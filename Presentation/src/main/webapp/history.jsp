@@ -9,7 +9,7 @@
 <c:forEach var="order" items="${orders}">
 	<div style="margin-top: 5em; margin-bottom: 1em;">
 		<table style="margin: 0px auto;">
-			<caption style="margin: 0px auto; font-size: 1.5em; padding: 5px;">!!!!!!!Calvin Order
+			<caption style="margin: 0px auto; font-size: 1.5em; padding: 5px;">Order
 				${order.id}, ${order.status}</caption>
 			<tr style="font-weight: bold;">
 				<td style="border: 1px solid black; padding: 5px;">Product</td>
@@ -18,13 +18,23 @@
 				<td style="border: 1px solid black; padding: 5px;">Product Cost</td>
 			</tr>
 			<c:set var="total" value="${0}" />
-			<c:forEach var="product" items="${order.orderItems}">
+			<c:forEach var="orderItem" items="${order.orderItems}">
+			<c:set var="product" value="${inventory[orderItem.sku]}" />
 				<tr style="border: 1px solid black;">
 					<td
-						style="border: 1px solid black; padding: 5px; text-align: right; max-width: 15em; min-width: 15em;">${product.id}</td>
+						style="border: 1px solid black; padding: 5px; text-align: right; max-width: 15em; min-width: 15em;">${product.name}</td>
 					<td
-						style="border: 1px solid black; padding: 5px; text-align: right;">${product.quantity}</td>
+						style="border: 1px solid black; padding: 5px; text-align: right;"><fmt:formatNumber
+							value="${product.price}" type="currency" groupingUsed="true" /></td>
+					<td
+						style="border: 1px solid black; padding: 5px; text-align: right;">${orderItem.quantity}</td>
+					<td
+						style="border: 1px solid black; padding: 5px; text-align: right; min-width: 12em;"><fmt:formatNumber
+							value="${product.price * orderItem.quantity}" type="currency"
+							groupingUsed="true" /></td>
 				</tr>
+				<c:set var="total"
+					value="${total + product.price * orderItem.quantity}" />
 			</c:forEach>
 			<tr style="font-weight: bold; margin-top: 1em;">
 				<td style="padding: 5px;"><div style="padding-top: 1em;">Grand
