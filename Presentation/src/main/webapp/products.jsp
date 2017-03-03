@@ -5,7 +5,7 @@
 	<table style="margin: 0px auto; width: 30em; border: 0px;">
 		<tr>
 			<td><input type="text" name="query" size="50">
-				<button type="submit">Search1</button></td>
+				<button type="submit">Search2</button></td>
 		</tr>
 	</table>
 </form>
