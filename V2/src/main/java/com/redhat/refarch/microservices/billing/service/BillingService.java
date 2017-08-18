@@ -11,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -106,6 +107,53 @@ public class BillingService {
 	     String catalog = "{\"services\":[{\"name\":\"3scales-amp\",\"id\":\"3101b971-1044-4816-a7ac-9ded2e028079\",\"description\":\"3scales-amp service for secure RESTful services\",\"tags\":[\"3scales\"],\"metadata\":{\"provider\":{\"name\":null},\"listing\":{\"imageUrl\":null,\"blurb\":\"3scales-amp service for secure RESTful services\"}},\"plans\":[{\"name\":\"testPlan\",\"id\":\"2451fa22-df16-4c10-ba6e-1f682d3dcdc9\",\"description\":\"testPlan desc\",\"metadata\":{\"cost\":0.0,\"bullets\":[{\"content\":\"test content 1\"},{\"content\":\"test content 2\"},{\"content\":\"test content 3\"}]}}]}]}";
 		logInfo( "getCatalog: " + catalog );
 		return catalog;
+	}
+
+
+	@PUT
+	@Path("/service_instances/{instance_id}")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String provisioning(@PathParam("instance_id") String instance_id) {
+	  //  String result = "test";
+	     String result = "{\"resut\":\"provisioning success\"}";
+		logInfo( "provisioning instance_id: " + instance_id );
+		return result;
+	}
+	
+	@DELETE
+	@Path("/service_instances/{instance_id}")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String deProvisioning(@PathParam("instance_id") String instance_id) {
+	  //  String result = "test";
+	     String result = "{\"resut\":\"deProvisioning success\"}";
+		logInfo( "deProvisioning instance_id: " + instance_id );
+		return result;
+	}
+
+	@PUT
+	@Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+	  //  String result = "test";
+	     String result = "{\"resut\":\"binding success\"}";
+		logInfo( "binding instance_id: " + instance_id );
+		logInfo( "binding binding_id: " + binding_id );
+		return result;
+	}
+
+	@DELETE
+	@Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String unBinding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+	  //  String result = "test";
+	     String result = "{\"resut\":\"unBinding success\"}";
+		logInfo( "unBinding instance_id: " + instance_id );
+		logInfo( "unBinding binding_id: " + binding_id );
+		return result;
 	}
 
 }
