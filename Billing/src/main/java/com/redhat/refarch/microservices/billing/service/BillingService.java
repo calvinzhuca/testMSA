@@ -11,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -100,12 +101,8 @@ public class BillingService {
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public void getCatalog() {
-	    String catalog = "{"services":[{"name":"3scales-amp","id":"3101b971-1044-4816-a7ac-9ded2e028079","description":"3scales-amp service for secure RESTful services","tags":["3scales"],"metadata":{"provider":{"name":null},"listing":{"imageUrl":null,"blurb":"3scales-amp service for secure RESTful services"}},"plans":[{"name":"testPlan","id":"2451fa22-df16-4c10-ba6e-1f682d3dcdc9","description":"testPlan desc","metadata":{"cost":0.0,"bullets":[{"content":"test content 1"},{"content":"test content 2"},{"content":"test content 3"}]}}]}]}";
-		logInfo( "getCatalog: " + transactionNumber );
+	    String catalog = "test";
+		logInfo( "getCatalog: " + catalog );
 	}
 
-	private void logInfo(String message) {
-		logger.log( Level.INFO, message );
-	}
-	
 }
