@@ -13,6 +13,7 @@
         <module>Presentation</module>
         <module>Product</module>
         <module>Sales</module>
+        <module>V2</module>        
         <module>Billing</module>
     </modules>
  
