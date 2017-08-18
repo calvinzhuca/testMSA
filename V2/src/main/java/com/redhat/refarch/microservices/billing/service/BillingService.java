@@ -96,13 +96,14 @@ public class BillingService {
 	}
 	
 	
-	@PUT
+	@GET
 	@Path("/catalog")
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public void getCatalog() {
+	public String getCatalog() {
 	    String catalog = "test";
 		logInfo( "getCatalog: " + catalog );
+		return catalog;
 	}
 
 }
