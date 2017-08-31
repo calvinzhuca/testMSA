@@ -21,6 +21,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.redhat.refarch.microservices.billing.model.Result;
 import com.redhat.refarch.microservices.billing.model.Result.Status;
@@ -102,15 +103,17 @@ public class BillingService {
 	@Path("/catalog")
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public String getCatalog() {
+	public Response getCatalog() {
 	  //  String catalog = "test";
 	  /*
 	     String catalog = "{\"services\":[{\"name\":\"fake-service\",\"id\":\"acb56d7c-AAAA-AAAA-AAAA-feb140a59a66\",\"description\":\"fake service\",\"tags\":[\"no-sql\",\"relational\"],\"requires\":[\"route_forwarding\"],\"bindable\":true,\"metadata\":{\"provider\":{\"name\":\"The name\"},\"listing\":{\"imageUrl\":\"http://example.com/cat.gif\",\"blurb\":\"Add a blurb here\",\"longDescription\":\"A long time ago, in a galaxy far far away...\"},\"displayName\":\"The Fake Broker\"},\"dashboard_client\":{\"id\":\"398e2f8e-AAAA-AAAA-AAAA-19a71ecbcf64\",\"secret\":\"277cabb0-AAAA-AAAA-AAAA-7822c0a90e5d\",\"redirect_uri\":\"http://localhost:1234\"},\"plan_updateable\":true,\"plans\":[{\"name\":\"fake-plan-1\",\"id\":\"d3031751-AAAA-AAAA-AAAA-a42377d3320e\",\"description\":\"Shared fake Server, 5tb persistent disk, 40 max concurrent connections\",\"free\":false,\"metadata\":{\"max_storage_tb\":5,\"costs\":[{\"amount\":{\"usd\":99},\"unit\":\"MONTHLY\"},{\"amount\":{\"usd\":0.99},\"unit\":\"1GB of messages over 20GB\"}],\"bullets\":[\"Shared fake server\",\"5 TB storage\",\"40 concurrent connections\"]}},{\"name\":\"fake-plan-2\",\"id\":\"0f4008b5-AAAA-AAAA-AAAA-dace631cd648\",\"description\":\"Shared fake Server, 5tb persistent disk, 40 max concurrent connections. 100 async\",\"free\":false,\"metadata\":{\"max_storage_tb\":5,\"costs\":[{\"amount\":{\"usd\":199},\"unit\":\"MONTHLY\"},{\"amount\":{\"usd\":0.99},\"unit\":\"1GB of messages over 20GB\"}],\"bullets\":[\"40 concurrent connections\"]}}]}]}";
 	     */
 	     String catalog = "{\r\n  \"services\": [\r\n   {\r\n    \"name\": \"service-name\",\r\n    \"id\": \"serviceUUID\",\r\n    \"description\": \"service description\",\r\n    \"tags\": [\r\n     \"tag1\",\r\n     \"tag2\"\r\n    ],\r\n    \"bindable\": true,\r\n    \"metadata\": {\r\n     \"metadata_key1\": \"metadata_value1\"\r\n    },\r\n    \"plans\": [\r\n     {\r\n      \"id\": \"gold-plan-id\",\r\n      \"name\": \"gold-plan\",\r\n      \"description\": \"gold plan description\",\r\n      \"free\": true,\r\n      \"bindable\": true\r\n     }\r\n    ]\r\n   }\r\n  ]\r\n }";
 		logInfo( "getCatalog: " + catalog );
-		return catalog;
+		
+		return Response.status(Response.Status.NOT_FOUND).entity("Entity not found" ).build();
 	}
+
 
 
 	@PUT
