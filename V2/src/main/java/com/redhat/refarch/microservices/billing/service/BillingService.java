@@ -111,10 +111,29 @@ public class BillingService {
 	     String catalog = "{\r\n  \"services\": [\r\n   {\r\n    \"name\": \"service-name\",\r\n    \"id\": \"serviceUUID\",\r\n    \"description\": \"service description\",\r\n    \"tags\": [\r\n     \"tag1\",\r\n     \"tag2\"\r\n    ],\r\n    \"bindable\": true,\r\n    \"metadata\": {\r\n     \"metadata_key1\": \"metadata_value1\"\r\n    },\r\n    \"plans\": [\r\n     {\r\n      \"id\": \"gold-plan-id\",\r\n      \"name\": \"gold-plan\",\r\n      \"description\": \"gold plan description\",\r\n      \"free\": true,\r\n      \"bindable\": true\r\n     }\r\n    ]\r\n   }\r\n  ]\r\n }";
 		logInfo( "getCatalog: " + catalog );
 		
-		return Response.status(Response.Status.NOT_FOUND).entity("Entity not found" ).build();
+		return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
 	}
 
+	@GET
+	@Path("/catalog2")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response getCatalog2() {
 
+		
+		//return Response.status(Response.Status.NOT_FOUND).entity("Entity not found" ).build();
+		return Response.serverError().entity("something is wrong example").build();
+	}
+
+	@GET
+	@Path("/catalog3")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response getCatalog3() {
+
+		
+		return Response.status(Response.Status.NOT_FOUND).entity("Entity not found example" ).build();
+	}
 
 	@PUT
 	@Path("/service_instances/{instance_id}")
