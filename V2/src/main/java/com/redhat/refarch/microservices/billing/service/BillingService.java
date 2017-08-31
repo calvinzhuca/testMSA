@@ -104,7 +104,10 @@ public class BillingService {
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String getCatalog() {
 	  //  String catalog = "test";
+	  /*
 	     String catalog = "{\"services\":[{\"name\":\"fake-service\",\"id\":\"acb56d7c-AAAA-AAAA-AAAA-feb140a59a66\",\"description\":\"fake service\",\"tags\":[\"no-sql\",\"relational\"],\"requires\":[\"route_forwarding\"],\"bindable\":true,\"metadata\":{\"provider\":{\"name\":\"The name\"},\"listing\":{\"imageUrl\":\"http://example.com/cat.gif\",\"blurb\":\"Add a blurb here\",\"longDescription\":\"A long time ago, in a galaxy far far away...\"},\"displayName\":\"The Fake Broker\"},\"dashboard_client\":{\"id\":\"398e2f8e-AAAA-AAAA-AAAA-19a71ecbcf64\",\"secret\":\"277cabb0-AAAA-AAAA-AAAA-7822c0a90e5d\",\"redirect_uri\":\"http://localhost:1234\"},\"plan_updateable\":true,\"plans\":[{\"name\":\"fake-plan-1\",\"id\":\"d3031751-AAAA-AAAA-AAAA-a42377d3320e\",\"description\":\"Shared fake Server, 5tb persistent disk, 40 max concurrent connections\",\"free\":false,\"metadata\":{\"max_storage_tb\":5,\"costs\":[{\"amount\":{\"usd\":99},\"unit\":\"MONTHLY\"},{\"amount\":{\"usd\":0.99},\"unit\":\"1GB of messages over 20GB\"}],\"bullets\":[\"Shared fake server\",\"5 TB storage\",\"40 concurrent connections\"]}},{\"name\":\"fake-plan-2\",\"id\":\"0f4008b5-AAAA-AAAA-AAAA-dace631cd648\",\"description\":\"Shared fake Server, 5tb persistent disk, 40 max concurrent connections. 100 async\",\"free\":false,\"metadata\":{\"max_storage_tb\":5,\"costs\":[{\"amount\":{\"usd\":199},\"unit\":\"MONTHLY\"},{\"amount\":{\"usd\":0.99},\"unit\":\"1GB of messages over 20GB\"}],\"bullets\":[\"40 concurrent connections\"]}}]}]}";
+	     */
+	     String catalog = "{\"services\":[{\"name\":\"service-name\",\"id\":\"serviceUUID\",\"description\":\"service description\",\"tags\":[\"tag1\",\"tag2\"],\"bindable\":true,\"metadata\":{\"metadata_key1\":\"metadata_value1\"},\"plans\":[{\"id\":\"gold-plan-id\",\"name\":\"gold-plan\",\"description\":\"gold plan description\",\"free\":true,\"bindable\":true}]}]}";
 		logInfo( "getCatalog: " + catalog );
 		return catalog;
 	}
