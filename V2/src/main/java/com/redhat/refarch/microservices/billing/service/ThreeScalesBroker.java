@@ -16,6 +16,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.AsyncResponse;
@@ -105,7 +106,7 @@ public class ThreeScalesBroker {
 	public Response getCatalog() {
 	  //  String catalog = "test";
 
-	     String catalog = "{\r\n  \"services\": [\r\n   {\r\n    \"name\": \"three-scale-service\",\r\n    \"id\": \"serviceUUID\",\r\n    \"description\": \"service description\",\r\n    \"tags\": [\r\n     \"tag1\",\r\n     \"tag2\"\r\n    ],\r\n    \"bindable\": true,\r\n    \"metadata\": {\r\n     \"metadata_key1\": \"metadata_value1\"\r\n    },\r\n    \"plans\": [\r\n     {\r\n      \"id\": \"gold-plan-id\",\r\n      \"name\": \"gold-plan\",\r\n      \"description\": \"gold plan description2\",\r\n      \"free\": true,\r\n      \"bindable\": true\r\n     }\r\n    ]\r\n   }\r\n  ]\r\n }";
+	     String catalog = "{\r\n  \"services\": [\r\n   {\r\n    \"name\": \"three-scales-service\",\r\n    \"id\": \"serviceUUID\",\r\n    \"description\": \"service description\",\r\n    \"tags\": [\r\n     \"tag1\",\r\n     \"tag2\"\r\n    ],\r\n    \"bindable\": true,\r\n    \"metadata\": {\r\n     \"metadata_key1\": \"metadata_value1\"\r\n    },\r\n    \"plans\": [\r\n     {\r\n      \"id\": \"gold-plan-id\",\r\n      \"name\": \"gold-plan\",\r\n      \"description\": \"gold plan description2\",\r\n      \"free\": true,\r\n      \"bindable\": true\r\n     }\r\n    ]\r\n   }\r\n  ]\r\n }";
 		logInfo( "getCatalog: " + catalog );
 	
 		return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
@@ -137,22 +138,44 @@ public class ThreeScalesBroker {
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String provisioning(@PathParam("instance_id") String instance_id) {
-	  //  String result = "test";
+		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id );
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
-		logInfo( "provisioning instance_id: " + instance_id );
 		return result;
 	}
 	
+	
+
+	@PUT
+	@Path("/service_instances")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String provisioning2(@QueryParam("instance_id") String instance_id) {
+		logInfo( "!!!!!!!!!!provisioning2 /service_instances instance_id: " + instance_id );
+	  //  String result = "test";
+	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
+		return result;
+	}
+		
 	@DELETE
 	@Path("/service_instances/{instance_id}")
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String deProvisioning(@PathParam("instance_id") String instance_id) {
-	  //  String result = "test";
+		logInfo( "deProvisioning /service_instances/{instance_id}: " + instance_id );
 	     String result = "{}";
-		logInfo( "deProvisioning instance_id: " + instance_id );
 		return result;
 	}
+
+	@DELETE
+	@Path("/service_instances")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String deProvisioning2(@QueryParam("instance_id") String instance_id) {
+		logInfo( "deProvisioning /service_instances: " + instance_id );
+	     String result = "{}";
+		return result;
+	}
+
 
 	@PUT
 	@Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
