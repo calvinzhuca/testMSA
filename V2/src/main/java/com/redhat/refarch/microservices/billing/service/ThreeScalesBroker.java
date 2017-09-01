@@ -140,6 +140,7 @@ public class ThreeScalesBroker {
 	public String provisioning(@PathParam("instance_id") String instance_id) {
 		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id );
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
+		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
 		return result;
 	}
 	
@@ -161,8 +162,9 @@ public class ThreeScalesBroker {
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String deProvisioning(@PathParam("instance_id") String instance_id) {
-		logInfo( "deProvisioning /service_instances/{instance_id}: " + instance_id );
+		logInfo( "!!!!!!!!!!!!!deProvisioning /service_instances/{instance_id}: " + instance_id );
 	     String result = "{}";
+		logInfo( "deProvisioning /service_instances/{instance_id} result: " + instance_id );
 		return result;
 	}
 
@@ -171,7 +173,7 @@ public class ThreeScalesBroker {
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String deProvisioning2(@QueryParam("instance_id") String instance_id) {
-		logInfo( "deProvisioning /service_instances: " + instance_id );
+		logInfo( "deProvisioning2 /service_instances: " + instance_id );
 	     String result = "{}";
 		return result;
 	}
@@ -184,7 +186,7 @@ public class ThreeScalesBroker {
 	public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
 	  //  String result = "test";
 	     String result = "{}";
-		logInfo( "binding instance_id: " + instance_id );
+		logInfo( "!!!!!!!!!!!!!!!binding instance_id: " + instance_id );
 		logInfo( "binding binding_id: " + binding_id );
 		return result;
 	}
@@ -196,7 +198,7 @@ public class ThreeScalesBroker {
 	public String unBinding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
 	  //  String result = "test";
 	     String result = "{}";
-		logInfo( "unBinding instance_id: " + instance_id );
+		logInfo( "!!!!!!!!!!!!!!!!unBinding instance_id: " + instance_id );
 		logInfo( "unBinding binding_id: " + binding_id );
 		return result;
 	}
