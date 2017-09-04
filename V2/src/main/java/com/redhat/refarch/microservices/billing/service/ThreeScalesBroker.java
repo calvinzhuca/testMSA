@@ -55,7 +55,7 @@ public class ThreeScalesBroker {
 		};
 		getExecutorService().execute( runnable );
 	}
-
+	
 	private Executor getExecutorService() {
 		if( executorService == null ) {
 			try {
@@ -85,6 +85,7 @@ public class ThreeScalesBroker {
 		}
 		return result;
 	}
+
 
 	@POST
 	@Path("/refund/{transactionNumber}")
