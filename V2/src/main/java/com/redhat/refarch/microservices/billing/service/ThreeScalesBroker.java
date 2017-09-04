@@ -136,7 +136,7 @@ public class ThreeScalesBroker {
 
 	@PUT
 	@Path("/service_instances/{instance_id}")
-	@Consumes({"*/*"})
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String provisioning(@PathParam("instance_id") String instance_id, final Transaction transaction) {
 		logInfo( "!!!!!!!!!!provisioning Transaction /service_instances/{instance_id} : " + instance_id );
@@ -147,7 +147,7 @@ public class ThreeScalesBroker {
 	
 	@PUT
 	@Path("/service_instances2/{instance_id}")
-	@Consumes({"*/*"})
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String provisioning(@PathParam("instance_id") String instance_id) {
 		logInfo( "!!!!!!!!!!provisioning Transaction /service_instances2/{instance_id} : " + instance_id );
