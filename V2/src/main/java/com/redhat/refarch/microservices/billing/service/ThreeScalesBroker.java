@@ -136,10 +136,10 @@ public class ThreeScalesBroker {
 
 	@PUT
 	@Path("/service_instances/{instance_id}")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String provisioning(@PathParam("instance_id") String instance_id, final Transaction transaction) {
-		logInfo( "!!!!!!!!!!provisioning Transaction /service_instances/{instance_id} : " + instance_id );
+		logInfo( "!!!!!!!!!!provisioning Transaction1 /service_instances/{instance_id} : " + instance_id );
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
 		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
 		return result;
@@ -150,7 +150,7 @@ public class ThreeScalesBroker {
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public String provisioning(final Transaction transaction) {
-		logInfo( "!!!!!!!!!!provisioning Transaction /service_instances2 : " );
+		logInfo( "!!!!!!!!!!provisioning Transaction1 /service_instances2 : " );
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
 		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
 		return result;
