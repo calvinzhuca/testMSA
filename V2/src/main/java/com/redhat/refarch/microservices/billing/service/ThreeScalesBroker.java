@@ -145,6 +145,17 @@ public class ThreeScalesBroker {
 		return result;
 	}
 	
+	@PUT
+	@Path("/service_instances2/{instance_id}")
+	@Consumes({"*/*"})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public String provisioning(@PathParam("instance_id") String instance_id) {
+		logInfo( "!!!!!!!!!!provisioning Transaction /service_instances2/{instance_id} : " + instance_id );
+	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
+		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
+		return result;
+	}
+	
 	
 
 	@PUT
