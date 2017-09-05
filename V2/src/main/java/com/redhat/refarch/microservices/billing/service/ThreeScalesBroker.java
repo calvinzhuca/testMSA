@@ -107,7 +107,7 @@ public class ThreeScalesBroker {
 	public Response getCatalog() {
 	  //  String catalog = "test";
 
-	     String catalog = "{\"services\":[{\"name\":\"three-scales-service\",\"id\":\"serviceUUID\",\"description\":\"secure service 3scales broker implementation\",\"bindable\":true,\"metadata\":{\"displayName\":\"secure-service-3scales-broker\",\"documentationUrl\":\"https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html-single/api_management_with_red_hat_3scale_api_management_platform\",\"longDescription\":\"A broker that secures input URL through 3scales-AMP\",\"parameters\":[{\"input_url\":{\"title\":\"input url\",\"type\":\"string\",\"default\":\"https://echo-api.3scale.net:443\"}},{\"username\":{\"title\":\"User Name\",\"type\":\"string\",\"default\":\"admin\"}},{\"password\":{\"title\":\"pass word\",\"type\":\"string\"}}]},\"plans\":[{\"id\":\"gold-plan-id\",\"name\":\"test-plan\",\"description\":\"3scale plan description ...\",\"free\":true,\"schemas\":{\"service_instance\":{\"create\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema\",\"additionalProperties\":false,\"properties\":{\"amp_admin_user\":{\"default\":\"admin\",\"title\":\"3scale AMP User\",\"type\":\"string\"},\"amp_admin_pass\":{\"default\":\"password1\",\"title\":\"3scale AMP User Password\",\"type\":\"string\"},\"amp_url\":{\"title\":\"input url for secure\",\"type\":\"string\",\"default\":\"https://echo-api.3scale.net:443\"}},\"required\":[\"amp_admin_user\",\"amp_admin_pass\",\"amp_url\"],\"type\":\"object\"}},\"update\":{}},\"service_binding\":{\"create\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema\",\"additionalProperties\":false,\"properties\":{\"properties\":{\"amp_admin_user\":{\"default\":\"admin\",\"title\":\"3scale AMP User\",\"type\":\"string\"},\"amp_admin_pass\":{\"default\":\"password1\",\"title\":\"3scale AMP User Password\",\"type\":\"string\"},\"amp_url\":{\"default\":\"amp\",\"title\":\"input url for secure\",\"type\":\"string\"}}},\"type\":\"object\"}}}}}]}]}";
+	     String catalog = "{\"services\":[{\"name\":\"three-scales-service\",\"id\":\"serviceUUID\",\"description\":\"secure service 3scales broker implementation\",\"bindable\":true,\"metadata\":{\"displayName\":\"secure-service-3scales-broker\",\"documentationUrl\":\"https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html-single/api_management_with_red_hat_3scale_api_management_platform\",\"longDescription\":\"A broker that secures input URL through 3scales-AMP\",\"parameters\":[{\"input_url\":{\"title\":\"input url\",\"type\":\"string\",\"default\":\"https://echo-api.3scale.net:443\"}},{\"username\":{\"title\":\"User Name\",\"type\":\"string\",\"default\":\"admin\"}},{\"password\":{\"title\":\"password\",\"type\":\"string\"}}]},\"plans\":[{\"id\":\"gold-plan-id\",\"name\":\"test-plan\",\"description\":\"3scale plan description ...\",\"free\":true,\"schemas\":{\"service_instance\":{\"create\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema\",\"additionalProperties\":false,\"properties\":{\"amp_admin_user\":{\"default\":\"admin\",\"title\":\"3scale AMP User\",\"type\":\"string\"},\"amp_admin_pass\":{\"default\":\"password1\",\"title\":\"3scale AMP Password\",\"type\":\"string\"},\"amp_url\":{\"title\":\"input url for secure\",\"type\":\"string\",\"default\":\"https://echo-api.3scale.net:443\"}},\"required\":[\"amp_admin_user\",\"amp_admin_pass\",\"amp_url\"],\"type\":\"object\"}},\"update\":{}},\"service_binding\":{\"create\":{\"parameters\":{\"$schema\":\"http://json-schema.org/draft-04/schema\",\"additionalProperties\":false,\"properties\":{\"properties\":{\"amp_admin_user\":{\"default\":\"admin\",\"title\":\"3scale AMP User\",\"type\":\"string\"},\"amp_admin_pass\":{\"default\":\"password1\",\"title\":\"3scale AMP User Password\",\"type\":\"string\"},\"amp_url\":{\"default\":\"amp\",\"title\":\"input url for secure\",\"type\":\"string\"}}},\"type\":\"object\"}}}}}]}]}";
 		logInfo( "getCatalog: " + catalog );
 	
 		return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
@@ -138,19 +138,20 @@ public class ThreeScalesBroker {
 	@Path("/service_instances/{instance_id}")
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public String provisioning(@PathParam("instance_id") String instance_id, final Transaction transaction) {
+	public String provisioning(@PathParam("instance_id") String instance_id, @QueryParam("amp_admin_user") String amp_admin_user) {
 		logInfo( "!!!!!!!!!!provisioning Transaction1 /service_instances/{instance_id} : " + instance_id );
+		logInfo( "!!!!!!!!!!provisioning Transaction1 /service_instances/  amp_admin_user: " + amp_admin_user );
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
 		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
 		return result;
 	}
 	
 	@PUT
-	@Path("/service_instances")
+	@Path("/service_instances2/{instance_id}")
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public String provisioning2(@QueryParam("instance_id") String instance_id) {
-		logInfo( "!!!!!!!!!!provisioning2 /service_instances instance_id: " + instance_id );
+	public String provisioning2(@QueryParam("instance_id") String instance_id, final Transaction transaction) {
+		logInfo( "!!!!!!!!!!provisioning2 /service_instances2 instance_id: " + instance_id );
 	  //  String result = "test";
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
 		return result;
