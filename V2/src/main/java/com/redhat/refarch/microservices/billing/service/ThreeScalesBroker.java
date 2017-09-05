@@ -103,7 +103,8 @@ public class ThreeScalesBroker {
 	
 	@GET
 	@Path("/catalog")
-	@Consumes({"*/*"})
+	//@Consumes({"*/*"})
+	@Consumes("application/x-www-form-urlencoded")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response getCatalog() {
 	  //  String catalog = "test";
