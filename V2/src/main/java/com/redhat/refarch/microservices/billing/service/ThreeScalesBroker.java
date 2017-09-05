@@ -107,7 +107,7 @@ public class ThreeScalesBroker {
 	public Response getCatalog() {
 	  //  String catalog = "test";
 
-	     String catalog = "{\r\n  \"services\": [\r\n   {\r\n    \"name\": \"three-scales-service\",\r\n    \"id\": \"serviceUUID\",\r\n    \"description\": \"service description\",\r\n    \"tags\": [\r\n     \"tag1\",\r\n     \"tag2\"\r\n    ],\r\n    \"bindable\": true,\r\n    \"metadata\": {\r\n     \"metadata_key1\": \"metadata_value1\"\r\n    },\r\n    \"plans\": [\r\n     {\r\n      \"id\": \"gold-plan-id\",\r\n      \"name\": \"gold-plan\",\r\n      \"description\": \"gold plan description2\",\r\n      \"free\": true,\r\n      \"bindable\": true\r\n     }\r\n    ]\r\n   }\r\n  ]\r\n }";
+	     String catalog = "{\r\n  \"services\": [\r\n   {\r\n    \"name\": \"three-scales-service\",\r\n    \"id\": \"serviceUUID\",\r\n    \"description\": \"service description\",\r\n    \"tags\": [\r\n     \"tag1\",\r\n     \"tag2\"\r\n    ],\r\n    \"bindable\": true,\r\n    \"metadata\": {\"displayName\":\"3scales-services-broker\",\"documentationUrl\":\"https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html-single/api_management_with_red_hat_3scale_api_management_platform/\",\"longDescription\":\"A broker that secures input URL through 3scales-AMP\",\"parameters\":[{\"input_url\":{\"title\":\"input url\",\"type\":\"string\",\"default\":\"https://echo-api.3scale.net:443\"}},{\"username\":{\"title\":\"User Name\",\"type\":\"string\",\"default\":\"admin\"}},{\"password\":{\"title\":\"pass word\",\"type\":\"string\",\"default\":\"password1\"}}]},\r\n    \"plans\": [\r\n     {\r\n      \"id\": \"gold-plan-id\",\r\n      \"name\": \"gold-plan\",\r\n      \"description\": \"gold plan description2\",\r\n      \"free\": true,\r\n      \"bindable\": true\r\n     }\r\n    ]\r\n   }\r\n  ]\r\n }";
 		logInfo( "getCatalog: " + catalog );
 	
 		return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
@@ -145,19 +145,6 @@ public class ThreeScalesBroker {
 		return result;
 	}
 	
-	@PUT
-	@Path("/service_instances2")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public String provisioning(final Transaction transaction) {
-		logInfo( "!!!!!!!!!!provisioning Transaction1 /service_instances2 : " );
-	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
-		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
-		return result;
-	}
-	
-	
-
 	@PUT
 	@Path("/service_instances")
 	@Consumes({"*/*"})
