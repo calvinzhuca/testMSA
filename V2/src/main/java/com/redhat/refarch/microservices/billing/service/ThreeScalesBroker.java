@@ -17,6 +17,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.AsyncResponse;
@@ -138,9 +139,10 @@ public class ThreeScalesBroker {
 	@Path("/service_instances/{instance_id}")
 	@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public String provisioning(@PathParam("instance_id") String instance_id, @QueryParam("amp_admin_user") String amp_admin_user) {
+	public String provisioning(@PathParam("instance_id") String instance_id, @FormParam("amp_admin_pass") String amp_admin_pass, @QueryParam("amp_admin_user") String amp_admin_user) {
 		logInfo( "!!!!!!!!!!provisioning Transaction1 /service_instances/{instance_id} : " + instance_id );
-		logInfo( "!!!!!!!!!!provisioning Transaction1 /service_instances/  amp_admin_user: " + amp_admin_user );
+		logInfo( "!!!!!!!!!!amp_admin_user: " + amp_admin_user );
+		logInfo( "!!!!!!!!!!amp_admin_pass: " + amp_admin_pass );
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
 		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
 		return result;
