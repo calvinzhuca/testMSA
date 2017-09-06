@@ -149,10 +149,9 @@ public class ThreeScalesBroker {
 		logInfo( "provision.getParameters().getAmp_url() : " + provision.getParameters().getAmp_url() );
 		logInfo( "provision.getParameters().getAmp_admin_user() : " + provision.getParameters().getAmp_admin_user() );
 		logInfo( "provision.getParameters().getAmp_admin_pass() : " + provision.getParameters().getAmp_admin_pass() );
-		//logInfo( "!!!!!!!!!!amp_admin_user: " + amp_admin_user );
-		//logInfo( "!!!!!!!!!!amp_admin_pass: " + amp_admin_pass );
-	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
-		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
+		String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
+//	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
+		logInfo( "provisioning result" + result );
 		return result;
 	}
 	
