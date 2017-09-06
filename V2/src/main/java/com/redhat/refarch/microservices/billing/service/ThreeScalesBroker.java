@@ -137,13 +137,14 @@ public class ThreeScalesBroker {
 
 	@PUT
 	@Path("/service_instances/{instance_id}")
-	@Consumes("application/x-www-form-urlencoded")
+	//@Consumes("application/x-www-form-urlencoded")
 	//@Consumes({"*/*"})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public String provisioning(@PathParam("instance_id") String instance_id, @FormParam("amp_admin_pass") String amp_admin_pass, @QueryParam("amp_admin_user") String amp_admin_user) {
-		logInfo( "!!!!!!!!!!provisioning Transaction123 /service_instances/{instance_id} : " + instance_id );
-		logInfo( "!!!!!!!!!!amp_admin_user: " + amp_admin_user );
-		logInfo( "!!!!!!!!!!amp_admin_pass: " + amp_admin_pass );
+	//public String provisioning(@PathParam("instance_id") String instance_id, @FormParam("amp_admin_pass") String amp_admin_pass, @QueryParam("amp_admin_user") String amp_admin_user) {
+	public String provisioning( String testString) {
+		logInfo( "!!!!!!!!!!provisioning Transaction123 /service_instances/{instance_id} : " + testString );
+		//logInfo( "!!!!!!!!!!amp_admin_user: " + amp_admin_user );
+		//logInfo( "!!!!!!!!!!amp_admin_pass: " + amp_admin_pass );
 	     String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
 		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : result" + result );
 		return result;
