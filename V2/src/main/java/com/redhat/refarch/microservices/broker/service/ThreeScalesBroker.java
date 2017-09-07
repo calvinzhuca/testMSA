@@ -29,7 +29,6 @@ import com.redhat.refarch.microservices.broker.model.Provision;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -49,6 +48,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -59,6 +60,7 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
 
 @Path("/")
 public class ThreeScalesBroker {
@@ -345,14 +347,20 @@ public class ThreeScalesBroker {
     private String ampCreateService(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
-        
+
         //TODO? will the name be another parameter? 
-        uriBuilder.addParameter("name", "testApi");
-        uriBuilder.addParameter("system_name", "testApi");
+        //uriBuilder.addParameter("name", "testApi");
+        //uriBuilder.addParameter("system_name", "testApi");
+
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList<NameValuePair>();
+        postParameters.add(new BasicNameValuePair("name", "testApi"));
+        postParameters.add(new BasicNameValuePair("system_name", "testApi"));
 
         //HttpGet get = new HttpGet(uriBuilder.build());
         HttpPost request = new HttpPost(uriBuilder.build());
-        logInfo("Executing " + request);
+        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        logInfo("Executing1 " + request);
         logInfo("Secure this URL " + inputURL);
         HttpResponse response = client.execute(request);
         if (isError(response)) {
