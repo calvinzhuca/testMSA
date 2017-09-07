@@ -1,4 +1,4 @@
-package com.redhat.refarch.microservices.billing.model;
+package com.redhat.refarch.microservices.broker.model;
 
 import java.util.Date;
 
