@@ -49,6 +49,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
@@ -176,7 +177,7 @@ public class ThreeScalesBroker {
         logInfo("provision.getParameters().getAmp_admin_user() : " + provision.getParameters().getAmp_admin_user());
         logInfo("provision.getParameters().getAmp_admin_pass() : " + provision.getParameters().getAmp_admin_pass());
         try {
-            String servicesList = searchServices();
+            String servicesList = ampCreateService(provision.getParameters().getAmp_url());
             logInfo("servicesList : " + servicesList);
         } catch (IOException ex) {
             Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -341,13 +342,19 @@ public class ThreeScalesBroker {
         return list;
     }
 
-    private String searchServices() throws IOException, JSONException, URISyntaxException, HttpErrorException {
+    private String ampCreateService(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
+        
+        //TODO? will the name be another parameter? 
+        uriBuilder.addParameter("name", "testApi");
+        uriBuilder.addParameter("system_name", "testApi");
 
-        HttpGet get = new HttpGet(uriBuilder.build());
-        Logger.getLogger("Executing " + get);
-        HttpResponse response = client.execute(get);
+        //HttpGet get = new HttpGet(uriBuilder.build());
+        HttpPost request = new HttpPost(uriBuilder.build());
+        logInfo("Executing " + request);
+        logInfo("Secure this URL " + inputURL);
+        HttpResponse response = client.execute(request);
         if (isError(response)) {
             throw new HttpErrorException(response);
         } else {
