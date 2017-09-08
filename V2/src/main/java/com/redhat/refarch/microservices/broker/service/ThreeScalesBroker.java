@@ -363,8 +363,8 @@ public class ThreeScalesBroker {
         //uriBuilder.addParameter("system_name", "testApi");
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair("name", "testApi"));
-        postParameters.add(new BasicNameValuePair("system_name", "testApi"));
+        postParameters.add(new BasicNameValuePair("name", "testapi"));
+        postParameters.add(new BasicNameValuePair("system_name", "testapi"));
 
         //HttpGet get = new HttpGet(uriBuilder.build());
         HttpPost request = new HttpPost(uriBuilder.build());
@@ -389,8 +389,8 @@ public class ThreeScalesBroker {
 
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair("name", "testPlan"));
-        postParameters.add(new BasicNameValuePair("system_name", "testPlan"));
+        postParameters.add(new BasicNameValuePair("name", "plan1"));
+        postParameters.add(new BasicNameValuePair("system_name", "plan1"));
 
         HttpPost request = new HttpPost(uriBuilder.build());
         request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
