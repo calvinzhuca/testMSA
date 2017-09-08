@@ -180,12 +180,17 @@ public class ThreeScalesBroker {
         logInfo("provision.getParameters().getAmp_admin_user() : " + provision.getParameters().getAmp_admin_user());
         logInfo("provision.getParameters().getAmp_admin_pass() : " + provision.getParameters().getAmp_admin_pass());
         try {
-            
-            String servicesList = ampSearchService(provision.getParameters().getAmp_url());
-           logInfo("servicesList : " + servicesList);
-             
-            servicesList = ampCreateService(provision.getParameters().getAmp_url());
-            logInfo("servicesList : " + servicesList);
+
+            //String servicesList = ampSearchService(provision.getParameters().getAmp_url());
+            //logInfo("servicesList : " + servicesList);
+            String result = ampCreateService(provision.getParameters().getAmp_url());
+            logInfo("services is created : " + result);
+            String serviceID = result.substring(result.indexOf("<service><id>") + "<service><id>".length(),
+                    result.indexOf("</id>"));
+            logInfo("serviceID : " + serviceID);
+            result = ampCreatePlan(serviceID);
+            logInfo("servicePlan is created : " + result);
+
         } catch (IOException ex) {
             Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
         } catch (JSONException ex) {
@@ -356,7 +361,6 @@ public class ThreeScalesBroker {
         //TODO? will the name be another parameter? 
         //uriBuilder.addParameter("name", "testApi");
         //uriBuilder.addParameter("system_name", "testApi");
-
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList<NameValuePair>();
         postParameters.add(new BasicNameValuePair("name", "testApi"));
@@ -366,18 +370,41 @@ public class ThreeScalesBroker {
         HttpPost request = new HttpPost(uriBuilder.build());
         request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
         logInfo("Executing ampCreateService " + request);
-        logInfo("Secure this URL " + inputURL);
+        logInfo("Secure this URL:  " + inputURL);
         HttpResponse response = client.execute(request);
         if (isError(response)) {
-            throw new HttpErrorException(response);
-        } else {
-            String responseString = EntityUtils.toString(response.getEntity());
-            //JSONArray jsonArray = new JSONArray(responseString);
-            //List<Map<String, Object>> products = getList(jsonArray);
-            return responseString;
+            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
         }
+        String responseString = EntityUtils.toString(response.getEntity());
+        //JSONArray jsonArray = new JSONArray(responseString);
+        //List<Map<String, Object>> products = getList(jsonArray);
+        return responseString;
+
     }
-    
+
+    private String ampCreatePlan(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
+        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+
+        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "service_plans.xml");
+
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList<NameValuePair>();
+        postParameters.add(new BasicNameValuePair("name", "testPlan"));
+        postParameters.add(new BasicNameValuePair("system_name", "testPlan"));
+
+        HttpPost request = new HttpPost(uriBuilder.build());
+        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        logInfo("Executing ampCreatePlan " + request);
+        HttpResponse response = client.execute(request);
+        if (isError(response)) {
+            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
+        }
+        String responseString = EntityUtils.toString(response.getEntity());
+        //JSONArray jsonArray = new JSONArray(responseString);
+        //List<Map<String, Object>> products = getList(jsonArray);
+        return responseString;
+    }
+
     private String ampSearchService(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
@@ -385,8 +412,6 @@ public class ThreeScalesBroker {
         //TODO? will the name be another parameter? 
         //uriBuilder.addParameter("name", "testApi");
         //uriBuilder.addParameter("system_name", "testApi");
-
-
         HttpGet request = new HttpGet(uriBuilder.build());
         logInfo("Executing ampSearchService " + request);
         logInfo("Search this URL " + inputURL);
@@ -399,6 +424,6 @@ public class ThreeScalesBroker {
             //List<Map<String, Object>> products = getList(jsonArray);
             return responseString;
         }
-    }    
+    }
 
 }
