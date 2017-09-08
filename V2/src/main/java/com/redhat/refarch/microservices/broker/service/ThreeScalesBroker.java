@@ -385,7 +385,7 @@ public class ThreeScalesBroker {
     private String ampCreatePlan(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
 
-        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "service_plans.xml");
+        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/service_plans.xml");
 
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList<NameValuePair>();
