@@ -183,13 +183,19 @@ public class ThreeScalesBroker {
 
             //String servicesList = ampSearchService(provision.getParameters().getAmp_url());
             //logInfo("servicesList : " + servicesList);
-            String result = ampCreateService(provision.getParameters().getAmp_url());
+            String result = apiCreation(provision.getParameters().getAmp_url());
             logInfo("services is created : " + result);
             String serviceID = result.substring(result.indexOf("<service><id>") + "<service><id>".length(),
                     result.indexOf("</id>"));
             logInfo("serviceID : " + serviceID);
-            result = ampCreatePlan(serviceID);
+            result = apiCreateApplicationPlan(serviceID);
             logInfo("servicePlan is created : " + result);
+            String planID = result.substring(result.indexOf("<plan><id>") + "<plan><id>".length(),
+                    result.indexOf("</id>"));
+            logInfo("planID : " + planID);
+            
+            result =  apiApiIntegration(serviceID);
+            logInfo("service is integerated : " + result);
 
         } catch (IOException ex) {
             Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -353,58 +359,7 @@ public class ThreeScalesBroker {
         }
         return list;
     }
-
-    private String ampCreateService(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
-        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-        URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
-
-        //TODO? will the name be another parameter? 
-        //uriBuilder.addParameter("name", "testApi");
-        //uriBuilder.addParameter("system_name", "testApi");
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair("name", "testapi"));
-        postParameters.add(new BasicNameValuePair("system_name", "testapi"));
-
-        //HttpGet get = new HttpGet(uriBuilder.build());
-        HttpPost request = new HttpPost(uriBuilder.build());
-        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
-        logInfo("Executing ampCreateService " + request);
-        logInfo("Secure this URL:  " + inputURL);
-        HttpResponse response = client.execute(request);
-        if (isError(response)) {
-            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
-        }
-        String responseString = EntityUtils.toString(response.getEntity());
-        //JSONArray jsonArray = new JSONArray(responseString);
-        //List<Map<String, Object>> products = getList(jsonArray);
-        return responseString;
-
-    }
-
-    private String ampCreatePlan(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
-        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-
-        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/service_plans.xml");
-
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair("name", "plan1"));
-        postParameters.add(new BasicNameValuePair("system_name", "plan1"));
-
-        HttpPost request = new HttpPost(uriBuilder.build());
-        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
-        logInfo("Executing ampCreatePlan " + request);
-        HttpResponse response = client.execute(request);
-        if (isError(response)) {
-            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
-        }
-        String responseString = EntityUtils.toString(response.getEntity());
-        //JSONArray jsonArray = new JSONArray(responseString);
-        //List<Map<String, Object>> products = getList(jsonArray);
-        return responseString;
-    }
-
+    
     private String ampSearchService(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
@@ -425,5 +380,82 @@ public class ThreeScalesBroker {
             return responseString;
         }
     }
+    
+
+    private String apiCreation(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
+        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+        URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
+
+        //TODO? will the name be another parameter? 
+        //uriBuilder.addParameter("name", "testApi");
+        //uriBuilder.addParameter("system_name", "testApi");
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+        postParameters.add(new BasicNameValuePair("name", "testapi"));
+        postParameters.add(new BasicNameValuePair("system_name", "testapi"));
+
+        //HttpGet get = new HttpGet(uriBuilder.build());
+        HttpPost request = new HttpPost(uriBuilder.build());
+        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        logInfo("Executing apiCreation " + request);
+        logInfo("Secure this URL:  " + inputURL);
+        HttpResponse response = client.execute(request);
+        if (isError(response)) {
+            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
+        }
+        String responseString = EntityUtils.toString(response.getEntity());
+        //JSONArray jsonArray = new JSONArray(responseString);
+        //List<Map<String, Object>> products = getList(jsonArray);
+        return responseString;
+
+    }
+
+    private String apiCreateApplicationPlan(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
+        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+
+        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/service_plans.xml");
+
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+        postParameters.add(new BasicNameValuePair("name", "plan1"));
+        postParameters.add(new BasicNameValuePair("system_name", "plan1"));
+
+        HttpPost request = new HttpPost(uriBuilder.build());
+        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        logInfo("Executing apiCreateApplicationPlan " + request);
+        HttpResponse response = client.execute(request);
+        if (isError(response)) {
+            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
+        }
+        String responseString = EntityUtils.toString(response.getEntity());
+        //JSONArray jsonArray = new JSONArray(responseString);
+        //List<Map<String, Object>> products = getList(jsonArray);
+        return responseString;
+    }
+
+    
+    private String apiApiIntegration(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
+        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+
+        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/proxy.xml");
+
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+        postParameters.add(new BasicNameValuePair("service_id", serviceID));
+        postParameters.add(new BasicNameValuePair("api_backend", "http://www.google.ca:80"));
+        //TODO: a lot more field might need to be added here, check the works.txt, add later
+        HttpPost request = new HttpPost(uriBuilder.build());
+        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        logInfo("Executing apiApiIntegration " + request);
+        HttpResponse response = client.execute(request);
+        if (isError(response)) {
+            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
+        }
+        String responseString = EntityUtils.toString(response.getEntity());
+        //JSONArray jsonArray = new JSONArray(responseString);
+        //List<Map<String, Object>> products = getList(jsonArray);
+        return responseString;
+    }    
+    
 
 }
