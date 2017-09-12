@@ -50,8 +50,10 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
@@ -183,19 +185,36 @@ public class ThreeScalesBroker {
 
             //String servicesList = ampSearchService(provision.getParameters().getAmp_url());
             //logInfo("servicesList : " + servicesList);
-            String result = apiCreation(provision.getParameters().getAmp_url());
+            //create API/Service
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("name", "testapi"));
+            postParameters.add(new BasicNameValuePair("system_name", "testapi"));
+
+            String ampUrl = "/admin/api/services.xml";
+            String result = restWsCall(ampUrl, postParameters, "POST");
             logInfo("services is created : " + result);
             String serviceID = result.substring(result.indexOf("<service><id>") + "<service><id>".length(),
                     result.indexOf("</id>"));
             logInfo("serviceID : " + serviceID);
-            result = apiCreateApplicationPlan(serviceID);
-            logInfo("servicePlan is created : " + result);
+
+            //create applicaiton plan
+            ampUrl = "/admin/api/services/" + serviceID + "/application_plans.xml";
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("name", "plan1"));
+            postParameters.add(new BasicNameValuePair("system_name", "plan1"));
+            result = restWsCall(ampUrl, postParameters, "POST");
             String planID = result.substring(result.indexOf("<plan><id>") + "<plan><id>".length(),
                     result.indexOf("</id>"));
             logInfo("planID : " + planID);
-            
-            result =  apiApiIntegration(serviceID);
-            logInfo("service is integerated : " + result);
+
+            //API integration
+            ampUrl = "/admin/api/services/" + serviceID + "/proxy.xml";
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("service_id", serviceID));
+            postParameters.add(new BasicNameValuePair("api_backend", "http://www.google.ca:80"));
+            result = restWsCall(ampUrl, postParameters, "POST");
+            logInfo("integration result : " + result);
 
         } catch (IOException ex) {
             Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -213,13 +232,36 @@ public class ThreeScalesBroker {
     }
 
     @PUT
-    @Path("/service_instances2/{instance_id}")
-    @Consumes({"*/*"})
+    @Path("/create_user/{instance_id}")
+    //@Consumes("application/x-www-form-urlencoded")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String provisioning2(@QueryParam("instance_id") String instance_id, final Transaction transaction) {
-        logInfo("!!!!!!!!!!provisioning2 /service_instances2 instance_id: " + instance_id);
-        //  String result = "test";
-        String result = "{\"kind\":\"ServiceInstanceList\",\"apiVersion\":\"sdkbroker.broker.k8s.io/v1alpha1\",\"metadata\":{\"selfLink\":\"/apis/sdkbroker.broker.k8s.io/v1alpha1/namespaces/brokersdk/serviceinstances\",\"resourceVersion\":\"473\"},\"items\":[]}";
+    public String createUser(@PathParam("instance_id") String instance_id, Provision provision) {
+        String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
+
+        try {
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("name", "testapi"));
+            postParameters.add(new BasicNameValuePair("system_name", "testapi"));
+
+            String ampUrl = "/admin/api/services.xml";
+            result = restWsCall(ampUrl, postParameters, "POST");
+            logInfo("services is created : " + result);
+            String serviceID = result.substring(result.indexOf("<service><id>") + "<service><id>".length(),
+                    result.indexOf("</id>"));
+            logInfo("serviceID : " + serviceID);
+
+        } catch (IOException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (HttpErrorException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        logInfo("createUser result" + result);
         return result;
     }
 
@@ -359,7 +401,7 @@ public class ThreeScalesBroker {
         }
         return list;
     }
-    
+
     private String ampSearchService(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
@@ -380,8 +422,27 @@ public class ThreeScalesBroker {
             return responseString;
         }
     }
-    
 
+    private String restWsCall(String inputURL, ArrayList<NameValuePair> postParameters, String httpMethod) throws IOException, JSONException, URISyntaxException, HttpErrorException {
+        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+        URIBuilder uriBuilder = getUriBuilder(inputURL);
+
+        HttpEntityEnclosingRequestBase request = new HttpPost(uriBuilder.build());
+        if ("PATCH".equals(httpMethod)) {
+            request = new HttpPatch(uriBuilder.build());
+        }
+        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        logInfo("Executing REST:  " + request);
+        HttpResponse response = client.execute(request);
+        if (isError(response)) {
+            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
+        }
+        String responseString = EntityUtils.toString(response.getEntity());
+        return responseString;
+
+    }
+
+    /*
     private String apiCreation(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
@@ -409,11 +470,10 @@ public class ThreeScalesBroker {
         return responseString;
 
     }
-
     private String apiCreateApplicationPlan(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
 
-        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/service_plans.xml");
+        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/application_plans.xml");
 
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
@@ -433,8 +493,7 @@ public class ThreeScalesBroker {
         return responseString;
     }
 
-    
-    private String apiApiIntegration(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
+    private String apiIntegration(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
 
         URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/proxy.xml");
@@ -444,7 +503,7 @@ public class ThreeScalesBroker {
         postParameters.add(new BasicNameValuePair("service_id", serviceID));
         postParameters.add(new BasicNameValuePair("api_backend", "http://www.google.ca:80"));
         //TODO: a lot more field might need to be added here, check the works.txt, add later
-        HttpPost request = new HttpPost(uriBuilder.build());
+        HttpPatch request = new HttpPatch(uriBuilder.build());
         request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
         logInfo("Executing apiApiIntegration " + request);
         HttpResponse response = client.execute(request);
@@ -455,7 +514,6 @@ public class ThreeScalesBroker {
         //JSONArray jsonArray = new JSONArray(responseString);
         //List<Map<String, Object>> products = getList(jsonArray);
         return responseString;
-    }    
-    
-
+    }
+     */
 }
