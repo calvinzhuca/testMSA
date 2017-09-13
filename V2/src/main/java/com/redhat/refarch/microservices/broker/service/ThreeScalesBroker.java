@@ -214,7 +214,7 @@ public class ThreeScalesBroker {
             ampUrl = "/admin/api/services/" + serviceID + "/proxy.xml";
             postParameters = new ArrayList();
             postParameters.add(new BasicNameValuePair("service_id", serviceID));
-            postParameters.add(new BasicNameValuePair("api_backend", "http://billing.example.com:8080/"));
+            postParameters.add(new BasicNameValuePair("api_backend", "http://billing.example.com:8080"));
             result = restWsCall(ampUrl, postParameters, "PATCH");
             logInfo("integration result : " + result);
 
