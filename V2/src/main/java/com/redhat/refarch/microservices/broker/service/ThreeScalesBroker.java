@@ -54,6 +54,7 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
@@ -194,7 +195,7 @@ public class ThreeScalesBroker {
             String ampUrl = "/admin/api/services.xml";
             String result = restWsCall(ampUrl, postParameters, "POST");
             logInfo("services is created : " + result);
-            String serviceID = result.substring(result.indexOf("<service><id>") + "<service><id>".length(),
+            String serviceID = result.substring(result.indexOf("<id>") + "<id>".length(),
                     result.indexOf("</id>"));
             logInfo("serviceID : " + serviceID);
 
@@ -204,7 +205,8 @@ public class ThreeScalesBroker {
             postParameters.add(new BasicNameValuePair("name", "plan1"));
             postParameters.add(new BasicNameValuePair("system_name", "plan1"));
             result = restWsCall(ampUrl, postParameters, "POST");
-            String planID = result.substring(result.indexOf("<plan><id>") + "<plan><id>".length(),
+            logInfo("rapplication plan is created: " + result);
+            String planID = result.substring(result.indexOf("<id>") + "<id>".length(),
                     result.indexOf("</id>"));
             logInfo("planID : " + planID);
 
@@ -212,8 +214,8 @@ public class ThreeScalesBroker {
             ampUrl = "/admin/api/services/" + serviceID + "/proxy.xml";
             postParameters = new ArrayList();
             postParameters.add(new BasicNameValuePair("service_id", serviceID));
-            postParameters.add(new BasicNameValuePair("api_backend", "http://www.google.ca:80"));
-            result = restWsCall(ampUrl, postParameters, "POST");
+            postParameters.add(new BasicNameValuePair("api_backend", "http://billing.example.com:8080/"));
+            result = restWsCall(ampUrl, postParameters, "PATCH");
             logInfo("integration result : " + result);
 
         } catch (IOException ex) {
@@ -242,15 +244,27 @@ public class ThreeScalesBroker {
         try {
             ArrayList<NameValuePair> postParameters;
             postParameters = new ArrayList();
-            postParameters.add(new BasicNameValuePair("name", "testapi"));
-            postParameters.add(new BasicNameValuePair("system_name", "testapi"));
+            postParameters.add(new BasicNameValuePair("username", "tester2"));
+            postParameters.add(new BasicNameValuePair("password", "password1"));
+            postParameters.add(new BasicNameValuePair("email", "tester2@test.com"));
 
-            String ampUrl = "/admin/api/services.xml";
+            //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+            int account_id = 5;
+            String ampUrl = "/admin/api/accounts/" + account_id + "/users.xml";
             result = restWsCall(ampUrl, postParameters, "POST");
-            logInfo("services is created : " + result);
-            String serviceID = result.substring(result.indexOf("<service><id>") + "<service><id>".length(),
+            logInfo("user is created : " + result);
+            String tmpID = result.substring(result.indexOf("<id>") + "<id>".length(),
                     result.indexOf("</id>"));
-            logInfo("serviceID : " + serviceID);
+            logInfo("user ID : " + tmpID);
+            
+            
+            //now activate the new user, the default state is "pending"
+            ampUrl = "/admin/api/accounts/" + account_id + "/users/" + tmpID + "/activate.xml";
+            postParameters = new ArrayList();
+            result = restWsCall(ampUrl, postParameters, "PUT");
+            logInfo("user is activated : " + result);
+            
+            
 
         } catch (IOException ex) {
             Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
@@ -261,9 +275,46 @@ public class ThreeScalesBroker {
         } catch (HttpErrorException ex) {
             Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        logInfo("createUser result" + result);
         return result;
     }
+
+    @PUT
+    @Path("/create_application/{instance_id}")
+    //@Consumes("application/x-www-form-urlencoded")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public String createApplication(@PathParam("instance_id") String instance_id, Provision provision) {
+        String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
+
+        try {
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("name", "testApp1"));
+            postParameters.add(new BasicNameValuePair("description", "testApp1"));
+            postParameters.add(new BasicNameValuePair("plan_id", instance_id));
+
+            //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+            int account_id = 5;
+            String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
+
+            result = restWsCall(ampUrl, postParameters, "POST");
+            logInfo("user is created : " + result);
+            String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(),
+                    result.indexOf("</user_key>"));
+            logInfo("user_key : " + user_key);
+            
+
+        } catch (IOException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (HttpErrorException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }    
 
     @DELETE
     @Path("/service_instances/{instance_id}")
@@ -430,7 +481,9 @@ public class ThreeScalesBroker {
         HttpEntityEnclosingRequestBase request = new HttpPost(uriBuilder.build());
         if ("PATCH".equals(httpMethod)) {
             request = new HttpPatch(uriBuilder.build());
-        }
+        }else if ("PUT".equals(httpMethod)) {
+            request = new HttpPut(uriBuilder.build());
+        }        
         request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
         logInfo("Executing REST:  " + request);
         HttpResponse response = client.execute(request);
@@ -442,78 +495,5 @@ public class ThreeScalesBroker {
 
     }
 
-    /*
-    private String apiCreation(String inputURL) throws IOException, JSONException, URISyntaxException, HttpErrorException {
-        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-        URIBuilder uriBuilder = getUriBuilder("/admin/api/services.xml");
 
-        //TODO? will the name be another parameter? 
-        //uriBuilder.addParameter("name", "testApi");
-        //uriBuilder.addParameter("system_name", "testApi");
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-        postParameters.add(new BasicNameValuePair("name", "testapi"));
-        postParameters.add(new BasicNameValuePair("system_name", "testapi"));
-
-        //HttpGet get = new HttpGet(uriBuilder.build());
-        HttpPost request = new HttpPost(uriBuilder.build());
-        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
-        logInfo("Executing apiCreation " + request);
-        logInfo("Secure this URL:  " + inputURL);
-        HttpResponse response = client.execute(request);
-        if (isError(response)) {
-            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
-        }
-        String responseString = EntityUtils.toString(response.getEntity());
-        //JSONArray jsonArray = new JSONArray(responseString);
-        //List<Map<String, Object>> products = getList(jsonArray);
-        return responseString;
-
-    }
-    private String apiCreateApplicationPlan(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
-        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-
-        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/application_plans.xml");
-
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-        postParameters.add(new BasicNameValuePair("name", "plan1"));
-        postParameters.add(new BasicNameValuePair("system_name", "plan1"));
-
-        HttpPost request = new HttpPost(uriBuilder.build());
-        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
-        logInfo("Executing apiCreateApplicationPlan " + request);
-        HttpResponse response = client.execute(request);
-        if (isError(response)) {
-            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
-        }
-        String responseString = EntityUtils.toString(response.getEntity());
-        //JSONArray jsonArray = new JSONArray(responseString);
-        //List<Map<String, Object>> products = getList(jsonArray);
-        return responseString;
-    }
-
-    private String apiIntegration(String serviceID) throws IOException, JSONException, URISyntaxException, HttpErrorException {
-        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-
-        URIBuilder uriBuilder = getUriBuilder("/admin/api/services/" + serviceID + "/proxy.xml");
-
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-        postParameters.add(new BasicNameValuePair("service_id", serviceID));
-        postParameters.add(new BasicNameValuePair("api_backend", "http://www.google.ca:80"));
-        //TODO: a lot more field might need to be added here, check the works.txt, add later
-        HttpPatch request = new HttpPatch(uriBuilder.build());
-        request.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
-        logInfo("Executing apiApiIntegration " + request);
-        HttpResponse response = client.execute(request);
-        if (isError(response)) {
-            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
-        }
-        String responseString = EntityUtils.toString(response.getEntity());
-        //JSONArray jsonArray = new JSONArray(responseString);
-        //List<Map<String, Object>> products = getList(jsonArray);
-        return responseString;
-    }
-     */
 }
