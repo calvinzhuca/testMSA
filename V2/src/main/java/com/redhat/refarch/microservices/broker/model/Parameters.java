@@ -2,45 +2,57 @@ package com.redhat.refarch.microservices.broker.model;
 
 public class Parameters
 {
-    private String amp_admin_pass;
+    private String application_name;
 
-    private String amp_admin_user;
+    private String input_url;
 
-    private String amp_url;
+    private String application_plan;
 
-    public String getAmp_admin_pass ()
+    private String service_name;
+
+    public String getApplication_name ()
     {
-        return amp_admin_pass;
+        return application_name;
     }
 
-    public void setAmp_admin_pass (String amp_admin_pass)
+    public void setApplication_name (String application_name)
     {
-        this.amp_admin_pass = amp_admin_pass;
+        this.application_name = application_name;
     }
 
-    public String getAmp_admin_user ()
+    public String getInput_url ()
     {
-        return amp_admin_user;
+        return input_url;
     }
 
-    public void setAmp_admin_user (String amp_admin_user)
+    public void setInput_url (String input_url)
     {
-        this.amp_admin_user = amp_admin_user;
+        this.input_url = input_url;
     }
 
-    public String getAmp_url ()
+    public String getApplication_plan ()
     {
-        return amp_url;
+        return application_plan;
     }
 
-    public void setAmp_url (String amp_url)
+    public void setApplication_plan (String application_plan)
     {
-        this.amp_url = amp_url;
+        this.application_plan = application_plan;
+    }
+
+    public String getService_name ()
+    {
+        return service_name;
+    }
+
+    public void setService_name (String service_name)
+    {
+        this.service_name = service_name;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [amp_admin_pass = "+amp_admin_pass+", amp_admin_user = "+amp_admin_user+", amp_url = "+amp_url+"]";
+        return "ClassPojo [application_name = "+application_name+", input_url = "+input_url+", application_plan = "+application_plan+", service_name = "+service_name+"]";
     }
 }
