@@ -12,7 +12,6 @@ import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,80 +23,82 @@ import javax.ws.rs.core.MediaType;
 import com.redhat.refarch.microservices.billing.model.Result;
 import com.redhat.refarch.microservices.billing.model.Result.Status;
 import com.redhat.refarch.microservices.billing.model.Transaction;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.ws.rs.core.Response;
 
 @Path("/")
 public class BillingService {
 
-	private ManagedExecutorService executorService;
+    private ManagedExecutorService executorService;
 
-	private Logger logger = Logger.getLogger( getClass().getName() );
+    private Logger logger = Logger.getLogger(getClass().getName());
 
-	private static final Random random = new Random();
+    private static final Random random = new Random();
 
-	@POST
-	@Path("/process")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public void process(final Transaction transaction, final @Suspended AsyncResponse asyncResponse) {
+    @POST
+    @Path("/process")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void process(final Transaction transaction, final @Suspended AsyncResponse asyncResponse) {
 
-		Runnable runnable = () -> {
-			try {
-				final long sleep = 5000;
-				logInfo( "Will simulate credit card processing for " + sleep + " milliseconds" );
-				Thread.sleep( sleep );
-				Result result = processSync( transaction );
-				asyncResponse.resume( result );
-			} catch (Exception e) {
-				asyncResponse.resume( e );
-			}
-		};
-		getExecutorService().execute( runnable );
-	}
+        Runnable runnable = () -> {
+            try {
+                final long sleep = 5000;
+                logInfo("Will simulate credit card processing for " + sleep + " milliseconds");
+                Thread.sleep(sleep);
+                Result result = processSync(transaction);
+                asyncResponse.resume(result);
+            } catch (Exception e) {
+                asyncResponse.resume(e);
+            }
+        };
+        getExecutorService().execute(runnable);
+    }
 
-	private Executor getExecutorService() {
-		if( executorService == null ) {
-			try {
-				executorService = InitialContext.doLookup( "java:comp/DefaultManagedExecutorService" );
-			} catch (NamingException e) {
-				throw new WebApplicationException( e );
-			}
-		}
-		return executorService;
-	}
+    private Executor getExecutorService() {
+        if (executorService == null) {
+            try {
+                executorService = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
+            } catch (NamingException e) {
+                throw new WebApplicationException(e);
+            }
+        }
+        return executorService;
+    }
 
-	private Result processSync(Transaction transaction) {
-		Result result = new Result();
-		result.setName( transaction.getCustomerName() );
-		result.setOrderNumber( transaction.getOrderNumber() );
-		logInfo( "Asked to process credit card transaction: " + transaction );
-		Calendar now = Calendar.getInstance();
-		Calendar calendar = Calendar.getInstance();
-		calendar.clear();
-		calendar.set( transaction.getExpYear(), transaction.getExpMonth(), 1 );
-		if( calendar.after( now ) ) {
-			result.setTransactionNumber( (long)(random.nextInt( 9000000 ) + 1000000) );
-			result.setTransactionDate( now.getTime() );
-			result.setStatus( Status.SUCCESS );
-		} else {
-			result.setStatus( Status.FAILURE );
-		}
-		return result;
-	}
+    private Result processSync(Transaction transaction) {
+        Result result = new Result();
+        result.setName(transaction.getCustomerName());
+        result.setOrderNumber(transaction.getOrderNumber());
+        logInfo("Asked to process credit card transaction: " + transaction);
+        Calendar now = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(transaction.getExpYear(), transaction.getExpMonth(), 1);
+        if (calendar.after(now)) {
+            result.setTransactionNumber((long) (random.nextInt(9000000) + 1000000));
+            result.setTransactionDate(now.getTime());
+            result.setStatus(Status.SUCCESS);
+        } else {
+            result.setStatus(Status.FAILURE);
+        }
+        return result;
+    }
 
-	@POST
-	@Path("/refund/{transactionNumber}")
-	@Consumes({"*/*"})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public void refund(@PathParam("transactionNumber") long transactionNumber) {
-		logInfo( "Asked to refund credit card transaction: " + transactionNumber );
-	}
+    @POST
+    @Path("/refund/{transactionNumber}")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void refund(@PathParam("transactionNumber") long transactionNumber) {
+        logInfo("Asked to refund credit card transaction: " + transactionNumber);
+    }
 
-	private void logInfo(String message) {
-		logger.log( Level.INFO, message );
-	}
-	
-	
+    private void logInfo(String message) {
+        logger.log(Level.INFO, message);
+    }
+
     @GET
     @Path("/catalog")
     @Consumes({"*/*"})
@@ -109,6 +110,20 @@ public class BillingService {
         logInfo("getCatalog: " + catalog);
 
         return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("/name")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getName() {
+        //  String catalog = "test";
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String name = "{\"name\":\"BillingService\", \"time\":\"" + dateFormat.format(date) + "\"}";
+        logInfo("getName: " + name);
+
+        return Response.ok(name, MediaType.APPLICATION_JSON).build();
     }
 
 }
