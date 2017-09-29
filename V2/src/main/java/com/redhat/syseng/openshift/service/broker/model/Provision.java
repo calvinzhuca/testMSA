@@ -1,4 +1,4 @@
-package com.redhat.refarch.microservices.broker.model;
+package com.redhat.syseng.openshift.service.broker.model;
 
 public class Provision
 {
