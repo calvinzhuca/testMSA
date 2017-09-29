@@ -308,8 +308,9 @@ public class ThreeScalesBroker
         logInfo("binding testString 2: " + testString);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);
-        result = "{/\"credentials/\":{/\"uri/\":/\"mysql://mysqluser:pass@mysqlhost:3306/dbname/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"host/\":/\"mysqlhost/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
-        result = "{\"dashboard_url\":\"\",\"operation\":\"task_10\"}";
+        //result = "{/\"credentials/\":{/\"uri/\":/\"mysql://mysqluser:pass@mysqlhost:3306/dbname/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"host/\":/\"mysqlhost/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
+        result = "{/\"credentials/\":{/\"ttt/\":/\"12345678901111111111111111111111111111111111/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"hhhh/\":/\"222222222/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
+        //result = "{\"dashboard_url\":\"\",\"operation\":\"task_10\"}";
         //result = "{\"test\":\"111111111111111\",\"test2\":\"task_10\"}";
         return result;
     } 
