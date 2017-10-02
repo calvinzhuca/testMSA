@@ -278,12 +278,22 @@ public class ThreeScalesBroker
 	@Path( "/service_instances/{instance_id}" )
 	@Consumes( {"*/*"} )
 	@Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
+	//public String deProvisioning(String inputStr)
 	public String deProvisioning(@PathParam( "instance_id" ) String instance_id)
 	{
-		logInfo( "!!!!!!!!!!!!!deProvisioning /service_instances/{instance_id}: " + instance_id );
-		String result = "{}";
-		logInfo( "deProvisioning /service_instances/{instance_id} result: " + instance_id );
-		return result;
+		//logInfo( "!!!!!!!!!!!!!deProvisioning /service_instances/{instance_id}: " + instance_id );
+               
+        String responseStr = System.getenv( "RESPONSE_STRING" );
+        logInfo("deProvisioning instance_id: " + instance_id);
+        logInfo("deProvisioning responseStr 2: " + responseStr);
+        //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
+        //logInfo("binding binding_id: " + binding_id);
+        //result = "{/\"credentials/\":{/\"uri/\":/\"mysql://mysqluser:pass@mysqlhost:3306/dbname/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"host/\":/\"mysqlhost/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
+        //result = "{/\"credentials/\":{/\"ttt/\":/\"12345678901111111111111111111111111111111111/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"hhhh/\":/\"222222222/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
+        //result = "{\"dashboard_url\":\"\",\"operation\":\"task_10\"}";
+        //result = "{\"test\":\"111111111111111\",\"test2\":\"task_10\"}";
+        String result = responseStr;
+        return result;
 	}
 
 	@DELETE
@@ -301,12 +311,13 @@ public class ThreeScalesBroker
     @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public synchronized String binding( String testString) {
-    //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+    //public synchronized String binding( String testString) {
+    public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
         //  String result = "test";
         String result = "";
         String responseStr = System.getenv( "RESPONSE_STRING" );
-        logInfo("binding testString 2: " + testString);
+        logInfo("binding instance_id : " + instance_id);
+        logInfo("binding binding_id : " + binding_id);
         logInfo("binding responseStr 2: " + responseStr);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);
