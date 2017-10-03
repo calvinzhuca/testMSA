@@ -295,19 +295,19 @@ public class ThreeScalesBroker {
     public synchronized String binding( String inputStr) {
     //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
         //  String result = "test";
-        String result = "";
-        String responseStr = System.getenv("RESPONSE_STRING");
+
+//        String responseStr = System.getenv("RESPONSE_STRING");
+        String result = "{\"route_service_url\":\"http://172.30.244.67:8080\"}";
         //logInfo("binding instance_id : " + instance_id);
         //logInfo("binding binding_id : " + binding_id);
-        logInfo("binding inputStr 3: " + inputStr);
-        logInfo("binding responseStr: " + responseStr);
+        logInfo("binding inputStr 4: " + inputStr);
+        logInfo("binding result: " + result);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);
         //result = "{/\"credentials/\":{/\"uri/\":/\"mysql://mysqluser:pass@mysqlhost:3306/dbname/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"host/\":/\"mysqlhost/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
         //result = "{/\"credentials/\":{/\"ttt/\":/\"12345678901111111111111111111111111111111111/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"hhhh/\":/\"222222222/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
         //result = "{\"dashboard_url\":\"\",\"operation\":\"task_10\"}";
         //result = "{\"test\":\"111111111111111\",\"test2\":\"task_10\"}";
-        result = responseStr;
         return result;
     }
 
