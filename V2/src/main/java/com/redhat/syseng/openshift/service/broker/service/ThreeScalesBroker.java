@@ -299,8 +299,8 @@ public class ThreeScalesBroker {
         String responseStr = System.getenv("RESPONSE_STRING");
         //logInfo("binding instance_id : " + instance_id);
         //logInfo("binding binding_id : " + binding_id);
-        logInfo("binding inputStr 2: " + inputStr);
-        logInfo("binding responseStr 2: " + responseStr);
+        logInfo("binding inputStr: " + inputStr);
+        logInfo("binding responseStr: " + responseStr);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);
         //result = "{/\"credentials/\":{/\"uri/\":/\"mysql://mysqluser:pass@mysqlhost:3306/dbname/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"host/\":/\"mysqlhost/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
