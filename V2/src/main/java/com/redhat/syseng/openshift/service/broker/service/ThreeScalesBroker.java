@@ -298,10 +298,11 @@ public class ThreeScalesBroker {
 
 //        String responseStr = System.getenv("RESPONSE_STRING");
         //String result = "{\"route_service_url\":\"http://172.30.244.67:8080\"}";
-        String result = "{\"credentials\":{\"username\":\"mysqluser\",\"password\":\"pass\"}}";
+        //String result = "{\"credentials\":{\"username\":\"mysqluser\",\"password\":\"pass\"}}";
+        String result = "{\"credentials\":{\"username\":\"mysqluser\",\"password\":\"pass\",\"url\":\"http://172.30.244.67:8080\"}}";
         //logInfo("binding instance_id : " + instance_id);
         //logInfo("binding binding_id : " + binding_id);
-        logInfo("binding inputStr 5: " + inputStr);
+        logInfo("binding inputStr 6: " + inputStr);
         logInfo("binding result: " + result);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);
