@@ -62,228 +62,210 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path( "/v2" )
-public class ThreeScalesBroker
-{
+@Path("/v2")
+public class ThreeScalesBroker {
 
-	private Logger logger = Logger.getLogger( getClass().getName() );
+    private Logger logger = Logger.getLogger(getClass().getName());
 
-	private static final Random random = new Random();
+    private static final Random random = new Random();
 
-	private void logInfo(String message)
-	{
-		logger.log( Level.INFO, message );
-	}
+    private void logInfo(String message) {
+        logger.log(Level.INFO, message);
+    }
 
-	@GET
-	@Path( "/catalog" )
-	@Consumes( {"*/*"} )
-	@Produces( {MediaType.APPLICATION_JSON} )
-	public Response getCatalog()
-	{
-		BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "/catalog.json" ) ) );
-		String catalog = bufferedReader.lines().collect( Collectors.joining( "\n" ) );
-		logInfo( "catalog:\n\n" + catalog );
-		return Response.ok( catalog, MediaType.APPLICATION_JSON ).build();
-	}
+    @GET
+    @Path("/catalog")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getCatalog() {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
+        String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
+        logInfo("catalog:\n\n" + catalog);
+        return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
+    }
 
-	@PUT
-	@Path( "/service_instances/{instance_id}" )
-	@Consumes( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	@Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	public synchronized String provisioning(@PathParam( "instance_id" ) String instance_id, Provision provision)
-	{
-		//public String provisioning( String testString) {
-		logInfo( "!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id );
-		logInfo( "provision.getService_id() : " + provision.getService_id() );
-		logInfo( "provision.getOrganization_guid() : " + provision.getOrganization_guid() );
-		logInfo( "provision.getParameters().getService_name() : " + provision.getParameters().getService_name() );
-		logInfo( "provision.getParameters().getApplication_plan() : " + provision.getParameters().getApplication_plan() );
-		logInfo( "provision.getParameters().getInput_url() : " + provision.getParameters().getInput_url() );
-		logInfo( "provision.getParameters().getApplication_name() : " + provision.getParameters().getApplication_name() );
+    @PUT
+    @Path("/service_instances/{instance_id}")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public String provisioning(String testString) {
 
-		String result = "{\"dashboard_url\":\"https://testapi-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443/?user_key=2491bd25351aeb458fea55381b3d4560\",\"operation\":\"task_10\"}";
-		String url = "";
+        logInfo("provision.testString : " + testString);
+        return testString;
 
-		try
-		{
+    }
 
-			//looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
-			int account_id = 5;
-			url = searchServiceInstance( provision.getParameters().getService_name(), account_id );
-			//no existing service, need to create one
-			if( "".equals( url ) )
-			{
+    @PUT
+    @Path("/service_instances/{instance_id}")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public synchronized String provisioning2(@PathParam("instance_id") String instance_id, Provision provision) //public String provisioning( String testString) {
+    {
+        logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
+        logInfo("provision.getService_id() : " + provision.getService_id());
+        logInfo("provision.getOrganization_guid() : " + provision.getOrganization_guid());
+        logInfo("provision.getParameters().getService_name() : " + provision.getParameters().getService_name());
+        logInfo("provision.getParameters().getApplication_plan() : " + provision.getParameters().getApplication_plan());
+        logInfo("provision.getParameters().getInput_url() : " + provision.getParameters().getInput_url());
+        logInfo("provision.getParameters().getApplication_name() : " + provision.getParameters().getApplication_name());
 
-				ArrayList<NameValuePair> postParameters;
-				postParameters = new ArrayList();
-				postParameters.add( new BasicNameValuePair( "name", provision.getParameters().getService_name() ) );
-				postParameters.add( new BasicNameValuePair( "system_name", provision.getParameters().getService_name() ) );
+        String result = "{\"dashboard_url\":\"https://testapi-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443/?user_key=2491bd25351aeb458fea55381b3d4560\",\"operation\":\"task_10\"}";
+        String url = "";
 
-				String ampUrl = "/admin/api/services.xml";
-				result = restWsCall( ampUrl, postParameters, "POST" );
-				logInfo( "---------------------services is created : " + result );
-				String serviceID = result.substring( result.indexOf( "<id>" ) + "<id>".length(), result.indexOf( "</id>" ) );
-				logInfo( "serviceID : " + serviceID );
+        try {
 
-				//create applicaiton plan
-				ampUrl = "/admin/api/services/" + serviceID + "/application_plans.xml";
-				postParameters = new ArrayList();
-				postParameters.add( new BasicNameValuePair( "name", provision.getParameters().getApplication_plan() ) );
-				postParameters.add( new BasicNameValuePair( "system_name", provision.getParameters().getApplication_plan() ) );
-				result = restWsCall( ampUrl, postParameters, "POST" );
-				logInfo( "---------------------application plan is created: " + result );
-				String planID = result.substring( result.indexOf( "<id>" ) + "<id>".length(), result.indexOf( "</id>" ) );
-				logInfo( "planID : " + planID );
+            //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+            int account_id = 5;
+            url = searchServiceInstance(provision.getParameters().getService_name(), account_id);
+            //no existing service, need to create one
+            if ("".equals(url)) {
 
-				createMappingRules( serviceID );
+                ArrayList<NameValuePair> postParameters;
+                postParameters = new ArrayList();
+                postParameters.add(new BasicNameValuePair("name", provision.getParameters().getService_name()));
+                postParameters.add(new BasicNameValuePair("system_name", provision.getParameters().getService_name()));
 
-				//API integration
-				ampUrl = "/admin/api/services/" + serviceID + "/proxy.xml";
-				postParameters = new ArrayList();
-				postParameters.add( new BasicNameValuePair( "service_id", serviceID ) );
-				postParameters.add( new BasicNameValuePair( "api_backend", provision.getParameters().getInput_url() ) );
-				result = restWsCall( ampUrl, postParameters, "PATCH" );
-				logInfo( "---------------------integration result : " + result );
+                String ampUrl = "/admin/api/services.xml";
+                result = restWsCall(ampUrl, postParameters, "POST");
+                logInfo("---------------------services is created : " + result);
+                String serviceID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+                logInfo("serviceID : " + serviceID);
 
-				//create Application to use the Plan, which will generate a valid user_key
-				postParameters = new ArrayList();
-				postParameters.add( new BasicNameValuePair( "name", provision.getParameters().getApplication_name() ) );
-				postParameters.add( new BasicNameValuePair( "description", provision.getParameters().getApplication_name() ) );
-				postParameters.add( new BasicNameValuePair( "plan_id", planID ) );
+                //create applicaiton plan
+                ampUrl = "/admin/api/services/" + serviceID + "/application_plans.xml";
+                postParameters = new ArrayList();
+                postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplication_plan()));
+                postParameters.add(new BasicNameValuePair("system_name", provision.getParameters().getApplication_plan()));
+                result = restWsCall(ampUrl, postParameters, "POST");
+                logInfo("---------------------application plan is created: " + result);
+                String planID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+                logInfo("planID : " + planID);
 
-				ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
+                createMappingRules(serviceID);
 
-				//after this step, in the API Integration page, the user_key will automatically replaced with the new one created below
-				result = restWsCall( ampUrl, postParameters, "POST" );
-				logInfo( "---------------------application is created : " + result );
-				String user_key = result.substring( result.indexOf( "<user_key>" ) + "<user_key>".length(), result.indexOf( "</user_key>" ) );
-				logInfo( "user_key : " + user_key );
+                //API integration
+                ampUrl = "/admin/api/services/" + serviceID + "/proxy.xml";
+                postParameters = new ArrayList();
+                postParameters.add(new BasicNameValuePair("service_id", serviceID));
+                postParameters.add(new BasicNameValuePair("api_backend", provision.getParameters().getInput_url()));
+                result = restWsCall(ampUrl, postParameters, "PATCH");
+                logInfo("---------------------integration result : " + result);
 
-				String domain = "-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443";
-				url = "https://" + provision.getParameters().getService_name() + domain + "/?user_key=" + user_key;
-				result = "{\"dashboard_url\":" + url + ",\"operation\":\"task_10\"}";
+                //create Application to use the Plan, which will generate a valid user_key
+                postParameters = new ArrayList();
+                postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplication_name()));
+                postParameters.add(new BasicNameValuePair("description", provision.getParameters().getApplication_name()));
+                postParameters.add(new BasicNameValuePair("plan_id", planID));
 
-			}
+                ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
 
-		}
-		catch( IOException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( JSONException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( URISyntaxException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
+                //after this step, in the API Integration page, the user_key will automatically replaced with the new one created below
+                result = restWsCall(ampUrl, postParameters, "POST");
+                logInfo("---------------------application is created : " + result);
+                String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
+                logInfo("user_key : " + user_key);
 
-		result = "{\"dashboard_url\":\"" + url + "\",\"operation\":\"task_10\"}";
-		logInfo( "provisioning result" + result );
-		return result;
-	}
+                String domain = "-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443";
+                url = "https://" + provision.getParameters().getService_name() + domain + "/?user_key=" + user_key;
+                result = "{\"dashboard_url\":" + url + ",\"operation\":\"task_10\"}";
 
-	@PUT
-	@Path( "/create_user/{instance_id}" )
-	//@Consumes("application/x-www-form-urlencoded")
-	@Consumes( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	@Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	public String createUser(@PathParam( "instance_id" ) String instance_id, Provision provision)
-	{
-		String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
+            }
 
-		try
-		{
-			ArrayList<NameValuePair> postParameters;
-			postParameters = new ArrayList();
-			postParameters.add( new BasicNameValuePair( "username", "tester2" ) );
-			postParameters.add( new BasicNameValuePair( "password", "password1" ) );
-			postParameters.add( new BasicNameValuePair( "email", "tester2@test.com" ) );
+        } catch (IOException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-			//looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
-			int account_id = 5;
-			String ampUrl = "/admin/api/accounts/" + account_id + "/users.xml";
-			result = restWsCall( ampUrl, postParameters, "POST" );
-			logInfo( "user is created : " + result );
-			String tmpID = result.substring( result.indexOf( "<id>" ) + "<id>".length(), result.indexOf( "</id>" ) );
-			logInfo( "user ID : " + tmpID );
+        result = "{\"dashboard_url\":\"" + url + "\",\"operation\":\"task_10\"}";
+        logInfo("provisioning result" + result);
+        return result;
+    }
 
-			//now activate the new user, the default state is "pending"
-			ampUrl = "/admin/api/accounts/" + account_id + "/users/" + tmpID + "/activate.xml";
-			postParameters = new ArrayList();
-			result = restWsCall( ampUrl, postParameters, "PUT" );
-			logInfo( "user is activated : " + result );
+    @PUT
+    @Path("/create_user/{instance_id}")
+    //@Consumes("application/x-www-form-urlencoded")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public String createUser(@PathParam("instance_id") String instance_id, Provision provision) {
+        String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
 
-		}
-		catch( IOException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( JSONException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( URISyntaxException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		return result;
-	}
+        try {
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("username", "tester2"));
+            postParameters.add(new BasicNameValuePair("password", "password1"));
+            postParameters.add(new BasicNameValuePair("email", "tester2@test.com"));
 
-	@PUT
-	@Path( "/create_application/{instance_id}" )
-	//@Consumes("application/x-www-form-urlencoded")
-	@Consumes( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	@Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	public String createApplication(@PathParam( "instance_id" ) String instance_id, Provision provision)
-	{
-		String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
+            //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+            int account_id = 5;
+            String ampUrl = "/admin/api/accounts/" + account_id + "/users.xml";
+            result = restWsCall(ampUrl, postParameters, "POST");
+            logInfo("user is created : " + result);
+            String tmpID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+            logInfo("user ID : " + tmpID);
 
-		try
-		{
-			ArrayList<NameValuePair> postParameters;
-			postParameters = new ArrayList();
-			postParameters.add( new BasicNameValuePair( "name", "testApp1" ) );
-			postParameters.add( new BasicNameValuePair( "description", "testApp1" ) );
-			postParameters.add( new BasicNameValuePair( "plan_id", instance_id ) );
+            //now activate the new user, the default state is "pending"
+            ampUrl = "/admin/api/accounts/" + account_id + "/users/" + tmpID + "/activate.xml";
+            postParameters = new ArrayList();
+            result = restWsCall(ampUrl, postParameters, "PUT");
+            logInfo("user is activated : " + result);
 
-			//looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
-			int account_id = 5;
-			String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
+        } catch (IOException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 
-			result = restWsCall( ampUrl, postParameters, "POST" );
-			logInfo( "user is created : " + result );
-			String user_key = result.substring( result.indexOf( "<user_key>" ) + "<user_key>".length(), result.indexOf( "</user_key>" ) );
-			logInfo( "user_key : " + user_key );
+    @PUT
+    @Path("/create_application/{instance_id}")
+    //@Consumes("application/x-www-form-urlencoded")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public String createApplication(@PathParam("instance_id") String instance_id, Provision provision) {
+        String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
 
-		}
-		catch( IOException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( JSONException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( URISyntaxException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		return result;
-	}
+        try {
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("name", "testApp1"));
+            postParameters.add(new BasicNameValuePair("description", "testApp1"));
+            postParameters.add(new BasicNameValuePair("plan_id", instance_id));
 
-	@DELETE
-	@Path( "/service_instances/{instance_id}" )
-	@Consumes( {"*/*"} )
-	@Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	//public String deProvisioning(String inputStr)
-	public String deProvisioning(@PathParam( "instance_id" ) String instance_id)
-	{
-		//logInfo( "!!!!!!!!!!!!!deProvisioning /service_instances/{instance_id}: " + instance_id );
-               
-        String responseStr = System.getenv( "RESPONSE_STRING" );
+            //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+            int account_id = 5;
+            String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
+
+            result = restWsCall(ampUrl, postParameters, "POST");
+            logInfo("user is created : " + result);
+            String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
+            logInfo("user_key : " + user_key);
+
+        } catch (IOException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    @DELETE
+    @Path("/service_instances/{instance_id}")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    //public String deProvisioning(String inputStr)
+    public synchronized String deProvisioning(@PathParam("instance_id") String instance_id) {
+        //logInfo( "!!!!!!!!!!!!!deProvisioning /service_instances/{instance_id}: " + instance_id );
+
+        String responseStr = System.getenv("RESPONSE_STRING");
         logInfo("deProvisioning instance_id: " + instance_id);
         logInfo("deProvisioning responseStr 2: " + responseStr);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
@@ -294,30 +276,30 @@ public class ThreeScalesBroker
         //result = "{\"test\":\"111111111111111\",\"test2\":\"task_10\"}";
         String result = responseStr;
         return result;
-	}
+    }
 
-	@DELETE
-	@Path( "/service_instances" )
-	@Consumes( {"*/*"} )
-	@Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	public String deProvisioning2(@QueryParam( "instance_id" ) String instance_id)
-	{
-		logInfo( "deProvisioning2 /service_instances: " + instance_id );
-		String result = "{}";
-		return result;
-	}
+    @DELETE
+    @Path("/service_instances")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public String deProvisioning2(@QueryParam("instance_id") String instance_id) {
+        logInfo("deProvisioning2 /service_instances: " + instance_id);
+        String result = "{}";
+        return result;
+    }
 
     @PUT
     @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    //public synchronized String binding( String testString) {
-    public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+    public synchronized String binding( String testString) {
+    //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
         //  String result = "test";
         String result = "";
-        String responseStr = System.getenv( "RESPONSE_STRING" );
-        logInfo("binding instance_id : " + instance_id);
-        logInfo("binding binding_id : " + binding_id);
+        String responseStr = System.getenv("RESPONSE_STRING");
+        //logInfo("binding instance_id : " + instance_id);
+        //logInfo("binding binding_id : " + binding_id);
+        logInfo("binding responseStr 2: " + testString);
         logInfo("binding responseStr 2: " + responseStr);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);
@@ -327,208 +309,178 @@ public class ThreeScalesBroker
         //result = "{\"test\":\"111111111111111\",\"test2\":\"task_10\"}";
         result = responseStr;
         return result;
-    } 
+    }
 
-	@DELETE
-	@Path( "/service_instances/{instance_id}/service_bindings/{binding_id}" )
-	@Consumes( {"*/*"} )
-	@Produces( {MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML} )
-	public String unBinding(@PathParam( "instance_id" ) String instance_id, @PathParam( "binding_id" ) String binding_id)
-	{
-		//  String result = "test";
-		String result = "{}";
-		logInfo( "!!!!!!!!!!!!!!!!unBinding instance_id: " + instance_id );
-		logInfo( "unBinding binding_id: " + binding_id );
-		return result;
-	}
+    @DELETE
+    @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public String unBinding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+        //  String result = "test";
+        String result = "{}";
+        logInfo("!!!!!!!!!!!!!!!!unBinding instance_id: " + instance_id);
+        logInfo("unBinding binding_id: " + binding_id);
+        return result;
+    }
 
-	public static HttpClient createHttpClient_AcceptsUntrustedCerts()
-	{
-		try
-		{
+    public static HttpClient createHttpClient_AcceptsUntrustedCerts() {
+        try {
 
-			HttpClientBuilder b = HttpClientBuilder.create();
+            HttpClientBuilder b = HttpClientBuilder.create();
 
-			// setup a Trust Strategy that allows all certificates.
-			//
-			SSLContext sslContext;
-			sslContext = new SSLContextBuilder().loadTrustMaterial( null, new TrustStrategy()
-			{
-				public boolean isTrusted(X509Certificate[] arg0, String arg1)
-				{
-					return true;
-				}
-			} ).build();
-			b.setSslcontext( sslContext );
+            // setup a Trust Strategy that allows all certificates.
+            //
+            SSLContext sslContext;
+            sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
+                public boolean isTrusted(X509Certificate[] arg0, String arg1) {
+                    return true;
+                }
+            }).build();
+            b.setSslcontext(sslContext);
 
-			// don't check Hostnames, either.
-			//      -- use SSLConnectionSocketFactory.getDefaultHostnameVerifier(), if you don't want to weaken
-			HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+            // don't check Hostnames, either.
+            //      -- use SSLConnectionSocketFactory.getDefaultHostnameVerifier(), if you don't want to weaken
+            HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
 
-			// here's the special part:
-			//      -- need to create an SSL Socket Factory, to use our weakened "trust strategy";
-			//      -- and create a Registry, to register it.
-			//
-			SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory( sslContext, hostnameVerifier );
-			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create().register( "http", PlainConnectionSocketFactory.getSocketFactory() ).register( "https", sslSocketFactory ).build();
+            // here's the special part:
+            //      -- need to create an SSL Socket Factory, to use our weakened "trust strategy";
+            //      -- and create a Registry, to register it.
+            //
+            SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
+            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create().register("http", PlainConnectionSocketFactory.getSocketFactory()).register("https", sslSocketFactory).build();
 
-			// now, we create connection-manager using our Registry.
-			//      -- allows multi-threaded use
-			PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager( socketFactoryRegistry );
-			b.setConnectionManager( connMgr );
+            // now, we create connection-manager using our Registry.
+            //      -- allows multi-threaded use
+            PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+            b.setConnectionManager(connMgr);
 
-			// finally, build the HttpClient;
-			//      -- done!
-			HttpClient client = b.build();
-			return client;
-		}
-		catch( NoSuchAlgorithmException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( KeyStoreException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		catch( KeyManagementException ex )
-		{
-			Logger.getLogger( ThreeScalesBroker.class.getName() ).log( Level.SEVERE, null, ex );
-		}
-		return null;
-	}
+            // finally, build the HttpClient;
+            //      -- done!
+            HttpClient client = b.build();
+            return client;
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyStoreException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyManagementException ex) {
+            Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
-	private URIBuilder getUriBuilder(Object... path)
-	{
-		String accessToken = System.getenv( "ACCESS_TOKEN" );
-		String ampAddress = System.getenv( "AMP_ADDRESS" );
-		logInfo( "accessToken: " + accessToken );
-		logInfo( "ampAddress: " + ampAddress );
+    private URIBuilder getUriBuilder(Object... path) {
+        String accessToken = System.getenv("ACCESS_TOKEN");
+        String ampAddress = System.getenv("AMP_ADDRESS");
+        logInfo("accessToken: " + accessToken);
+        logInfo("ampAddress: " + ampAddress);
 
-		URIBuilder uriBuilder = new URIBuilder();
-		uriBuilder.setScheme( "https" );
-		uriBuilder.setHost( ampAddress );
+        URIBuilder uriBuilder = new URIBuilder();
+        uriBuilder.setScheme("https");
+        uriBuilder.setHost(ampAddress);
 
-		uriBuilder.setPort( 443 );
-		uriBuilder.addParameter( "access_token", accessToken );
+        uriBuilder.setPort(443);
+        uriBuilder.addParameter("access_token", accessToken);
 
-		StringWriter stringWriter = new StringWriter();
-		for( Object part : path )
-		{
-			stringWriter.append( '/' ).append( String.valueOf( part ) );
-		}
-		uriBuilder.setPath( stringWriter.toString() );
-		return uriBuilder;
-	}
+        StringWriter stringWriter = new StringWriter();
+        for (Object part : path) {
+            stringWriter.append('/').append(String.valueOf(part));
+        }
+        uriBuilder.setPath(stringWriter.toString());
+        return uriBuilder;
+    }
 
-	private static boolean isError(HttpResponse response)
-	{
-		if( response.getStatusLine().getStatusCode() >= HttpStatus.SC_BAD_REQUEST )
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+    private static boolean isError(HttpResponse response) {
+        if (response.getStatusLine().getStatusCode() >= HttpStatus.SC_BAD_REQUEST) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public static List<Map<String, Object>> getList(JSONArray jsonArray) throws JSONException
-	{
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		for( int index = 0; index < jsonArray.length(); index++ )
-		{
-			Map<String, Object> map = new HashMap<String, Object>();
-			JSONObject jsonObject = jsonArray.getJSONObject( index );
-			for( Iterator<?> jsonIterator = jsonObject.keys(); jsonIterator.hasNext(); )
-			{
-				String jsonKey = (String)jsonIterator.next();
-				map.put( jsonKey, jsonObject.get( jsonKey ) );
-			}
-			list.add( map );
-		}
-		return list;
-	}
+    public static List<Map<String, Object>> getList(JSONArray jsonArray) throws JSONException {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for (int index = 0; index < jsonArray.length(); index++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            JSONObject jsonObject = jsonArray.getJSONObject(index);
+            for (Iterator<?> jsonIterator = jsonObject.keys(); jsonIterator.hasNext();) {
+                String jsonKey = (String) jsonIterator.next();
+                map.put(jsonKey, jsonObject.get(jsonKey));
+            }
+            list.add(map);
+        }
+        return list;
+    }
 
-	private String restWsCall(String inputURL, ArrayList<NameValuePair> postParameters, String httpMethod) throws IOException, JSONException, URISyntaxException
-	{
-		HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-		URIBuilder uriBuilder = getUriBuilder( inputURL );
+    private String restWsCall(String inputURL, ArrayList<NameValuePair> postParameters, String httpMethod) throws IOException, JSONException, URISyntaxException {
+        HttpClient client = createHttpClient_AcceptsUntrustedCerts();
+        URIBuilder uriBuilder = getUriBuilder(inputURL);
 
-		HttpRequestBase request;
-		if( "PATCH".equals( httpMethod ) )
-		{
-			request = new HttpPatch( uriBuilder.build() );
-			((HttpEntityEnclosingRequestBase)request).setEntity( new UrlEncodedFormEntity( postParameters, "UTF-8" ) );
-		}
-		else if( "PUT".equals( httpMethod ) )
-		{
-			request = new HttpPut( uriBuilder.build() );
-			((HttpEntityEnclosingRequestBase)request).setEntity( new UrlEncodedFormEntity( postParameters, "UTF-8" ) );
-		}
-		else if( "POST".equals( httpMethod ) )
-		{
-			request = new HttpPost( uriBuilder.build() );
-			((HttpEntityEnclosingRequestBase)request).setEntity( new UrlEncodedFormEntity( postParameters, "UTF-8" ) );
-		}
-		else
-		{
-			//else treat it as "GET" then
-			request = new HttpGet( uriBuilder.build() );
-		}
+        HttpRequestBase request;
+        if ("PATCH".equals(httpMethod)) {
+            request = new HttpPatch(uriBuilder.build());
+            ((HttpEntityEnclosingRequestBase) request).setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        } else if ("PUT".equals(httpMethod)) {
+            request = new HttpPut(uriBuilder.build());
+            ((HttpEntityEnclosingRequestBase) request).setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        } else if ("POST".equals(httpMethod)) {
+            request = new HttpPost(uriBuilder.build());
+            ((HttpEntityEnclosingRequestBase) request).setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
+        } else {
+            //else treat it as "GET" then
+            request = new HttpGet(uriBuilder.build());
+        }
 
-		logInfo( "Executing REST:  " + request );
-		HttpResponse response = client.execute( request );
-		if( isError( response ) )
-		{
-			logInfo( "!!!!Error status code: " + response.getStatusLine().getStatusCode() );
-		}
-		String responseString = EntityUtils.toString( response.getEntity() );
-		return responseString;
+        logInfo("Executing REST:  " + request);
+        HttpResponse response = client.execute(request);
+        if (isError(response)) {
+            logInfo("!!!!Error status code: " + response.getStatusLine().getStatusCode());
+        }
+        String responseString = EntityUtils.toString(response.getEntity());
+        return responseString;
 
-	}
+    }
 
-	private void createMappingRules(String serviceID) throws IOException, JSONException, URISyntaxException
-	{
-		//create mapping rule, first need to get the "hit" metric id.
-		String ampUrl = "/admin/api/services/" + serviceID + "/metrics.xml";
-		String result = restWsCall( ampUrl, null, "GET" );
-		logInfo( "get metric result : " + result );
-		String metricID = result.substring( result.indexOf( "<id>" ) + "<id>".length(), result.indexOf( "</id>" ) );
-		logInfo( "metricID : " + metricID );
+    private void createMappingRules(String serviceID) throws IOException, JSONException, URISyntaxException {
+        //create mapping rule, first need to get the "hit" metric id.
+        String ampUrl = "/admin/api/services/" + serviceID + "/metrics.xml";
+        String result = restWsCall(ampUrl, null, "GET");
+        logInfo("get metric result : " + result);
+        String metricID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+        logInfo("metricID : " + metricID);
 
-		ampUrl = "/admin/api/services/" + serviceID + "/proxy/mapping_rules.xml";
-		ArrayList<NameValuePair> postParameters;
-		postParameters = new ArrayList();
+        ampUrl = "/admin/api/services/" + serviceID + "/proxy/mapping_rules.xml";
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
 
-		//now create mapping rule for POST under metric "hit"
-		postParameters.add( new BasicNameValuePair( "pattern", "/" ) );
-		postParameters.add( new BasicNameValuePair( "delta", "1" ) );
-		postParameters.add( new BasicNameValuePair( "metric_id", metricID ) );
-		postParameters.add( 3, new BasicNameValuePair( "http_method", "POST" ) );
-		result = restWsCall( ampUrl, postParameters, "POST" );
-		logInfo( "creating mapping result : " + result );
+        //now create mapping rule for POST under metric "hit"
+        postParameters.add(new BasicNameValuePair("pattern", "/"));
+        postParameters.add(new BasicNameValuePair("delta", "1"));
+        postParameters.add(new BasicNameValuePair("metric_id", metricID));
+        postParameters.add(3, new BasicNameValuePair("http_method", "POST"));
+        result = restWsCall(ampUrl, postParameters, "POST");
+        logInfo("creating mapping result : " + result);
 
-		//now create mapping rule for PUT under metric "hit"
-		postParameters.remove( 3 );
-		postParameters.add( 3, new BasicNameValuePair( "http_method", "PUT" ) );
-		result = restWsCall( ampUrl, postParameters, "POST" );
-		logInfo( "creating mapping result : " + result );
+        //now create mapping rule for PUT under metric "hit"
+        postParameters.remove(3);
+        postParameters.add(3, new BasicNameValuePair("http_method", "PUT"));
+        result = restWsCall(ampUrl, postParameters, "POST");
+        logInfo("creating mapping result : " + result);
 
-		//now create mapping rule for PATCH under metric "hit"
-		postParameters.remove( 3 );
-		postParameters.add( 3, new BasicNameValuePair( "http_method", "PATCH" ) );
-		result = restWsCall( ampUrl, postParameters, "POST" );
-		logInfo( "creating mapping result : " + result );
+        //now create mapping rule for PATCH under metric "hit"
+        postParameters.remove(3);
+        postParameters.add(3, new BasicNameValuePair("http_method", "PATCH"));
+        result = restWsCall(ampUrl, postParameters, "POST");
+        logInfo("creating mapping result : " + result);
 
-		//now create mapping rule for DELETE under metric "hit"
-		postParameters.remove( 3 );
-		postParameters.add( 3, new BasicNameValuePair( "http_method", "DELETE" ) );
-		result = restWsCall( ampUrl, postParameters, "POST" );
-		logInfo( "creating mapping result : " + result );
+        //now create mapping rule for DELETE under metric "hit"
+        postParameters.remove(3);
+        postParameters.add(3, new BasicNameValuePair("http_method", "DELETE"));
+        result = restWsCall(ampUrl, postParameters, "POST");
+        logInfo("creating mapping result : " + result);
 
-	}
+    }
 
-	/*
+    /*
 	private boolean searchServiceInstance(String inputServiceSystemName) throws IOException, URISyntaxException, JSONException {
 		ArrayList<NameValuePair> postParameters;
 		postParameters = new ArrayList();
@@ -558,77 +510,68 @@ public class ThreeScalesBroker
 
 		return found;
 	}
-	 */
-	private String searchServiceInstance(String inputServiceSystemName, int account_id) throws IOException, URISyntaxException, JSONException
-	{
-		ArrayList<NameValuePair> postParameters;
-		postParameters = new ArrayList();
+     */
+    private String searchServiceInstance(String inputServiceSystemName, int account_id) throws IOException, URISyntaxException, JSONException {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
 
-		String ampUrl = "/admin/api/services.xml";
-		String result = restWsCall( ampUrl, postParameters, "GET" );
-		logInfo( "services are listed : " + result );
+        String ampUrl = "/admin/api/services.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("services are listed : " + result);
 
-		int i = result.indexOf( "<system_name>" + inputServiceSystemName + "</system_name>" );
+        int i = result.indexOf("<system_name>" + inputServiceSystemName + "</system_name>");
 
-		if( i > -1 )
-		{
-			String serviceId = result.substring( result.lastIndexOf( "<service><id>", i ) + "<service><id>".length(), result.lastIndexOf( "</id>", i ) );
-			logInfo( "---------------------found same system_name service, id : " + serviceId );
-			String user_key = searchUserKeyBasedOnServiceId( serviceId, account_id );
-			String endpoint = searchEndPointBasedOnServiceId( serviceId );
+        if (i > -1) {
+            String serviceId = result.substring(result.lastIndexOf("<service><id>", i) + "<service><id>".length(), result.lastIndexOf("</id>", i));
+            logInfo("---------------------found same system_name service, id : " + serviceId);
+            String user_key = searchUserKeyBasedOnServiceId(serviceId, account_id);
+            String endpoint = searchEndPointBasedOnServiceId(serviceId);
 
-			String url = endpoint + "/?user_key=" + user_key;
+            String url = endpoint + "/?user_key=" + user_key;
 
-			return url;
+            return url;
 
-		}
-		else
-		{
-			logInfo( "---------------------didn't found same system_name service : " + inputServiceSystemName );
-			return "";
-		}
+        } else {
+            logInfo("---------------------didn't found same system_name service : " + inputServiceSystemName);
+            return "";
+        }
 
-	}
+    }
 
-	private String searchUserKeyBasedOnServiceId(String serviceId, int accountId) throws IOException, URISyntaxException, JSONException
-	{
-		ArrayList<NameValuePair> postParameters;
-		postParameters = new ArrayList();
+    private String searchUserKeyBasedOnServiceId(String serviceId, int accountId) throws IOException, URISyntaxException, JSONException {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
 
-		//String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
-		String ampUrl = "/admin/api/applications.xml";
-		String result = restWsCall( ampUrl, postParameters, "GET" );
-		logInfo( "application is listed : " + result );
+        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String ampUrl = "/admin/api/applications.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("application is listed : " + result);
 
-		int i = result.indexOf( "<service_id>" + serviceId + "</service_id>" );
-		String user_key = "";
-		if( i > -1 )
-		{
-			user_key = result.substring( result.indexOf( "<user_key>", i ) + "<user_key>".length(), result.indexOf( "</user_key>", i ) );
-			logInfo( "---------------------found user_key for this service id : " + user_key );
+        int i = result.indexOf("<service_id>" + serviceId + "</service_id>");
+        String user_key = "";
+        if (i > -1) {
+            user_key = result.substring(result.indexOf("<user_key>", i) + "<user_key>".length(), result.indexOf("</user_key>", i));
+            logInfo("---------------------found user_key for this service id : " + user_key);
 
-		}
-		else
-		{
-			logInfo( "---------------------didn't found same service id in this application: " + serviceId );
-		}
-		return user_key;
+        } else {
+            logInfo("---------------------didn't found same service id in this application: " + serviceId);
+        }
+        return user_key;
 
-	}
+    }
 
-	private String searchEndPointBasedOnServiceId(String serviceId) throws IOException, URISyntaxException, JSONException
-	{
-		ArrayList<NameValuePair> postParameters;
-		postParameters = new ArrayList();
+    private String searchEndPointBasedOnServiceId(String serviceId) throws IOException, URISyntaxException, JSONException {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
 
-		String ampUrl = "/admin/api/services/" + serviceId + "/proxy.xml";
-		String result = restWsCall( ampUrl, postParameters, "GET" );
-		logInfo( "proxy is read: " + result );
+        String ampUrl = "/admin/api/services/" + serviceId + "/proxy.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("proxy is read: " + result);
 
-		String endpoint = result.substring( result.indexOf( "<endpoint>" ) + "<endpoint>".length(), result.indexOf( "</endpoint>" ) );
-		logInfo( "---------------------found endpoint for this service id : " + endpoint );
+        String endpoint = result.substring(result.indexOf("<endpoint>") + "<endpoint>".length(), result.indexOf("</endpoint>"));
+        logInfo("---------------------found endpoint for this service id : " + endpoint);
 
-		return endpoint;
+        return endpoint;
 
-	}
+    }
 }
