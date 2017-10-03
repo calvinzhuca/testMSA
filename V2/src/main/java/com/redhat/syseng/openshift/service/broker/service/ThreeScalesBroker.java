@@ -299,7 +299,7 @@ public class ThreeScalesBroker {
         String responseStr = System.getenv("RESPONSE_STRING");
         //logInfo("binding instance_id : " + instance_id);
         //logInfo("binding binding_id : " + binding_id);
-        logInfo("binding inputStr 1: " + inputStr);
+        logInfo("binding inputStr 3: " + inputStr);
         logInfo("binding responseStr: " + responseStr);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);

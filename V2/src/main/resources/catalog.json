@@ -4,6 +4,7 @@
       "name": "three-scales-service",
       "id": "serviceUUID",
       "description": "secure service 3scales broker implementation",
+      "requires": ["route_forwarding"],
       "bindable": true,
       "metadata": {
         "displayName": "secure-service-3scales-broker",
