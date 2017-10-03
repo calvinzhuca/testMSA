@@ -292,14 +292,14 @@ public class ThreeScalesBroker {
     @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public synchronized String binding( String testString) {
+    public synchronized String binding( String inputStr) {
     //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
         //  String result = "test";
         String result = "";
         String responseStr = System.getenv("RESPONSE_STRING");
         //logInfo("binding instance_id : " + instance_id);
         //logInfo("binding binding_id : " + binding_id);
-        logInfo("binding responseStr 2: " + testString);
+        logInfo("binding inputStr 2: " + inputStr);
         logInfo("binding responseStr 2: " + responseStr);
         //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
         //logInfo("binding binding_id: " + binding_id);
