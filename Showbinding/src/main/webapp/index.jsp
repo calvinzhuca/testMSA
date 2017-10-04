@@ -21,8 +21,8 @@
   %>
       <h2>User Name: </h2><%= userName %>
       <h2>Password : </h2><%= password %>
-      <p>Below is the link to use: </p>
-      <h2><a href="<%= developrPortalUrl %>"><h3>Developer Portal</h3></a></p>
+      <h2>Below is the Developer Portal: </h2>
+      <a href="<%= developrPortalUrl %>"><h3><%= developrPortalUrl %></h3></a>
   <%
     }
   %>
