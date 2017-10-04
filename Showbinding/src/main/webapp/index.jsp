@@ -14,7 +14,7 @@
 <head>
 <body>
   <%
-    String userName = System.getProperty("USER_NAME");
+    String userName = System.getenv("USER_NAME");
     System.out.println("!!!!!!!!!!userName: " + userName);
     out.println("!!!!!!!!!!userName: " + userName);
     String password = System.getProperty("PASSWORD");
