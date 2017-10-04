@@ -191,7 +191,8 @@ public class ThreeScalesBroker {
             postParameters = new ArrayList();
             postParameters.add(new BasicNameValuePair("username", userName));
             postParameters.add(new BasicNameValuePair("password", password));
-            postParameters.add(new BasicNameValuePair("email", "tester2@test.com"));
+            String email = userName + "@example.com";
+            postParameters.add(new BasicNameValuePair("email", email));
 
             //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
             int account_id = 5;
