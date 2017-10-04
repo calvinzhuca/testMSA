@@ -28,6 +28,7 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +48,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -184,25 +184,19 @@ public class ThreeScalesBroker {
         return result;
     }
 
-    @PUT
-    @Path("/create_user/{instance_id}")
-    //@Consumes("application/x-www-form-urlencoded")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String createUser(@PathParam("instance_id") String instance_id, Provision provision) {
-        String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
+    private void createUser(String userName, String password) {
 
         try {
             ArrayList<NameValuePair> postParameters;
             postParameters = new ArrayList();
-            postParameters.add(new BasicNameValuePair("username", "tester2"));
-            postParameters.add(new BasicNameValuePair("password", "password1"));
+            postParameters.add(new BasicNameValuePair("username", userName));
+            postParameters.add(new BasicNameValuePair("password", password));
             postParameters.add(new BasicNameValuePair("email", "tester2@test.com"));
 
             //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
             int account_id = 5;
             String ampUrl = "/admin/api/accounts/" + account_id + "/users.xml";
-            result = restWsCall(ampUrl, postParameters, "POST");
+            String result = restWsCall(ampUrl, postParameters, "POST");
             logInfo("user is created : " + result);
             String tmpID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
             logInfo("user ID : " + tmpID);
@@ -220,7 +214,7 @@ public class ThreeScalesBroker {
         } catch (URISyntaxException ex) {
             Logger.getLogger(ThreeScalesBroker.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return result;
+
     }
 
     @PUT
@@ -292,14 +286,24 @@ public class ThreeScalesBroker {
     @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public synchronized String binding( String inputStr) {
-    //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+    public synchronized String binding(String inputStr) {
+        //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
         //  String result = "test";
 
+        boolean useLetters = true;
+        boolean useNumbers = false;
+        String userName = "user" + RandomStringUtils.random(4, useLetters, useNumbers);
+
+        useNumbers = true;
+        String passWord = RandomStringUtils.random(12, useLetters, useNumbers);
+        logInfo("binding userName: " + userName);
+        logInfo("binding passWord: " + passWord);
+        
+        createUser(userName, passWord);
 //        String responseStr = System.getenv("RESPONSE_STRING");
         //String result = "{\"route_service_url\":\"http://172.30.244.67:8080\"}";
         //String result = "{\"credentials\":{\"username\":\"mysqluser\",\"password\":\"pass\"}}";
-        String result = "{\"credentials\":{\"username\":\"mysqluser\",\"password\":\"pass\",\"url\":\"http://172.30.244.67:8080\"}}";
+        String result = "{\"credentials\":{\"username\":\"" + userName + "\",\"password\":\"" + passWord + "\",\"url\":\"https://3scale.middleware.ocp.cloud.lab.eng.bos.redhat.com/login\"}}";
         //logInfo("binding instance_id : " + instance_id);
         //logInfo("binding binding_id : " + binding_id);
         logInfo("binding inputStr 6: " + inputStr);
