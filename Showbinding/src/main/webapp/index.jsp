@@ -19,12 +19,13 @@
   <%
     } else {
   %>
-      <h2>User Name: </h2><p><%= userName %></p>
-      <h2>Password : </h2><p><%= password %></p>
+      <h2>User Name: </h2><%= userName %>
+      <h2>Password : </h2><%= password %>
+      <p>Below is the link to use: </p>
       <h2><a href="<%= developrPortalUrl %>"><h3>Developer Portal</h3></a></p>
   <%
     }
   %>
-  <a href="<%= request.getRequestURI() %>"><h3>Try Again</h3></a>
+
 </body>
 </html>
