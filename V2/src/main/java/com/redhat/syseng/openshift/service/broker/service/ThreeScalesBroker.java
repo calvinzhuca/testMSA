@@ -292,10 +292,10 @@ public class ThreeScalesBroker {
 
         boolean useLetters = true;
         boolean useNumbers = false;
-        String userName = "user" + RandomStringUtils.random(4, useLetters, useNumbers);
+        String userName = "user_" + RandomStringUtils.random(4, useLetters, useNumbers);
 
         useNumbers = true;
-        String passWord = RandomStringUtils.random(12, useLetters, useNumbers);
+        String passWord = RandomStringUtils.random(15, useLetters, useNumbers);
         logInfo("binding userName: " + userName);
         logInfo("binding passWord: " + passWord);
         

@@ -15,6 +15,7 @@
         <module>Sales</module>
         <module>V2</module>        
         <module>Billing</module>
+        <module>Showbinding</module>
     </modules>
  
 </project>
