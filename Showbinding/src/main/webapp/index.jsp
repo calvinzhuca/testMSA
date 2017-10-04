@@ -14,14 +14,18 @@
 <head>
 <body>
   <%
-    double num = Math.random();
-    if (num > 0.95) {
+    String userName = System.getProperty("USER_NAME");
+    String password = System.getProperty("PASSWORD");
+    String developrPortalUrl = System.getProperty("DEVELOPR_PORTAL_URL");
+    if (userName == null || ("".equals(userName))) {
   %>
-      <h2>You'll have a luck day!</h2><p>(<%= num %>)</p>
+      <h2>There is no information about Developer Portal yet!</h2>
   <%
     } else {
   %>
-      <h2>Well, life goes on ... </h2><p>(<%= num %>)</p>
+      <h2>User Name: </h2><p>(<%= userName %>)</p>
+      <h2>Password : </h2><p>(<%= password %>)</p>
+      <h2><a href="<%= developrPortalUrl %>"><h3>Developer Portal</h3></a></p>
   <%
     }
   %>
