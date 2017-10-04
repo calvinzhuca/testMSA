@@ -15,11 +15,13 @@
 <body>
   <%
     String userName = System.getProperty("USER_NAME");
+    System.out.println("!!!!!!!!!!userName: " + userName);
+    out.println("!!!!!!!!!!userName: " + userName);
     String password = System.getProperty("PASSWORD");
     String developrPortalUrl = System.getProperty("DEVELOPR_PORTAL_URL");
     if (userName == null || ("".equals(userName))) {
   %>
-      <h2>There is no information about Developer Portal yet!</h2>
+      <h2>There is no information about Developer Portal</h2>
   <%
     } else {
   %>
