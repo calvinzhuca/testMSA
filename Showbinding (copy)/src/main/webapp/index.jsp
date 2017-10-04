@@ -19,7 +19,7 @@
     String developrPortalUrl = System.getenv("DEVELOPER_PORTAL_URL");
     if (userName == null || ("".equals(userName))) {
   %>
-      <h2>There is no information about Developer Portal!</h2>
+      <h2>There is no information about Developer Portal</h2>
   <%
     } else {
   %>
