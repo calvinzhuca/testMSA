@@ -15,18 +15,16 @@
 <body>
   <%
     String userName = System.getenv("USER_NAME");
-    System.out.println("!!!!!!!!!!userName: " + userName);
-    out.println("!!!!!!!!!!userName: " + userName);
-    String password = System.getProperty("PASSWORD");
-    String developrPortalUrl = System.getProperty("DEVELOPR_PORTAL_URL");
+    String password = System.getenv("PASSWORD");
+    String developrPortalUrl = System.getenv("DEVELOPER_PORTAL_URL");
     if (userName == null || ("".equals(userName))) {
   %>
       <h2>There is no information about Developer Portal</h2>
   <%
     } else {
   %>
-      <h2>User Name: </h2><p>(<%= userName %>)</p>
-      <h2>Password : </h2><p>(<%= password %>)</p>
+      <h2>User Name: </h2><p><%= userName %></p>
+      <h2>Password : </h2><p><%= password %></p>
       <h2><a href="<%= developrPortalUrl %>"><h3>Developer Portal</h3></a></p>
   <%
     }
