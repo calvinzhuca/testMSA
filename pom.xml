@@ -10,12 +10,10 @@
     <name>Parent Project</name>
 
     <modules>
-        <module>Presentation</module>
-        <module>Product</module>
-        <module>Sales</module>
-        <module>V2</module>        
         <module>Billing</module>
         <module>Showbinding</module>
+        <module>ThreeScaleSecureApi</module>        
+        <module>ThreeScaleApiMarket</module>        
     </modules>
  
 </project>
