@@ -123,7 +123,8 @@ public class ThreeScalesBroker {
                 ArrayList<NameValuePair> postParameters;
                 postParameters = new ArrayList();
                 postParameters.add(new BasicNameValuePair("name", provision.getParameters().getService_name()));
-                postParameters.add(new BasicNameValuePair("system_name", instance_id));
+                postParameters.add(new BasicNameValuePair("system_name", provision.getParameters().getService_name()));
+                postParameters.add(new BasicNameValuePair("description", instance_id));
 
                 String ampUrl = "/admin/api/services.xml";
                 result = restWsCall(ampUrl, postParameters, "POST");
