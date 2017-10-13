@@ -48,7 +48,7 @@
                   "properties": {
                     "service_name": {
                       "default": "testapi",
-                      "title": "3scale service name",
+                      "title": "3scale service display name",
                       "type": "string"
                     },
                     "application_plan": {
