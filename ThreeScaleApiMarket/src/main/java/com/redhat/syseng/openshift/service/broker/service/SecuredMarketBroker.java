@@ -1,6 +1,13 @@
 package com.redhat.syseng.openshift.service.broker.service;
 
-import com.redhat.syseng.openshift.service.broker.model.Provision;
+import com.google.gson.Gson;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Catalog;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Metadata;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Plan;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Schemas;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Service_binding;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Service;
+import com.redhat.syseng.openshift.service.broker.model.provision.Provision;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -30,9 +37,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -47,7 +52,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -73,18 +77,130 @@ public class SecuredMarketBroker {
         logger.log(Level.INFO, message);
     }
 
+    public static void main(String[] args) {
+        System.out.println("===============================");
+
+        Service svc = new Service();
+        svc.setName("three-scales-service");
+        svc.setId("serviceUUID");
+        svc.setDescription("secure service 3scales broker implementation");
+        svc.setBindable(true);
+
+        Metadata mt = new Metadata();
+        mt.setDisplayName("secure-service-3scales-broker");
+        mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
+        mt.setLongDescription("A broker that secures input URL through 3scales-AMP");
+        svc.setMetadata(mt);
+
+        Service_binding sb = new Service_binding();
+
+        Schemas schemas = new Schemas();
+        schemas.setService_binding(sb);
+
+        Plan plan = new Plan();
+        plan.setDescription("3scale plan description ...");
+        plan.setFree("true");
+        plan.setName("test-plan");
+        plan.setId("gold-plan-id");
+        plan.setSchemas(schemas);
+
+        Plan[] plans = new Plan[1];
+        plans[0] = plan;
+
+        svc.setPlans(plans);
+
+        Service[] svcs = new Service[1];
+        svcs[0] = svc;
+        Catalog cat = new Catalog();
+        cat.setServices(svcs);
+
+        Gson gson = new Gson();
+        System.out.println("Json from gson: " + gson.toJson(cat));
+
+    }
+
     @GET
     @Path("/catalog")
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCatalog() {
+        /*
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
         logInfo("catalog:\n\n" + catalog);
-        return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
+         */
+        String result = "";
+        try {
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+
+            String ampUrl = "/admin/api/services.xml";
+            result = restWsCall(ampUrl, postParameters, "GET");
+            logInfo("---------------------getCatalog search service : " + result);
+
+            int i = result.indexOf("<id>");
+            ArrayList<Service> svcList = new ArrayList<Service>();
+            while (i != -1) {
+                Service svc = new Service();
+                String id = result.substring(result.indexOf("<id>", i) + "<id>".length(),
+                        result.indexOf("</id>", i));
+
+                svc.setId(id);
+                String name = result.substring(result.indexOf("<name>", i) + "<name>".length(),
+                        result.indexOf("</name>", i));
+                svc.setDescription(name);
+
+                String systemName = result.substring(result.indexOf("<system_name>", i) + "<system_name>".length(),
+                        result.indexOf("</system_name>", i));
+                svc.setName(systemName);
+
+                svc.setBindable(true);
+
+                Metadata mt = new Metadata();
+                mt.setDisplayName("secure-service-3scales-broker");
+                mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
+                mt.setLongDescription("A broker that secures input URL through 3scales-AMP");
+                svc.setMetadata(mt);
+
+                svc.setMetadata(mt);
+
+                Service_binding sb = new Service_binding();
+
+                Schemas schemas = new Schemas();
+                schemas.setService_binding(sb);
+
+                Plan plan = new Plan();
+                plan.setDescription("3scale plan description ...");
+                plan.setFree("true");
+                plan.setName("test-plan");
+                plan.setId("gold-plan-id");
+                plan.setSchemas(schemas);
+
+                Plan[] plans = new Plan[1];
+                plans[0] = plan;
+
+                svc.setPlans(plans);
+
+                svcList.add(svc);
+            }
+
+            Service[] svcs = svcList.toArray(new Service[svcList.size()]);
+            Catalog cat = new Catalog();
+            cat.setServices(svcs);
+
+            Gson gson = new Gson();
+            result = gson.toJson(cat);
+            logInfo("Json from gson: " + result);
+        } catch (IOException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return Response.ok(result, MediaType.APPLICATION_JSON).build();
     }
-
-
 
     @PUT
     @Path("/service_instances/{instance_id}")
@@ -290,7 +406,7 @@ public class SecuredMarketBroker {
         String passWord = RandomStringUtils.random(15, useLetters, useNumbers);
         logInfo("binding userName: " + userName);
         logInfo("binding passWord: " + passWord);
-        
+
         createUser(userName, passWord);
 //        String responseStr = System.getenv("RESPONSE_STRING");
         //String result = "{\"route_service_url\":\"http://172.30.244.67:8080\"}";
@@ -572,4 +688,5 @@ public class SecuredMarketBroker {
         return endpoint;
 
     }
+
 }
