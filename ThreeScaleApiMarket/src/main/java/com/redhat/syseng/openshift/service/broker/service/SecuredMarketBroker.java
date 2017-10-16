@@ -168,7 +168,8 @@ public class SecuredMarketBroker {
                 svcList.add(svc);
 
                 int j = result.indexOf("</service>", i);
-                i = result.indexOf("<id>", j);
+                //i = result.indexOf("<id>", j);
+                i = -1;
             }
 
             Service[] svcs = svcList.toArray(new Service[svcList.size()]);
