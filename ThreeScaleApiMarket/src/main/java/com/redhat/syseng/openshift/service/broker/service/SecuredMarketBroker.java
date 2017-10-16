@@ -109,7 +109,7 @@ public class SecuredMarketBroker {
 
         Plan plan = new Plan();
         plan.setDescription("3scale plan description ...");
-        plan.setFree("true");
+        plan.setFree(true);
         plan.setName("test-plan");
         plan.setId("gold-plan-id");
         plan.setSchemas(schemas);
