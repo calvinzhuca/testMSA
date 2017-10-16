@@ -11,7 +11,7 @@ public class Plan
 
     private Schemas schemas;
 
-    private String free;
+    private boolean free;
 
     private String description;
 
@@ -37,12 +37,12 @@ public class Plan
         this.schemas = schemas;
     }
 
-    public String getFree ()
+    public boolean getFree ()
     {
         return free;
     }
 
-    public void setFree (String free)
+    public void setFree (boolean free)
     {
         this.free = free;
     }

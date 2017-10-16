@@ -230,7 +230,7 @@ public class SecuredMarketBroker {
             plan.setName(name);
             //TODO: get the description from somewhere  
             plan.setDescription(" plan description ...");
-            plan.setFree("true");
+            plan.setFree(true);
 
             //create service instance
             Properties properties = new Properties();
