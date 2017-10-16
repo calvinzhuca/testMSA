@@ -10,7 +10,7 @@ public class Parameters
 {
     private String $schema;
 
-    private String additionalProperties;
+    private boolean additionalProperties;
 
     private Properties properties;
 
@@ -28,12 +28,12 @@ public class Parameters
         this.$schema = $schema;
     }
 
-    public String getAdditionalProperties ()
+    public boolean getAdditionalProperties ()
     {
         return additionalProperties;
     }
 
-    public void setAdditionalProperties (String additionalProperties)
+    public void setAdditionalProperties (boolean additionalProperties)
     {
         this.additionalProperties = additionalProperties;
     }

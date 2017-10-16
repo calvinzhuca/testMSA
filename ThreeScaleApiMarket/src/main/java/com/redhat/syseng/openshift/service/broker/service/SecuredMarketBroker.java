@@ -2,11 +2,18 @@ package com.redhat.syseng.openshift.service.broker.service;
 
 import com.google.gson.Gson;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Catalog;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Create;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Email;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Metadata;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Parameters;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Password;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Plan;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Properties;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Schemas;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_binding;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Service_instance;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Username;
 import com.redhat.syseng.openshift.service.broker.model.provision.Provision;
 
 import org.apache.http.HttpResponse;
@@ -202,6 +209,34 @@ public class SecuredMarketBroker {
             plan.setDescription(" plan description ...");
             plan.setFree("true");
 
+            //create service instance
+            Properties properties = new Properties();
+            Email email = new Email();
+            email.setTitle("email");
+            email.setType("string");
+            Password password = new Password();
+            password.setTitle("password");
+            password.setType("string");
+            Username username = new Username();
+            username.setTitle("user name");
+            username.setType("string");
+            properties.setEmail(email);
+            properties.setPassword(password);
+            properties.setUsername(username);
+            Parameters parameters = new Parameters();
+            parameters.set$schema("http://json-schema.org/draft-04/schema");
+            parameters.setAdditionalProperties(false);
+            parameters.setType("object");
+            String[] required = new String[]{"username","password","email"};
+            parameters.setRequired(required);
+            parameters.setProperties(properties);
+            
+            Create create = new Create();
+            create.setParameters(parameters);
+            Service_instance si = new Service_instance();
+            si.setCreate(create);
+            si.setUpdate("{}");
+            
             Service_binding sb = new Service_binding();
 
             Schemas schemas = new Schemas();
