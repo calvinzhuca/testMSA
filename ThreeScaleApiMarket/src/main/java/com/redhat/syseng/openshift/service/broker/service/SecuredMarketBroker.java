@@ -156,33 +156,10 @@ public class SecuredMarketBroker {
 
                 svc.setBindable(true);
 
-                Metadata mt = new Metadata();
-                mt.setDisplayName("secure-service-3scales-broker");
-                mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
-                mt.setLongDescription("A broker that secures input URL through 3scales-AMP");
-                svc.setMetadata(mt);
-
-                svc.setMetadata(mt);
-
-                Service_binding sb = new Service_binding();
-
-                Schemas schemas = new Schemas();
-                schemas.setService_binding(sb);
-
-                Plan plan = new Plan();
-                plan.setDescription("3scale plan description ...");
-                plan.setFree("true");
-                plan.setName("test-plan");
-                plan.setId("gold-plan-id");
-                plan.setSchemas(schemas);
-
-                Plan[] plans = new Plan[1];
-                plans[0] = plan;
-
-                svc.setPlans(plans);
+                svc.setPlans(readPlansForOneService(id));
 
                 svcList.add(svc);
-                
+
                 int j = result.indexOf("</service>", i);
                 i = result.indexOf("<id>", j);
             }
@@ -203,6 +180,42 @@ public class SecuredMarketBroker {
         }
 
         return Response.ok(result, MediaType.APPLICATION_JSON).build();
+    }
+
+    private Plan[] readPlansForOneService(String serviceId) throws JSONException, IOException, URISyntaxException {
+        //call the Application PLan List function
+        String ampUrl = ampUrl = "/admin/api/services/" + serviceId + "/application_plans.xml";;
+        String result = restWsCall(ampUrl, null, "GET");
+        logInfo("---------------------getCatalog search service : " + result);
+        int i = result.indexOf("<id>");
+        ArrayList<Plan> planList = new ArrayList<Plan>();
+        while (i != -1) {
+            Plan plan = new Plan();
+            String id = result.substring(result.indexOf("<id>", i) + "<id>".length(),
+                    result.indexOf("</id>", i));
+
+            plan.setId(id);
+            String name = result.substring(result.indexOf("<name>", i) + "<name>".length(),
+                    result.indexOf("</name>", i));
+            plan.setName(name);
+            //TODO: get the description from somewhere  
+            plan.setDescription(" plan description ...");
+            plan.setFree("true");
+
+            Service_binding sb = new Service_binding();
+
+            Schemas schemas = new Schemas();
+            schemas.setService_binding(sb);
+            plan.setSchemas(schemas);
+            
+            planList.add(plan);
+            
+            int j = result.indexOf("</plan>", i);
+            i = result.indexOf("<id>", j);
+
+        }
+        Plan[] plans = planList.toArray(new Plan[planList.size()]);
+        return plans;
     }
 
     @PUT
