@@ -182,6 +182,9 @@ public class SecuredMarketBroker {
                 svc.setPlans(plans);
 
                 svcList.add(svc);
+                
+                int j = result.indexOf("</service>", i);
+                i = result.indexOf("<id>", j);
             }
 
             Service[] svcs = svcList.toArray(new Service[svcList.size()]);
