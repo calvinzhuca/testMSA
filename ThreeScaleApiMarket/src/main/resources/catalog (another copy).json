@@ -1,9 +1,9 @@
 {
   "services": [
     {
-      "name": "api",
-      "id": "2",
-      "description": "API",
+      "name": "three-scales-service",
+      "id": "serviceUUID",
+      "description": "secure service 3scales broker implementation",
       "bindable": true,
       "metadata": {
         "displayName": "secure-service-3scales-broker",
@@ -12,7 +12,7 @@
       },      
       "plans": [
         {
-          "id": "8",
+          "id": "7",
           "name": "Basic",
           "description": " plan description ...",
           "free": true,
