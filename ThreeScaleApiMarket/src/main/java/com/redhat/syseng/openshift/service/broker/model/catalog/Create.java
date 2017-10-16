@@ -5,7 +5,7 @@
  */
 package com.redhat.syseng.openshift.service.broker.model.catalog;
 
-import com.redhat.syseng.openshift.service.broker.model.provision.Parameters;
+
 
 public class Create
 {
