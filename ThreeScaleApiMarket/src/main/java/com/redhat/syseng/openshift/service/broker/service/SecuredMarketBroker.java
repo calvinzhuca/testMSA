@@ -248,7 +248,8 @@ public class SecuredMarketBroker {
             planList.add(plan);
             
             int j = result.indexOf("</plan>", i);
-            i = result.indexOf("<id>", j);
+            //i = result.indexOf("<id>", j);
+            i = -1;
 
         }
         Plan[] plans = planList.toArray(new Plan[planList.size()]);
