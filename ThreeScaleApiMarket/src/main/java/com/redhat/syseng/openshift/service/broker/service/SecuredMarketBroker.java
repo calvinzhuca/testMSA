@@ -128,7 +128,7 @@ public class SecuredMarketBroker {
         System.out.println("Json from gson: " + gson.toJson(cat));
 
     }
-    
+
     @GET
     @Path("/catalog")
     @Consumes({"*/*"})
@@ -138,10 +138,8 @@ public class SecuredMarketBroker {
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
         logInfo("catalog:\n\n" + catalog);
         return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
-    }    
+    }
 
-    
-    
     @GET
     @Path("/catalog2")
     @Consumes({"*/*"})
@@ -180,6 +178,12 @@ public class SecuredMarketBroker {
                 svc.setBindable(true);
 
                 svc.setPlans(readPlansForOneService(id));
+
+                Metadata mt = new Metadata();
+                mt.setDisplayName("secure-service-3scales-broker");
+                mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
+                mt.setLongDescription("A broker that secures input URL through 3scales-AMP");
+                svc.setMetadata(mt);
 
                 svcList.add(svc);
 
@@ -244,25 +248,25 @@ public class SecuredMarketBroker {
             parameters.set$schema("http://json-schema.org/draft-04/schema");
             parameters.setAdditionalProperties(false);
             parameters.setType("object");
-            String[] required = new String[]{"username","password","email"};
+            String[] required = new String[]{"username", "password", "email"};
             parameters.setRequired(required);
             parameters.setProperties(properties);
-            
+
             Create create = new Create();
             create.setParameters(parameters);
             Service_instance si = new Service_instance();
             si.setCreate(create);
             si.setUpdate("{}");
-            
+
             Service_binding sb = new Service_binding();
 
             Schemas schemas = new Schemas();
             schemas.setService_binding("{}");
             schemas.setService_instance(si);
             plan.setSchemas(schemas);
-            
+
             planList.add(plan);
-            
+
             int j = result.indexOf("</plan>", i);
             //i = result.indexOf("<id>", j);
             i = -1;
