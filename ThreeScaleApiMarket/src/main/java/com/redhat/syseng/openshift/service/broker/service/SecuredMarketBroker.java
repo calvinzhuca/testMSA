@@ -102,7 +102,7 @@ public class SecuredMarketBroker {
         Service_binding sb = new Service_binding();
 
         Schemas schemas = new Schemas();
-        schemas.setService_binding(sb);
+        schemas.setService_binding("{}");
 
         Plan plan = new Plan();
         plan.setDescription("3scale plan description ...");
@@ -240,7 +240,7 @@ public class SecuredMarketBroker {
             Service_binding sb = new Service_binding();
 
             Schemas schemas = new Schemas();
-            schemas.setService_binding(sb);
+            schemas.setService_binding("{}");
             schemas.setService_instance(si);
             plan.setSchemas(schemas);
             
