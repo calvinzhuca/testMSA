@@ -9,13 +9,13 @@
         "displayName": "secure-service-3scales-broker",
         "documentationUrl": "https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform",
         "longDescription": "A broker that secures input URL through 3scales-AMP"
-      },
+      },      
       "plans": [
         {
-          "id": "gold-plan-id",
-          "name": "test-plan",
-          "description": "3scale plan description ...",
-          "free": true,
+          "id": "6",
+          "name": "Basic",
+          "description": " plan description ...",
+          "free": "true",
           "schemas": {
             "service_instance": {
               "create": {
