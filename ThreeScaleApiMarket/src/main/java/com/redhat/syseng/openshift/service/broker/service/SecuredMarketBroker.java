@@ -15,6 +15,7 @@ import com.redhat.syseng.openshift.service.broker.model.catalog.Service;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_instance;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Username;
 import com.redhat.syseng.openshift.service.broker.model.provision.Provision;
+import java.io.BufferedReader;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -45,6 +46,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -59,6 +61,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -125,12 +128,23 @@ public class SecuredMarketBroker {
         System.out.println("Json from gson: " + gson.toJson(cat));
 
     }
-
+    
     @GET
     @Path("/catalog")
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCatalog() {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/test_catalog.json")));
+        String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
+        logInfo("catalog:\n\n" + catalog);
+        return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
+    }    
+
+    @GET
+    @Path("/catalog2")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getCatalog2() {
         /*
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
