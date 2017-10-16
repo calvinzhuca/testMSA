@@ -241,6 +241,7 @@ public class SecuredMarketBroker {
 
             Schemas schemas = new Schemas();
             schemas.setService_binding(sb);
+            schemas.setService_instance(si);
             plan.setSchemas(schemas);
             
             planList.add(plan);
