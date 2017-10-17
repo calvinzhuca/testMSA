@@ -7,16 +7,17 @@ package com.redhat.syseng.openshift.service.broker.model.catalog;
 
 public class Service_instance
 {
-    private String update;
+    //update structure is the same as create
+    private Create update;
 
     private Create create;
 
-    public String getUpdate ()
+    public Create getUpdate ()
     {
         return update;
     }
 
-    public void setUpdate (String update)
+    public void setUpdate (Create update)
     {
         this.update = update;
     }

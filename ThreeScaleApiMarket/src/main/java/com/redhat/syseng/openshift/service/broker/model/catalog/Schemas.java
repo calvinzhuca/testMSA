@@ -9,16 +9,16 @@ public class Schemas
 {
     //private Service_binding service_binding;
     
-    private String service_binding;
+    private Service_binding service_binding;
 
     private Service_instance service_instance;
 
-    public String getService_binding ()
+    public Service_binding getService_binding ()
     {
         return service_binding;
     }
 
-    public void setService_binding (String service_binding)
+    public void setService_binding (Service_binding service_binding)
     {
         this.service_binding = service_binding;
     }

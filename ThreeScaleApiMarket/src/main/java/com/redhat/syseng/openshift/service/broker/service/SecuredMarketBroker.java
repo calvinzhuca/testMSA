@@ -1,6 +1,7 @@
 package com.redhat.syseng.openshift.service.broker.service;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Catalog;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Create;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Email;
@@ -102,13 +103,44 @@ public class SecuredMarketBroker {
         mt.setLongDescription("A broker that secures input URL through 3scales-AMP");
         svc.setMetadata(mt);
 
+        //create service instance
+        Properties properties = new Properties();
+        Email email = new Email();
+        email.setTitle("email");
+        email.setType("string");
+        Password password = new Password();
+        password.setTitle("password");
+        password.setType("string");
+        Username username = new Username();
+        username.setTitle("user name");
+        username.setType("string");
+        properties.setEmail(email);
+        properties.setPassword(password);
+        properties.setUsername(username);
+        Parameters parameters = new Parameters();
+        parameters.set$schema("http://json-schema.org/draft-04/schema");
+        parameters.setAdditionalProperties(false);
+        parameters.setType("object");
+        String[] required = new String[]{"username", "password", "email"};
+        parameters.setRequired(required);
+        parameters.setProperties(properties);
+
+        Create create = new Create();
+        create.setParameters(parameters);
+        Service_instance si = new Service_instance();
+        si.setCreate(create);
+
+        Create update = new Create();
+        si.setUpdate(update);
+
         Service_binding sb = new Service_binding();
 
         Schemas schemas = new Schemas();
-        schemas.setService_binding("{}");
+        schemas.setService_binding(sb);
+        schemas.setService_instance(si);
 
         Plan plan = new Plan();
-        plan.setDescription("3scale plan description ...");
+        plan.setDescription("3scale plan descriptions ...");
         plan.setFree(true);
         plan.setName("test-plan");
         plan.setId("gold-plan-id");
@@ -124,29 +156,27 @@ public class SecuredMarketBroker {
         Catalog cat = new Catalog();
         cat.setServices(svcs);
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println("Json from gson: " + gson.toJson(cat));
 
     }
-
-    
-    @GET
-    @Path("/catalog")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getCatalog() {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
-        String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
-        logInfo("catalog:\n\n" + catalog);
-        return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
-    }
-    
 
     @GET
     @Path("/catalog2")
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCatalog2() {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
+        String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
+        logInfo("catalog:\n\n" + catalog);
+        return Response.ok(catalog, MediaType.APPLICATION_JSON).build();
+    }
+
+    @GET
+    @Path("/catalog")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getCatalog() {
         /*
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
@@ -190,15 +220,16 @@ public class SecuredMarketBroker {
                 svcList.add(svc);
 
                 int j = result.indexOf("</service>", i);
-                //i = result.indexOf("<id>", j);
-                i = -1;
+                i = result.indexOf("<id>", j);
+                //i = -1;
             }
 
             Service[] svcs = svcList.toArray(new Service[svcList.size()]);
             Catalog cat = new Catalog();
             cat.setServices(svcs);
 
-            Gson gson = new Gson();
+            //Gson gson = new Gson();
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             result = gson.toJson(cat);
             logInfo("Json from gson: " + result);
         } catch (IOException ex) {
@@ -258,20 +289,23 @@ public class SecuredMarketBroker {
             create.setParameters(parameters);
             Service_instance si = new Service_instance();
             si.setCreate(create);
-            si.setUpdate("{}");
+
+            //update structure is the same as create
+            Create update = new Create();
+            si.setUpdate(update);
 
             Service_binding sb = new Service_binding();
 
             Schemas schemas = new Schemas();
-            schemas.setService_binding("{}");
+            schemas.setService_binding(sb);
             schemas.setService_instance(si);
             plan.setSchemas(schemas);
 
             planList.add(plan);
 
             int j = result.indexOf("</plan>", i);
-            //i = result.indexOf("<id>", j);
-            i = -1;
+            i = result.indexOf("<id>", j);
+            //i = -1;
 
         }
         Plan[] plans = planList.toArray(new Plan[planList.size()]);
