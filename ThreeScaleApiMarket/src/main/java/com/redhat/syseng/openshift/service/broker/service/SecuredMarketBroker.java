@@ -1,7 +1,6 @@
 package com.redhat.syseng.openshift.service.broker.service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Catalog;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Create;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Email;
@@ -199,8 +198,7 @@ public class SecuredMarketBroker {
             Catalog cat = new Catalog();
             cat.setServices(svcs);
 
-            //Gson gson = new Gson();
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            Gson gson = new Gson();
             result = gson.toJson(cat);
             logInfo("Json from gson: " + result);
         } catch (IOException ex) {
