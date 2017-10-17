@@ -131,10 +131,10 @@ public class SecuredMarketBroker {
 
     
     @GET
-    @Path("/catalog2")
+    @Path("/catalog")
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getCatalog2() {
+    public Response getCatalog() {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
         logInfo("catalog:\n\n" + catalog);
@@ -143,10 +143,10 @@ public class SecuredMarketBroker {
     
 
     @GET
-    @Path("/catalog")
+    @Path("/catalog2")
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getCatalog() {
+    public Response getCatalog2() {
         /*
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
