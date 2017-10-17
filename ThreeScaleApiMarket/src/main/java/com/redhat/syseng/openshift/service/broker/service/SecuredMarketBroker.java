@@ -182,9 +182,9 @@ public class SecuredMarketBroker {
                 svc.setPlans(readPlansForOneService(id));
 
                 Metadata mt = new Metadata();
-                mt.setDisplayName("secure-service-3scales-broker");
+                mt.setDisplayName("secured-market-service: " + name);
                 mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
-                mt.setLongDescription("A broker that secures input URL through 3scales-AMP");
+                mt.setLongDescription("secured service through 3scales-AMP, name is: " + name);
                 svc.setMetadata(mt);
 
                 svcList.add(svc);
