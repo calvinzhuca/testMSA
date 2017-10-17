@@ -7,45 +7,33 @@ package com.redhat.syseng.openshift.service.broker.model.catalog;
 
 public class Properties
 {
-    private Username username;
+    private ApplicationName applicationName;
+    private Description description;
 
-    private Email email;
-
-    private Password password;
-
-    public Username getUsername ()
+    public ApplicationName getApplicationName ()
     {
-        return username;
+        return applicationName;
     }
 
-    public void setUsername (Username username)
+    public void setApplicationName (ApplicationName applicationName)
     {
-        this.username = username;
+        this.applicationName = applicationName;
     }
 
-    public Email getEmail ()
+
+    public Description getDescription ()
     {
-        return email;
+        return description;
     }
 
-    public void setEmail (Email email)
+    public void setDescription (Description description)
     {
-        this.email = email;
-    }
-
-    public Password getPassword ()
-    {
-        return password;
-    }
-
-    public void setPassword (Password password)
-    {
-        this.password = password;
+        this.description = description;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [username = "+username+", email = "+email+", password = "+password+"]";
+        return "ClassPojo [applicationName = "+applicationName+", description = "+description+"]";
     }
 }

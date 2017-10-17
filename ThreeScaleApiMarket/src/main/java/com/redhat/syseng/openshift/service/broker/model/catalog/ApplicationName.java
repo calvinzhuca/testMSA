@@ -5,7 +5,7 @@
  */
 package com.redhat.syseng.openshift.service.broker.model.catalog;
 
-public class Username
+public class ApplicationName
 {
     private String title;
 

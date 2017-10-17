@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Catalog;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Create;
-import com.redhat.syseng.openshift.service.broker.model.catalog.Email;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Metadata;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Parameters;
-import com.redhat.syseng.openshift.service.broker.model.catalog.Password;
+import com.redhat.syseng.openshift.service.broker.model.catalog.Description;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Plan;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Properties;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Schemas;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_binding;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_instance;
-import com.redhat.syseng.openshift.service.broker.model.catalog.Username;
+import com.redhat.syseng.openshift.service.broker.model.catalog.ApplicationName;
 import com.redhat.syseng.openshift.service.broker.model.provision.Provision;
 import java.io.BufferedReader;
 
@@ -44,7 +43,6 @@ import org.apache.http.util.EntityUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -92,31 +90,28 @@ public class SecuredMarketBroker {
         System.out.println("===============================");
 
         Service svc = new Service();
-        svc.setName("three-scales-service");
+        svc.setName("three-scale-service");
         svc.setId("serviceUUID");
-        svc.setDescription("secure service 3scales broker implementation");
+        svc.setDescription("secure service 3scale broker implementation");
         svc.setBindable(true);
 
         Metadata mt = new Metadata();
-        mt.setDisplayName("secure-service-3scales-broker");
+        mt.setDisplayName("secure-service-3scale-broker");
         mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
-        mt.setLongDescription("A broker that secures input URL through 3scales-AMP");
+        mt.setLongDescription("A broker that secures input URL through 3scale-AMP");
         svc.setMetadata(mt);
 
         //create service instance
         Properties properties = new Properties();
-        Email email = new Email();
-        email.setTitle("email");
-        email.setType("string");
-        Password password = new Password();
-        password.setTitle("password");
-        password.setType("string");
-        Username username = new Username();
-        username.setTitle("user name");
-        username.setType("string");
-        properties.setEmail(email);
-        properties.setPassword(password);
-        properties.setUsername(username);
+        Description description = new Description();
+        description.setTitle("description");
+        description.setType("string");
+        ApplicationName applicationName = new ApplicationName();
+        applicationName.setTitle("application name");
+        applicationName.setType("string");
+
+        properties.setDescription(description);
+        properties.setApplicationName(applicationName);
         Parameters parameters = new Parameters();
         parameters.set$schema("http://json-schema.org/draft-04/schema");
         parameters.setAdditionalProperties(false);
@@ -214,7 +209,7 @@ public class SecuredMarketBroker {
                 Metadata mt = new Metadata();
                 mt.setDisplayName("secured-market-service: " + name);
                 mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
-                mt.setLongDescription("secured service through 3scales-AMP, name is: " + name);
+                mt.setLongDescription("secured service through 3scale-AMP, name is: " + name);
                 svc.setMetadata(mt);
 
                 svcList.add(svc);
@@ -265,18 +260,16 @@ public class SecuredMarketBroker {
 
             //create service instance
             Properties properties = new Properties();
-            Email email = new Email();
-            email.setTitle("email");
-            email.setType("string");
-            Password password = new Password();
-            password.setTitle("password");
-            password.setType("string");
-            Username username = new Username();
-            username.setTitle("user name");
-            username.setType("string");
-            properties.setEmail(email);
-            properties.setPassword(password);
-            properties.setUsername(username);
+
+            Description description = new Description();
+            description.setTitle("description");
+            description.setType("string");
+            ApplicationName applicationName = new ApplicationName();
+            applicationName.setTitle("application name");
+            applicationName.setType("string");
+
+            properties.setDescription(description);
+            properties.setApplicationName(applicationName);
             Parameters parameters = new Parameters();
             parameters.set$schema("http://json-schema.org/draft-04/schema");
             parameters.setAdditionalProperties(false);
@@ -312,6 +305,18 @@ public class SecuredMarketBroker {
         return plans;
     }
 
+    /*
+    @PUT
+    @Path("/service_instances/{instance_id}")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    //public synchronized String provisioning(@PathParam("instance_id") String instance_id, Provision provision) 
+    public synchronized String provisioning(String inputStr) 
+    {
+        logInfo("provision.inputStr : " + inputStr);
+        return "";
+    }    
+     */
     @PUT
     @Path("/service_instances/{instance_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -319,96 +324,27 @@ public class SecuredMarketBroker {
     public synchronized String provisioning(@PathParam("instance_id") String instance_id, Provision provision) //public String provisioning( String testString) {
     {
         logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
-        logInfo("provision.getService_id() : " + provision.getService_id());
         logInfo("provision.getOrganization_guid() : " + provision.getOrganization_guid());
-        logInfo("provision.getParameters().getService_name() : " + provision.getParameters().getService_name());
-        logInfo("provision.getParameters().getApplication_plan() : " + provision.getParameters().getApplication_plan());
-        logInfo("provision.getParameters().getInput_url() : " + provision.getParameters().getInput_url());
-        logInfo("provision.getParameters().getApplication_name() : " + provision.getParameters().getApplication_name());
+        logInfo("provision.getService_id() : " + provision.getService_id());
+        logInfo("provision.getPlan_id() : " + provision.getPlan_id());
+        logInfo("provision.getParameters().getApplicationName() : " + provision.getParameters().getApplicationName());
+        logInfo("provision.getParameters().getDescription() : " + provision.getParameters().getDescription());
 
         String result = "{\"dashboard_url\":\"https://testapi-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443/?user_key=2491bd25351aeb458fea55381b3d4560\",\"operation\":\"task_10\"}";
         String url = "";
-
-        try {
-
-            //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
-            int account_id = 5;
-            url = searchServiceInstance(provision.getParameters().getService_name(), account_id);
-            //no existing service, need to create one
-            if ("".equals(url)) {
-
-                ArrayList<NameValuePair> postParameters;
-                postParameters = new ArrayList();
-                postParameters.add(new BasicNameValuePair("name", provision.getParameters().getService_name()));
-                postParameters.add(new BasicNameValuePair("system_name", instance_id));
-
-                String ampUrl = "/admin/api/services.xml";
-                result = restWsCall(ampUrl, postParameters, "POST");
-                logInfo("---------------------services is created : " + result);
-                String serviceID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
-                logInfo("serviceID : " + serviceID);
-
-                //create applicaiton plan
-                ampUrl = "/admin/api/services/" + serviceID + "/application_plans.xml";
-                postParameters = new ArrayList();
-                postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplication_plan()));
-                postParameters.add(new BasicNameValuePair("system_name", provision.getParameters().getApplication_plan()));
-                result = restWsCall(ampUrl, postParameters, "POST");
-                logInfo("---------------------application plan is created: " + result);
-                String planID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
-                logInfo("planID : " + planID);
-
-                createMappingRules(serviceID);
-
-                //API integration
-                ampUrl = "/admin/api/services/" + serviceID + "/proxy.xml";
-                postParameters = new ArrayList();
-                postParameters.add(new BasicNameValuePair("service_id", serviceID));
-                postParameters.add(new BasicNameValuePair("api_backend", provision.getParameters().getInput_url()));
-                result = restWsCall(ampUrl, postParameters, "PATCH");
-                logInfo("---------------------integration result : " + result);
-
-                //create Application to use the Plan, which will generate a valid user_key
-                postParameters = new ArrayList();
-                postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplication_name()));
-                postParameters.add(new BasicNameValuePair("description", provision.getParameters().getApplication_name()));
-                postParameters.add(new BasicNameValuePair("plan_id", planID));
-
-                ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
-
-                //after this step, in the API Integration page, the user_key will automatically replaced with the new one created below
-                result = restWsCall(ampUrl, postParameters, "POST");
-                logInfo("---------------------application is created : " + result);
-                String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
-                logInfo("user_key : " + user_key);
-
-                String domain = "-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443";
-                url = "https://" + provision.getParameters().getService_name() + domain + "/?user_key=" + user_key;
-                result = "{\"dashboard_url\":" + url + ",\"operation\":\"task_10\"}";
-
-            }
-
-        } catch (IOException ex) {
-            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         result = "{\"dashboard_url\":\"" + url + "\",\"operation\":\"task_10\"}";
         logInfo("provisioning result" + result);
         return result;
     }
 
-    private void createUser(String userName, String password) {
+    private void createUser(String userName, String password, String email) {
 
         try {
             ArrayList<NameValuePair> postParameters;
             postParameters = new ArrayList();
             postParameters.add(new BasicNameValuePair("username", userName));
             postParameters.add(new BasicNameValuePair("password", password));
-            String email = userName + "@example.com";
             postParameters.add(new BasicNameValuePair("email", email));
 
             //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
@@ -506,32 +442,8 @@ public class SecuredMarketBroker {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public synchronized String binding(String inputStr) {
         //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
-        //  String result = "test";
+        String result = "test";
 
-        boolean useLetters = true;
-        boolean useNumbers = false;
-        String userName = "user_" + RandomStringUtils.random(4, useLetters, useNumbers);
-
-        useNumbers = true;
-        String passWord = RandomStringUtils.random(15, useLetters, useNumbers);
-        logInfo("binding userName: " + userName);
-        logInfo("binding passWord: " + passWord);
-
-        createUser(userName, passWord);
-//        String responseStr = System.getenv("RESPONSE_STRING");
-        //String result = "{\"route_service_url\":\"http://172.30.244.67:8080\"}";
-        //String result = "{\"credentials\":{\"username\":\"mysqluser\",\"password\":\"pass\"}}";
-        String result = "{\"credentials\":{\"username\":\"" + userName + "\",\"password\":\"" + passWord + "\",\"url\":\"https://3scale.middleware.ocp.cloud.lab.eng.bos.redhat.com/login\"}}";
-        //logInfo("binding instance_id : " + instance_id);
-        //logInfo("binding binding_id : " + binding_id);
-        logInfo("binding inputStr 6: " + inputStr);
-        logInfo("binding result: " + result);
-        //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
-        //logInfo("binding binding_id: " + binding_id);
-        //result = "{/\"credentials/\":{/\"uri/\":/\"mysql://mysqluser:pass@mysqlhost:3306/dbname/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"host/\":/\"mysqlhost/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
-        //result = "{/\"credentials/\":{/\"ttt/\":/\"12345678901111111111111111111111111111111111/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"hhhh/\":/\"222222222/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
-        //result = "{\"dashboard_url\":\"\",\"operation\":\"task_10\"}";
-        //result = "{\"test\":\"111111111111111\",\"test2\":\"task_10\"}";
         return result;
     }
 

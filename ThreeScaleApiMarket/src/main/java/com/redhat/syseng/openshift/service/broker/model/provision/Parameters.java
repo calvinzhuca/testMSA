@@ -2,57 +2,35 @@ package com.redhat.syseng.openshift.service.broker.model.provision;
 
 public class Parameters
 {
-    private String application_name;
+    private String applicationName;
 
-    private String input_url;
+    private String description;
 
-    private String application_plan;
 
-    private String service_name;
 
-    public String getApplication_name ()
+    public String getApplicationName ()
     {
-        return application_name;
+        return applicationName;
     }
 
-    public void setApplication_name (String application_name)
+    public void setApplicationName (String name)
     {
-        this.application_name = application_name;
+        this.applicationName = name;
     }
 
-    public String getInput_url ()
+    public String getDescription ()
     {
-        return input_url;
+        return description;
     }
 
-    public void setInput_url (String input_url)
+    public void setDescription (String description)
     {
-        this.input_url = input_url;
-    }
-
-    public String getApplication_plan ()
-    {
-        return application_plan;
-    }
-
-    public void setApplication_plan (String application_plan)
-    {
-        this.application_plan = application_plan;
-    }
-
-    public String getService_name ()
-    {
-        return service_name;
-    }
-
-    public void setService_name (String service_name)
-    {
-        this.service_name = service_name;
+        this.description = description;
     }
 
     @Override
     public String toString()
     {
-        return "ClassPojo [application_name = "+application_name+", input_url = "+input_url+", application_plan = "+application_plan+", service_name = "+service_name+"]";
+        return "ClassPojo [applicationName = "+applicationName+", description = "+description+"]";
     }
 }
