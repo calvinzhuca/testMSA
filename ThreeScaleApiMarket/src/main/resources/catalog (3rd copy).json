@@ -1,12 +1,22 @@
 {
   "services": [
     {
+      "name": "api",
       "id": "2",
+      "description": "API",
+      "bindable": true,
+      "metadata": {
+        "displayName": "secure-service-3scales-broker",
+        "documentationUrl": "https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform",
+        "longDescription": "A broker that secures input URL through 3scales-AMP"
+      },
       "plans": [
         {
           "id": "6",
+          "name": "Basic",
+          "description": " plan description ...",
+          "free": true,
           "schemas": {
-            "service_binding": {},
             "service_instance": {
               "update": {},
               "create": {
@@ -35,21 +45,11 @@
                   ]
                 }
               }
-            }
-          },
-          "free": true,
-          "description": " plan description ...",
-          "name": "Basic"
+            },
+            "service_binding": {}
+          }
         }
-      ],
-      "description": "API",
-      "name": "api",
-      "metadata": {
-        "documentationUrl": "https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform",
-        "longDescription": "A broker that secures input URL through 3scales-AMP",
-        "displayName": "secure-service-3scales-broker"
-      },
-      "bindable": true
+      ]
     }
   ]
 }
