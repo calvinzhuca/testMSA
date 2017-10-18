@@ -116,7 +116,7 @@ public class SecuredMarketBroker {
         parameters.set$schema("http://json-schema.org/draft-04/schema");
         parameters.setAdditionalProperties(false);
         parameters.setType("object");
-        String[] required = new String[]{"username", "password", "email"};
+        String[] required = new String[]{"applicationName", "description"};
         parameters.setRequired(required);
         parameters.setProperties(properties);
 
@@ -274,7 +274,7 @@ public class SecuredMarketBroker {
             parameters.set$schema("http://json-schema.org/draft-04/schema");
             parameters.setAdditionalProperties(false);
             parameters.setType("object");
-            String[] required = new String[]{"username", "password", "email"};
+            String[] required = new String[]{"applicationName", "description"};
             parameters.setRequired(required);
             parameters.setProperties(properties);
 
@@ -332,6 +332,41 @@ public class SecuredMarketBroker {
 
         String result = "{\"dashboard_url\":\"https://testapi-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443/?user_key=2491bd25351aeb458fea55381b3d4560\",\"operation\":\"task_10\"}";
         String url = "";
+
+        try {
+
+            //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+            int account_id = 5;
+
+            //create Application to use the Plan, which will generate a valid user_key
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplicationName()));
+            //Add GUID in the description, so later the binding can find this application based on guid. 
+            String desc = provision.getParameters().getDescription() + " GUID:" + provision.getOrganization_guid();
+            postParameters.add(new BasicNameValuePair("description", desc));
+            postParameters.add(new BasicNameValuePair("plan_id", provision.getPlan_id()));
+
+            String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
+
+            //after this step, in the API Integration page, the user_key will automatically replaced with the new one created below
+            result = restWsCall(ampUrl, postParameters, "POST");
+            logInfo("---------------------application is created : " + result);
+
+            String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
+            logInfo("user_key : " + user_key);
+            String endpoint = searchEndPointBasedOnServiceId(provision.getService_id());
+            url = endpoint + "/?user_key=" + user_key;
+            result = "{\"dashboard_url\":" + url + ",\"operation\":\"task_10\"}";
+
+        } catch (IOException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         result = "{\"dashboard_url\":\"" + url + "\",\"operation\":\"task_10\"}";
         logInfo("provisioning result" + result);
@@ -442,7 +477,30 @@ public class SecuredMarketBroker {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public synchronized String binding(String inputStr) {
         //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
-        String result = "test";
+        logInfo("binding inputStr: " + inputStr);
+        String guid = inputStr.substring(inputStr.indexOf("app_guid\":\"") + "app_guid\":\"".length(), inputStr.indexOf("\",\"plan_id"));
+        logInfo("binding guid: " + guid);
+        String planId = inputStr.substring(inputStr.indexOf("plan_id\":\"") + "plan_id\":\"".length(), inputStr.indexOf("\",\"service_id"));
+        logInfo("binding planId: " + planId);
+        String serviceId = inputStr.substring(inputStr.indexOf("service_id\":\"") + "service_id\":\"".length(), inputStr.indexOf("\",\"bind_resource"));
+        logInfo("binding serviceId: " + serviceId);
+
+        //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+        int account_id = 5;
+        String user_key;
+        String result = "{}";
+        try {
+            user_key = searchUserKeyBasedOnGUID(guid, account_id);
+            String endpoint = searchEndPointBasedOnServiceId(serviceId);
+            result = "{\"credentials\":{\"url\":\"" + endpoint + "\",\"user_key\":\"" + user_key + "\"}}";
+            logInfo("binding result: " + result);
+        } catch (IOException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JSONException ex) {
+            Logger.getLogger(SecuredMarketBroker.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return result;
     }
@@ -616,37 +674,6 @@ public class SecuredMarketBroker {
 
     }
 
-    /*
-	private boolean searchServiceInstance(String inputServiceSystemName) throws IOException, URISyntaxException, JSONException {
-		ArrayList<NameValuePair> postParameters;
-		postParameters = new ArrayList();
-
-		String ampUrl = "/admin/api/services.xml";
-		String result = restWsCall(ampUrl, postParameters, "GET");
-		logInfo("services are listed : " + result);
-
-		int i = result.indexOf("<system_name>");
-		boolean found = false;
-		while (i != -1) {
-			String system_name = result.substring(result.indexOf("<system_name>",i) + "<system_name>".length(),
-					result.indexOf("</system_name>",i));
-			logInfo("system_name : " + system_name);
-
-			if (system_name.equals(inputServiceSystemName)) {
-				logInfo("found same system_name service : " + system_name);
-				found = true;
-				i = -1;
-			} else {
-				int j = result.indexOf("</system_name>", i) + "</system_name>".length();
-				logInfo("j : " + j);
-				i = result.indexOf("<system_name>", j);
-				logInfo("i : " + i);
-			}
-		}
-
-		return found;
-	}
-     */
     private String searchServiceInstance(String inputServiceSystemName, int account_id) throws IOException, URISyntaxException, JSONException {
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
@@ -695,6 +722,28 @@ public class SecuredMarketBroker {
         return user_key;
 
     }
+    
+    private String searchUserKeyBasedOnGUID(String guid, int accountId) throws IOException, URISyntaxException, JSONException {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+
+        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String ampUrl = "/admin/api/applications.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("application is listed : " + result);
+
+        int i = result.indexOf(guid);
+        String user_key = "";
+        if (i > -1) {
+            user_key = result.substring(result.lastIndexOf("<user_key>", i) + "<user_key>".length(), result.lastIndexOf("</user_key>", i));
+            logInfo("---------------------found user_key for this service id : " + user_key);
+
+        } else {
+            logInfo("---------------------didn't found same service id in this application: " + guid);
+        }
+        return user_key;
+
+    }    
 
     private String searchEndPointBasedOnServiceId(String serviceId) throws IOException, URISyntaxException, JSONException {
         ArrayList<NameValuePair> postParameters;
