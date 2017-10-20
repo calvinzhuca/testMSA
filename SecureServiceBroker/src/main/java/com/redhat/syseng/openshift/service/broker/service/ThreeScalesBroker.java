@@ -88,8 +88,9 @@ public class ThreeScalesBroker {
     @Path("/service_instances/{instance_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String provisioning(String testString) {
+    public String provisioning(@PathParam("instance_id") String instance_id,String testString) {
 
+        logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
         logInfo("provision.testString : " + testString);
         return testString;
 
