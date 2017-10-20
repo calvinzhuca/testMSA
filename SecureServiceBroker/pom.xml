@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.redhat.syseng.openshift.service.broker</groupId>
-    <artifactId>ThreeScaleSecureApi</artifactId>
+    <artifactId>SecureServiceBroker</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>ThreeScaleSecureApi</name>
+    <name>SecureServiceBroker</name>
     <url>http://maven.apache.org</url>
 
     <build>
