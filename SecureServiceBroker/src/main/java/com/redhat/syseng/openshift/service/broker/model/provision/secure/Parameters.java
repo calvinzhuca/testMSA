@@ -1,4 +1,4 @@
-package com.redhat.syseng.openshift.service.broker.model;
+package com.redhat.syseng.openshift.service.broker.model.provision.secure;
 
 public class Parameters
 {

@@ -1,7 +1,7 @@
 package com.redhat.syseng.openshift.service.broker.service;
 
-import com.redhat.syseng.openshift.service.broker.model.Provision;
-
+import com.google.gson.Gson;
+import com.redhat.syseng.openshift.service.broker.model.provision.secure.Provision;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -88,11 +88,15 @@ public class ThreeScalesBroker {
     @Path("/service_instances/{instance_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String provisioning(@PathParam("instance_id") String instance_id,String testString) {
+    public String provisioning(@PathParam("instance_id") String instance_id, String inputJsonString) {
 
         logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
-        logInfo("provision.testString : " + testString);
-        return testString;
+        logInfo("provision.inputJsonString : " + inputJsonString);
+        Gson gson = new Gson();
+        Provision provision = gson.fromJson(inputJsonString, Provision.class);
+        String result = provisioning2(instance_id, provision);
+        logInfo("provision.result : " + result);
+        return result;
 
     }
 
@@ -100,7 +104,8 @@ public class ThreeScalesBroker {
     @Path("/service_instances2/{instance_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public synchronized String provisioning2(@PathParam("instance_id") String instance_id, Provision provision) //public String provisioning( String testString) {
+//    public synchronized String provisioning2(@PathParam("instance_id") String instance_id, Provision provision) //public String provisioning( String testString) {
+    private synchronized String provisioning2(String instance_id, Provision provision) //public String provisioning( String testString) {
     {
         logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
         logInfo("provision.getService_id() : " + provision.getService_id());
@@ -301,7 +306,7 @@ public class ThreeScalesBroker {
         String passWord = RandomStringUtils.random(15, useLetters, useNumbers);
         logInfo("binding userName: " + userName);
         logInfo("binding passWord: " + passWord);
-        
+
         createUser(userName, passWord);
 //        String responseStr = System.getenv("RESPONSE_STRING");
         //String result = "{\"route_service_url\":\"http://172.30.244.67:8080\"}";
