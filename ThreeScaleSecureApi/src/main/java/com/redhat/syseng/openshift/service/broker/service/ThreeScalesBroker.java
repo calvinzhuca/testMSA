@@ -85,10 +85,10 @@ public class ThreeScalesBroker {
     }
 
     @PUT
-    @Path("/service_instances2/{instance_id}")
+    @Path("/service_instances/{instance_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String provisioning2(String testString) {
+    public String provisioning(String testString) {
 
         logInfo("provision.testString : " + testString);
         return testString;
@@ -96,10 +96,10 @@ public class ThreeScalesBroker {
     }
 
     @PUT
-    @Path("/service_instances/{instance_id}")
+    @Path("/service_instances2/{instance_id}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public synchronized String provisioning(@PathParam("instance_id") String instance_id, Provision provision) //public String provisioning( String testString) {
+    public synchronized String provisioning2(@PathParam("instance_id") String instance_id, Provision provision) //public String provisioning( String testString) {
     {
         logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
         logInfo("provision.getService_id() : " + provision.getService_id());
