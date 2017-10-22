@@ -1,11 +1,13 @@
+{
+  "services": [
     {
-      "name": "secure-service-3scale",
+      "name": "three-scales-service",
       "id": "serviceUUID",
       "description": "secure service 3scales broker implementation",
       "requires": ["route_forwarding"],
       "bindable": true,
       "metadata": {
-        "displayName": "secure-service-3scale",
+        "displayName": "secure-service-3scales-broker",
         "documentationUrl": "https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform",
         "longDescription": "A broker that secures input URL through 3scales-AMP",
         "parameters": [
@@ -151,5 +153,6 @@
           }
         }
       ]
-    },
-
+    }
+  ]
+}

@@ -14,29 +14,24 @@ import com.redhat.syseng.openshift.service.broker.model.catalog.Schemas;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_binding;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_instance;
+import com.redhat.syseng.openshift.service.broker.service.broker.util.BrokerUtil;
 import static com.redhat.syseng.openshift.service.broker.service.broker.util.BrokerUtil.restWsCall;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.http.NameValuePair;
 
-@Path("/v2")
-public class ThreeScalesBroker {
+public class SecuredMarket {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
@@ -46,12 +41,58 @@ public class ThreeScalesBroker {
         logger.log(Level.INFO, message);
     }
 
+    public synchronized String provisioningForSecuredMarket(@PathParam("instance_id") String instance_id, com.redhat.syseng.openshift.service.broker.model.provision.market.Provision provision) //public String provisioning( String testString) {
+    {
+        logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
+        logInfo("provision.getOrganization_guid() : " + provision.getOrganization_guid());
+        logInfo("provision.getService_id() : " + provision.getService_id());
+        logInfo("provision.getPlan_id() : " + provision.getPlan_id());
+        logInfo("provision.getParameters().getApplicationName() : " + provision.getParameters().getApplicationName());
+        logInfo("provision.getParameters().getDescription() : " + provision.getParameters().getDescription());
+
+        String result = "{\"dashboard_url\":\"https://testapi-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443/?user_key=2491bd25351aeb458fea55381b3d4560\",\"operation\":\"task_10\"}";
+        String url = "";
+
+        //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+        int account_id = 5;
+
+        //create Application to use the Plan, which will generate a valid user_key
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+        postParameters = new ArrayList();
+        postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplicationName()));
+        //Add GUID in the description, so later the binding can find this application based on guid. 
+        String desc = provision.getParameters().getDescription() + " GUID:" + provision.getOrganization_guid();
+        postParameters.add(new BasicNameValuePair("description", desc));
+        postParameters.add(new BasicNameValuePair("plan_id", provision.getPlan_id()));
+
+        String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
+
+        //after this step, in the API Integration page, the user_key will automatically replaced with the new one created below
+        result = BrokerUtil.restWsCall(ampUrl, postParameters, "POST");
+        logInfo("---------------------application is created : " + result);
+
+        String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
+        logInfo("user_key : " + user_key);
+        String endpoint = BrokerUtil.searchEndPointBasedOnServiceId(provision.getService_id());
+        url = endpoint + "/?user_key=" + user_key;
+        result = "{\"dashboard_url\":" + url + ",\"operation\":\"task_10\"}";
+
+        result = "{\"dashboard_url\":\"" + url + "\",\"operation\":\"task_10\"}";
+        logInfo("provisioning result" + result);
+        return result;
+    }
 
     @GET
     @Path("/catalog")
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCatalog() {
+        /*
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
+        String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
+        logInfo("catalog:\n\n" + catalog);
+         */
         String result = "";
 
         ArrayList<NameValuePair> postParameters;
@@ -102,86 +143,10 @@ public class ThreeScalesBroker {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         result = gson.toJson(cat);
         logInfo("Json from gson: " + result);
-        
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
-        String secureServiceCatalog = bufferedReader.lines().collect(Collectors.joining("\n"));
-        
-        int j = result.indexOf("[");
-        result = result.substring(0,j) + secureServiceCatalog + result.substring(j,result.length()-1);
-        
-        
-        logInfo("secureServiceCatalog:\n\n" + secureServiceCatalog);
-
-        
 
         return Response.ok(result, MediaType.APPLICATION_JSON).build();
     }
 
-
-    @PUT
-    @Path("/service_instances/{instance_id}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String provisioning(@PathParam("instance_id") String instance_id, String inputJsonString) {
-
-        logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
-        logInfo("provision.inputJsonString : " + inputJsonString);
-        Gson gson = new Gson();
-        String result = "";
-        if (inputJsonString.contains("input_url")) {
-            com.redhat.syseng.openshift.service.broker.model.provision.secure.Provision provision = gson.fromJson(inputJsonString, com.redhat.syseng.openshift.service.broker.model.provision.secure.Provision.class);
-            result = new ServiceSecurer().provisioningForSecureService(instance_id, provision);
-        }else{
-            com.redhat.syseng.openshift.service.broker.model.provision.market.Provision provision = gson.fromJson(inputJsonString, com.redhat.syseng.openshift.service.broker.model.provision.market.Provision.class);
-            result = new SecuredMarket().provisioningForSecuredMarket(instance_id, provision);
-        }
-
-        logInfo("provision.result : " + result);
-        return result;
-
-    }
-
-    @DELETE
-    @Path("/service_instances/{instance_id}")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    //public String deProvisioning(String inputStr)
-    public synchronized String deProvisioning(@PathParam("instance_id") String instance_id) {
-        //logInfo( "!!!!!!!!!!!!!deProvisioning /service_instances/{instance_id}: " + instance_id );
-
-        String responseStr = System.getenv("RESPONSE_STRING");
-        logInfo("deProvisioning instance_id: " + instance_id);
-        logInfo("deProvisioning responseStr 2: " + responseStr);
-        String result = responseStr;
-        return result;
-    }
-
-    @PUT
-    @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public synchronized String binding(String inputStr) {
-        //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
-        //  String result = "test";
-
-        return "{}";
-    }
-
-    @DELETE
-    @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String unBinding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
-        //  String result = "test";
-        String result = "{}";
-        logInfo("!!!!!!!!!!!!!!!!unBinding instance_id: " + instance_id);
-        logInfo("unBinding binding_id: " + binding_id);
-        return result;
-    }
-    
-    
-    
     private Plan[] readPlansForOneService(String serviceId) {
         //call the Application PLan List function
         String ampUrl = ampUrl = "/admin/api/services/" + serviceId + "/application_plans.xml";;
@@ -248,6 +213,5 @@ public class ThreeScalesBroker {
         Plan[] plans = planList.toArray(new Plan[planList.size()]);
         return plans;
     }
-    
 
 }

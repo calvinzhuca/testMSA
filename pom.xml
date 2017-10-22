@@ -12,8 +12,7 @@
     <modules>
         <module>Billing</module>
         <module>Showbinding</module>
-        <module>ThreeScaleSecureApi</module>        
-        <module>ThreeScaleApiMarket</module>        
+        <module>SecureServiceBroker</module>        
     </modules>
  
 </project>
