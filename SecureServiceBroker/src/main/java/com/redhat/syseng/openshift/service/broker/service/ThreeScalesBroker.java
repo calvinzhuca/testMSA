@@ -101,18 +101,19 @@ public class ThreeScalesBroker {
         //Gson gson = new Gson();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         result = gson.toJson(cat);
-        logInfo("Json from gson: " + result);
+        logInfo("secured market catalog: " + result);
         
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String secureServiceCatalog = bufferedReader.lines().collect(Collectors.joining("\n"));
-        
+        logInfo("secure service catalog:\n\n" + secureServiceCatalog);
+    
         int j = result.indexOf("[");
-        result = result.substring(0,j) + secureServiceCatalog + result.substring(j,result.length()-1);
+        result = result.substring(0,j+1) + secureServiceCatalog + result.substring(j+1,result.length());
+        logInfo("secure service catalog:\n\n" + secureServiceCatalog);
         
         
-        logInfo("secureServiceCatalog:\n\n" + secureServiceCatalog);
-
+    
         
 
         return Response.ok(result, MediaType.APPLICATION_JSON).build();
