@@ -1,17 +1,13 @@
 package com.redhat.syseng.openshift.service.broker.service;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.redhat.syseng.openshift.service.broker.model.catalog.ApplicationName;
-import com.redhat.syseng.openshift.service.broker.model.catalog.Catalog;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Create;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Description;
-import com.redhat.syseng.openshift.service.broker.model.catalog.Metadata;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Parameters;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Plan;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Properties;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Schemas;
-import com.redhat.syseng.openshift.service.broker.model.catalog.Service;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_binding;
 import com.redhat.syseng.openshift.service.broker.model.catalog.Service_instance;
 import static com.redhat.syseng.openshift.service.broker.service.broker.util.BrokerUtil.restWsCall;
@@ -33,7 +29,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.http.NameValuePair;
 
 @Path("/v2")
 public class ThreeScalesBroker {
@@ -52,58 +47,9 @@ public class ThreeScalesBroker {
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCatalog() {
-        String result = "";
+        String result = new SecuredMarket().getCatalog();
 
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-
-        String ampUrl = "/admin/api/services.xml";
-        result = restWsCall(ampUrl, postParameters, "GET");
-        logInfo("---------------------getCatalog search service : " + result);
-
-        int i = result.indexOf("<id>");
-        ArrayList<Service> svcList = new ArrayList<Service>();
-        while (i != -1) {
-            Service svc = new Service();
-            String id = result.substring(result.indexOf("<id>", i) + "<id>".length(),
-                    result.indexOf("</id>", i));
-
-            svc.setId(id);
-            String name = result.substring(result.indexOf("<name>", i) + "<name>".length(),
-                    result.indexOf("</name>", i));
-            svc.setDescription(name);
-
-            String systemName = result.substring(result.indexOf("<system_name>", i) + "<system_name>".length(),
-                    result.indexOf("</system_name>", i));
-            svc.setName(systemName);
-
-            svc.setBindable(true);
-
-            svc.setPlans(readPlansForOneService(id));
-
-            Metadata mt = new Metadata();
-            mt.setDisplayName("secured-market-service: " + name);
-            mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
-            mt.setLongDescription("secured service through 3scale-AMP, name is: " + name);
-            svc.setMetadata(mt);
-
-            svcList.add(svc);
-
-            int j = result.indexOf("</service>", i);
-            i = result.indexOf("<id>", j);
-            //i = -1;
-        }
-
-        Service[] svcs = svcList.toArray(new Service[svcList.size()]);
-        Catalog cat = new Catalog();
-        cat.setServices(svcs);
-
-        //Gson gson = new Gson();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        result = gson.toJson(cat);
-        logInfo("secured market catalog: " + result);
-        
-
+        //now read the catalog for secure service, which is static
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String secureServiceCatalog = bufferedReader.lines().collect(Collectors.joining("\n"));
         logInfo("secure service catalog:\n\n" + secureServiceCatalog);
@@ -112,10 +58,6 @@ public class ThreeScalesBroker {
         result = result.substring(0,j+1) + secureServiceCatalog + result.substring(j+1,result.length());
         logInfo("secure service catalog:\n\n" + secureServiceCatalog);
         
-        
-    
-        
-
         return Response.ok(result, MediaType.APPLICATION_JSON).build();
     }
 
@@ -142,6 +84,20 @@ public class ThreeScalesBroker {
         return result;
 
     }
+    
+
+    @PUT
+    @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public synchronized String binding(@PathParam("instance_id") String instance_id, String inputStr) {
+        //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+        
+        
+        String result = new SecuredMarket().binding(inputStr);
+        logInfo("binding.result : " + result);
+        return result;
+    }    
 
     @DELETE
     @Path("/service_instances/{instance_id}")
@@ -158,16 +114,6 @@ public class ThreeScalesBroker {
         return result;
     }
 
-    @PUT
-    @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public synchronized String binding(String inputStr) {
-        //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
-        //  String result = "test";
-
-        return "{}";
-    }
 
     @DELETE
     @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")

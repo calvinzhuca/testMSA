@@ -83,11 +83,8 @@ public class SecuredMarket {
         return result;
     }
 
-    @GET
-    @Path("/catalog")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getCatalog() {
+
+    public String getCatalog() {
         /*
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
@@ -123,7 +120,7 @@ public class SecuredMarket {
             svc.setPlans(readPlansForOneService(id));
 
             Metadata mt = new Metadata();
-            mt.setDisplayName("secured-market-service: " + name);
+            mt.setDisplayName("secured-service-market: " + name);
             mt.setDocumentationUrl("https://access.qa.redhat.com/documentation/en-us/reference_architectures/2017/html/api_management_with_red_hat_3scale_api_management_platform");
             mt.setLongDescription("secured service through 3scale-AMP, name is: " + name);
             svc.setMetadata(mt);
@@ -142,9 +139,9 @@ public class SecuredMarket {
         //Gson gson = new Gson();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         result = gson.toJson(cat);
-        logInfo("Json from gson: " + result);
+        logInfo("secured market catalog: " + result);
 
-        return Response.ok(result, MediaType.APPLICATION_JSON).build();
+        return result;
     }
 
     private Plan[] readPlansForOneService(String serviceId) {
@@ -214,4 +211,68 @@ public class SecuredMarket {
         return plans;
     }
 
+    
+
+    public synchronized String binding(String inputStr) {
+        //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
+        logInfo("binding inputStr: " + inputStr);
+        String guid = inputStr.substring(inputStr.indexOf("app_guid\":\"") + "app_guid\":\"".length(), inputStr.indexOf("\",\"plan_id"));
+        logInfo("binding guid: " + guid);
+        String planId = inputStr.substring(inputStr.indexOf("plan_id\":\"") + "plan_id\":\"".length(), inputStr.indexOf("\",\"service_id"));
+        logInfo("binding planId: " + planId);
+        String serviceId = inputStr.substring(inputStr.indexOf("service_id\":\"") + "service_id\":\"".length(), inputStr.indexOf("\",\"bind_resource"));
+        logInfo("binding serviceId: " + serviceId);
+
+        //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
+        int account_id = 5;
+        String user_key;
+        String result = "{}";
+
+            user_key = searchUserKeyBasedOnGUID(guid, account_id);
+            String endpoint = searchEndPointBasedOnServiceId(serviceId);
+            result = "{\"credentials\":{\"url\":\"" + endpoint + "\",\"user_key\":\"" + user_key + "\"}}";
+            logInfo("binding result: " + result);
+
+
+        return result;
+    }
+
+    private String searchUserKeyBasedOnGUID(String guid, int accountId) {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+
+        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String ampUrl = "/admin/api/applications.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("application is listed : " + result);
+
+        int i = result.indexOf(guid);
+        String user_key = "";
+        if (i > -1) {
+            user_key = result.substring(result.lastIndexOf("<user_key>", i) + "<user_key>".length(), result.lastIndexOf("</user_key>", i));
+            logInfo("---------------------found user_key for this service id : " + user_key);
+
+        } else {
+            logInfo("---------------------didn't found same service id in this application: " + guid);
+        }
+        return user_key;
+
+    }    
+
+    private String searchEndPointBasedOnServiceId(String serviceId) {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+
+        String ampUrl = "/admin/api/services/" + serviceId + "/proxy.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("proxy is read: " + result);
+
+        String endpoint = result.substring(result.indexOf("<endpoint>") + "<endpoint>".length(), result.indexOf("</endpoint>"));
+        logInfo("---------------------found endpoint for this service id : " + endpoint);
+
+        return endpoint;
+
+    }
+    
+    
 }
