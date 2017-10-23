@@ -11,16 +11,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 
-@Path("/v2")
 public class ServiceSecurer {
 
     private Logger logger = Logger.getLogger(getClass().getName());
@@ -136,67 +127,7 @@ public class ServiceSecurer {
 
     }
 
-    @PUT
-    @Path("/create_application/{instance_id}")
-    //@Consumes("application/x-www-form-urlencoded")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String createApplication(@PathParam("instance_id") String instance_id, com.redhat.syseng.openshift.service.broker.model.provision.secure.Provision provision) {
-        String result = "{\"dashboard_url\":\"http://secured.url/test-string\",\"operation\":\"task_10\"}";
 
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-        postParameters.add(new BasicNameValuePair("name", "testApp1"));
-        postParameters.add(new BasicNameValuePair("description", "testApp1"));
-        postParameters.add(new BasicNameValuePair("plan_id", instance_id));
-
-        //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
-        int account_id = 5;
-        String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
-
-        result = restWsCall(ampUrl, postParameters, "POST");
-        logInfo("user is created : " + result);
-        String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
-        logInfo("user_key : " + user_key);
-
-        return result;
-    }
-
-    @DELETE
-    @Path("/service_instances/{instance_id}")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    //public String deProvisioning(String inputStr)
-    public synchronized String deProvisioning(@PathParam("instance_id") String instance_id) {
-        //logInfo( "!!!!!!!!!!!!!deProvisioning /service_instances/{instance_id}: " + instance_id );
-
-        String responseStr = System.getenv("RESPONSE_STRING");
-        logInfo("deProvisioning instance_id: " + instance_id);
-        logInfo("deProvisioning responseStr 2: " + responseStr);
-        //logInfo("!!!!!!!!!!!!!!!binding instance_id: " + instance_id);
-        //logInfo("binding binding_id: " + binding_id);
-        //result = "{/\"credentials/\":{/\"uri/\":/\"mysql://mysqluser:pass@mysqlhost:3306/dbname/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"host/\":/\"mysqlhost/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
-        //result = "{/\"credentials/\":{/\"ttt/\":/\"12345678901111111111111111111111111111111111/\",/\"username/\":/\"mysqluser/\",/\"password/\":/\"pass/\",/\"hhhh/\":/\"222222222/\",/\"port/\":3306,/\"database/\":/\"dbname/\"}}";
-        //result = "{\"dashboard_url\":\"\",\"operation\":\"task_10\"}";
-        //result = "{\"test\":\"111111111111111\",\"test2\":\"task_10\"}";
-        String result = responseStr;
-        return result;
-    }
-
-    @DELETE
-    @Path("/service_instances")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String deProvisioning2(@QueryParam("instance_id") String instance_id) {
-        logInfo("deProvisioning2 /service_instances: " + instance_id);
-        String result = "{}";
-        return result;
-    }
-
-    @PUT
-    @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public synchronized String binding(String inputStr) {
         //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
         //  String result = "test";
@@ -228,17 +159,7 @@ public class ServiceSecurer {
         return result;
     }
 
-    @DELETE
-    @Path("/service_instances/{instance_id}/service_bindings/{binding_id}")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public String unBinding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
-        //  String result = "test";
-        String result = "{}";
-        logInfo("!!!!!!!!!!!!!!!!unBinding instance_id: " + instance_id);
-        logInfo("unBinding binding_id: " + binding_id);
-        return result;
-    }
+
 
     private void createMappingRules(String serviceID) {
         //create mapping rule, first need to get the "hit" metric id.
