@@ -26,7 +26,7 @@ public class ServiceSecurer {
     
 
 //    public synchronized String provisioning2(@PathParam("instance_id") String instance_id, Provision provision) //public String provisioning( String testString) {
-    synchronized String provisioningForSecureService(String instance_id, Provision provision) //public String provisioning( String testString) {
+    String provisioningForSecureService(String instance_id, Provision provision) //public String provisioning( String testString) {
     {
         logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
         logInfo("provision.getService_id() : " + provision.getService_id());
@@ -214,7 +214,7 @@ public class ServiceSecurer {
         if (i > -1) {
             String serviceId = result.substring(result.lastIndexOf("<service><id>", i) + "<service><id>".length(), result.lastIndexOf("</id>", i));
             logInfo("---------------------found same system_name service, id : " + serviceId);
-            String user_key = searchUserKeyBasedOnServiceId(serviceId, account_id);
+            String user_key = BrokerUtil.searchUserKeyBasedOnServiceId(serviceId, account_id);
             String endpoint = BrokerUtil.searchEndPointBasedOnServiceId(serviceId);
 
             String url = endpoint + "/?user_key=" + user_key;
@@ -228,26 +228,6 @@ public class ServiceSecurer {
 
     }
 
-    private String searchUserKeyBasedOnServiceId(String serviceId, int accountId) {
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
 
-        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
-        String ampUrl = "/admin/api/applications.xml";
-        String result = restWsCall(ampUrl, postParameters, "GET");
-        logInfo("application is listed : " + result);
-
-        int i = result.indexOf("<service_id>" + serviceId + "</service_id>");
-        String user_key = "";
-        if (i > -1) {
-            user_key = result.substring(result.indexOf("<user_key>", i) + "<user_key>".length(), result.indexOf("</user_key>", i));
-            logInfo("---------------------found user_key for this service id : " + user_key);
-
-        } else {
-            logInfo("---------------------didn't found same service id in this application: " + serviceId);
-        }
-        return user_key;
-
-    }
 
 }

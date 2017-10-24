@@ -35,7 +35,7 @@ public class SecuredMarket {
         logger.log(Level.INFO, message);
     }
 
-    public synchronized String provisioningForSecuredMarket(@PathParam("instance_id") String instance_id, com.redhat.syseng.openshift.service.broker.model.provision.market.Provision provision) //public String provisioning( String testString) {
+    String provisioningForSecuredMarket(@PathParam("instance_id") String instance_id, com.redhat.syseng.openshift.service.broker.model.provision.market.Provision provision) //public String provisioning( String testString) {
     {
         logInfo("!!!!!!!!!!provisioning /service_instances/{instance_id} : " + instance_id);
         logInfo("provision.getOrganization_guid() : " + provision.getOrganization_guid());
@@ -44,42 +44,40 @@ public class SecuredMarket {
         logInfo("provision.getParameters().getApplicationName() : " + provision.getParameters().getApplicationName());
         logInfo("provision.getParameters().getDescription() : " + provision.getParameters().getDescription());
 
-        String result = "{\"dashboard_url\":\"https://testapi-3scale-apicast-staging.middleware.ocp.cloud.lab.eng.bos.redhat.com:443/?user_key=2491bd25351aeb458fea55381b3d4560\",\"operation\":\"task_10\"}";
-        String url = "";
-
         //looks like I need to have an account ready first, and I don't see a REST api for create account, so I manually create one "brokerGroup", id is "5"
         int account_id = 5;
 
-        //create Application to use the Plan, which will generate a valid user_key
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-        postParameters = new ArrayList();
-        postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplicationName()));
-        //Add GUID in the description, so later the binding can find this application based on guid. 
-        //update on Oct 23, it seems GUID is not unique for each binding...leave it for now, but adding instance_id as well
-        String desc = provision.getParameters().getDescription() + " GUID:" + provision.getOrganization_guid() + " instance_id:" + instance_id;
-        postParameters.add(new BasicNameValuePair("description", desc));
-        postParameters.add(new BasicNameValuePair("plan_id", provision.getPlan_id()));
+        String user_key = BrokerUtil.searchExistingApplicationBaseOnName(provision.getParameters().getApplicationName(), account_id);
+        if (!user_key.equals("")) {
+            //create new Application to use the Plan, which will generate a new user_key
+            ArrayList<NameValuePair> postParameters;
+            postParameters = new ArrayList();
+            postParameters = new ArrayList();
+            postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplicationName()));
+            //Add GUID in the description, so later the binding can find this application based on guid. 
+            //update on Oct 23, it seems GUID is not unique for each binding...leave it for now, but adding instance_id as well
+            String desc = provision.getParameters().getDescription() + " GUID:" + provision.getOrganization_guid() + " instance_id:" + instance_id;
+            postParameters.add(new BasicNameValuePair("description", desc));
+            postParameters.add(new BasicNameValuePair("plan_id", provision.getPlan_id()));
 
-        String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
+            String ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
 
-        //after this step, in the API Integration page, the user_key will automatically replaced with the new one created below
-        result = BrokerUtil.restWsCall(ampUrl, postParameters, "POST");
-        logInfo("---------------------application is created : " + result);
+            //after this step, in the API Integration page, the user_key will automatically replaced with the new one created below
+            String result = BrokerUtil.restWsCall(ampUrl, postParameters, "POST");
+            logInfo("---------------------application is created : " + result);
 
-        String user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
-        logInfo("user_key : " + user_key);
+            user_key = result.substring(result.indexOf("<user_key>") + "<user_key>".length(), result.indexOf("</user_key>"));
+            logInfo("new created user_key : " + user_key);
+        }
+
         String endpoint = BrokerUtil.searchEndPointBasedOnServiceId(provision.getService_id());
-        url = endpoint + "/?user_key=" + user_key;
-        result = "{\"dashboard_url\":" + url + ",\"operation\":\"task_10\"}";
-
-        result = "{\"dashboard_url\":\"" + url + "\",\"operation\":\"task_10\"}";
-        logInfo("provisioning result" + result);
-        return result;
+        String url = endpoint + "/?user_key=" + user_key;
+        String jsonResult = "{\"dashboard_url\":\"" + url + "\",\"operation\":\"task_10\"}";
+        logInfo("provisioning result" + jsonResult);
+        return jsonResult;
     }
 
-
-    public String getCatalog() {
+    String getCatalog() {
         /*
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String catalog = bufferedReader.lines().collect(Collectors.joining("\n"));
@@ -206,9 +204,7 @@ public class SecuredMarket {
         return plans;
     }
 
-    
-
-    public synchronized String binding(String inputStr) {
+    String binding(String inputStr) {
         //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
         logInfo("binding inputStr: " + inputStr);
         String guid = inputStr.substring(inputStr.indexOf("app_guid\":\"") + "app_guid\":\"".length(), inputStr.indexOf("\",\"plan_id"));
@@ -223,11 +219,10 @@ public class SecuredMarket {
         String user_key;
         String result = "{}";
 
-            user_key = searchUserKeyBasedOnGUID(guid, account_id);
-            String endpoint = searchEndPointBasedOnServiceId(serviceId);
-            result = "{\"credentials\":{\"url\":\"" + endpoint + "\",\"user_key\":\"" + user_key + "\"}}";
-            logInfo("binding result: " + result);
-
+        user_key = searchUserKeyBasedOnGUID(guid, account_id);
+        String endpoint = BrokerUtil.searchEndPointBasedOnServiceId(serviceId);
+        result = "{\"credentials\":{\"url\":\"" + endpoint + "\",\"user_key\":\"" + user_key + "\"}}";
+        logInfo("binding result: " + result);
 
         return result;
     }
@@ -252,22 +247,6 @@ public class SecuredMarket {
         }
         return user_key;
 
-    }    
-
-    private String searchEndPointBasedOnServiceId(String serviceId) {
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-
-        String ampUrl = "/admin/api/services/" + serviceId + "/proxy.xml";
-        String result = restWsCall(ampUrl, postParameters, "GET");
-        logInfo("proxy is read: " + result);
-
-        String endpoint = result.substring(result.indexOf("<endpoint>") + "<endpoint>".length(), result.indexOf("</endpoint>"));
-        logInfo("---------------------found endpoint for this service id : " + endpoint);
-
-        return endpoint;
-
     }
-    
-    
+
 }

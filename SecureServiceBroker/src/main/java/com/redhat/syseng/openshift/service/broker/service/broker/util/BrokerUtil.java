@@ -162,14 +162,13 @@ public class BrokerUtil {
         return responseString;
 
     }
-    
-    
-        public static String searchEndPointBasedOnServiceId(String serviceId) {
+
+    public static String searchEndPointBasedOnServiceId(String serviceId) {
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
 
         String ampUrl = "/admin/api/services/" + serviceId + "/proxy.xml";
-        String result = BrokerUtil.restWsCall(ampUrl, postParameters, "GET");
+        String result = restWsCall(ampUrl, postParameters, "GET");
         logInfo("proxy is read: " + result);
 
         String endpoint = result.substring(result.indexOf("<endpoint>") + "<endpoint>".length(), result.indexOf("</endpoint>"));
@@ -179,4 +178,42 @@ public class BrokerUtil {
 
     }
 
+    public static String searchUserKeyBasedOnServiceId(String serviceId, int accountId) {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+
+        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String ampUrl = "/admin/api/applications.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("application is listed : " + result);
+
+        int i = result.indexOf("<service_id>" + serviceId + "</service_id>");
+        String user_key = "";
+        if (i > -1) {
+            user_key = result.substring(result.indexOf("<user_key>", i) + "<user_key>".length(), result.indexOf("</user_key>", i));
+            logInfo("---------------------found user_key for this service id : " + user_key);
+
+        } else {
+            logInfo("---------------------didn't found same service id in this application: " + serviceId);
+        }
+        return user_key;
+
+    }
+
+    public static String searchExistingApplicationBaseOnName(String applicationName, int accountId) {
+        String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String result = restWsCall(ampUrl, null, "GET");
+        logInfo("application is listed : " + result);
+        int i =  result.indexOf("<name>" + applicationName + "</name>");
+        String user_key = "";
+        
+        if (i > -1){
+            user_key = result.substring(result.lastIndexOf("<user_key>", i) + "<user_key>".length(), result.lastIndexOf("</user_key>", i));
+            logInfo("---------------------found existing application, user_key is : " + user_key);
+            
+        }
+         
+         return user_key;
+    }
+    
 }
