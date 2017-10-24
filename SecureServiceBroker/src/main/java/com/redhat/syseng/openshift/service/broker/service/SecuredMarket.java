@@ -48,7 +48,9 @@ public class SecuredMarket {
         int account_id = 5;
 
         String user_key = BrokerUtil.searchExistingApplicationBaseOnName(provision.getParameters().getApplicationName(), account_id);
-        if (!user_key.equals("")) {
+                logInfo("user_key after searchExistingApplicationBaseOnName: " + user_key);
+
+        if (user_key.equals("")) {
             //create new Application to use the Plan, which will generate a new user_key
             ArrayList<NameValuePair> postParameters;
             postParameters = new ArrayList();
