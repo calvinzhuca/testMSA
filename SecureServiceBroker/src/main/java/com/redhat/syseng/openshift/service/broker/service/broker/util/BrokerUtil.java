@@ -201,7 +201,7 @@ public class BrokerUtil {
     }
 
     public static String searchExistingApplicationBaseOnName(String applicationName, int accountId) {
-        String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml";
         String result = restWsCall(ampUrl, null, "GET");
         logInfo("application is listed : " + result);
         int i =  result.indexOf("<name>" + applicationName + "</name>");
