@@ -56,7 +56,8 @@ public class SecuredMarket {
         postParameters = new ArrayList();
         postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplicationName()));
         //Add GUID in the description, so later the binding can find this application based on guid. 
-        String desc = provision.getParameters().getDescription() + " GUID:" + provision.getOrganization_guid();
+        //update on Oct 23, it seems GUID is not unique for each binding...leave it for now, but adding instance_id as well
+        String desc = provision.getParameters().getDescription() + " GUID:" + provision.getOrganization_guid() + " instance_id:" + instance_id;
         postParameters.add(new BasicNameValuePair("description", desc));
         postParameters.add(new BasicNameValuePair("plan_id", provision.getPlan_id()));
 

@@ -91,8 +91,10 @@ public class ThreeScalesBroker {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public synchronized String binding(@PathParam("instance_id") String instance_id, String inputStr) {
-        //public String binding(@PathParam("instance_id") String instance_id, @PathParam("binding_id") String binding_id) {
-        
+//This is a sample of binding inputStr
+// {"app_guid":"23d69a55-a40f-11e7-a9bf-beeffeed005d","plan_id":"102","service_id":"42","bind_resource":{"app_guid":"23d69a55-a40f-11e7-a9bf-beeffeed005d"}}
+//don't see a way for me to differentiate which binding this request is calling for
+//so just forward to SecuredMarket().binding for now. 
         
         String result = new SecuredMarket().binding(inputStr);
         logInfo("binding.result : " + result);
