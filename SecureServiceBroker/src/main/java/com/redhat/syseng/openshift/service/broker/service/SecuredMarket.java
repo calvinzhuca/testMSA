@@ -48,7 +48,6 @@ public class SecuredMarket {
         int account_id = 5;
 
         String user_key = BrokerUtil.searchExistingApplicationBaseOnName(provision.getParameters().getApplicationName(), account_id);
-                logInfo("user_key after searchExistingApplicationBaseOnName: " + user_key);
 
         if (user_key.equals("")) {
             //create new Application to use the Plan, which will generate a new user_key
@@ -221,7 +220,7 @@ public class SecuredMarket {
         String user_key;
         String result = "{}";
 
-        user_key = searchUserKeyBasedOnGUID(guid, account_id);
+        user_key = BrokerUtil.searchUserKeyBasedOnGUID(guid, account_id);
         String endpoint = BrokerUtil.searchEndPointBasedOnServiceId(serviceId);
         result = "{\"credentials\":{\"url\":\"" + endpoint + "\",\"user_key\":\"" + user_key + "\"}}";
         logInfo("binding result: " + result);
@@ -229,26 +228,5 @@ public class SecuredMarket {
         return result;
     }
 
-    private String searchUserKeyBasedOnGUID(String guid, int accountId) {
-        ArrayList<NameValuePair> postParameters;
-        postParameters = new ArrayList();
-
-        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
-        String ampUrl = "/admin/api/applications.xml";
-        String result = restWsCall(ampUrl, postParameters, "GET");
-        logInfo("application is listed : " + result);
-
-        int i = result.indexOf(guid);
-        String user_key = "";
-        if (i > -1) {
-            user_key = result.substring(result.lastIndexOf("<user_key>", i) + "<user_key>".length(), result.lastIndexOf("</user_key>", i));
-            logInfo("---------------------found user_key for this service id : " + user_key);
-
-        } else {
-            logInfo("---------------------didn't found same service id in this application: " + guid);
-        }
-        return user_key;
-
-    }
 
 }

@@ -178,7 +178,7 @@ public class BrokerUtil {
 
     }
 
-    public static String searchUserKeyBasedOnServiceId(String serviceId, int accountId) {
+    public static String searchAnyUserKeyBasedOnServiceId(String serviceId, int accountId) {
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
 
@@ -215,5 +215,28 @@ public class BrokerUtil {
          
          return user_key;
     }
+    
+        public static String searchUserKeyBasedOnGUID(String guid, int accountId) {
+        ArrayList<NameValuePair> postParameters;
+        postParameters = new ArrayList();
+
+        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String ampUrl = "/admin/api/applications.xml";
+        String result = restWsCall(ampUrl, postParameters, "GET");
+        logInfo("application is listed : " + result);
+
+        int i = result.indexOf(guid);
+        String user_key = "";
+        if (i > -1) {
+            user_key = result.substring(result.lastIndexOf("<user_key>", i) + "<user_key>".length(), result.lastIndexOf("</user_key>", i));
+            logInfo("---------------------found user_key for this service id : " + user_key);
+
+        } else {
+            logInfo("---------------------didn't found same service id in this application: " + guid);
+        }
+        return user_key;
+
+    }
+
     
 }

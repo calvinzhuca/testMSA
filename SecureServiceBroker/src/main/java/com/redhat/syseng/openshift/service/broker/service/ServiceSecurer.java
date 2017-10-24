@@ -214,7 +214,7 @@ public class ServiceSecurer {
         if (i > -1) {
             String serviceId = result.substring(result.lastIndexOf("<service><id>", i) + "<service><id>".length(), result.lastIndexOf("</id>", i));
             logInfo("---------------------found same system_name service, id : " + serviceId);
-            String user_key = BrokerUtil.searchUserKeyBasedOnServiceId(serviceId, account_id);
+            String user_key = BrokerUtil.searchAnyUserKeyBasedOnServiceId(serviceId, account_id);
             String endpoint = BrokerUtil.searchEndPointBasedOnServiceId(serviceId);
 
             String url = endpoint + "/?user_key=" + user_key;
