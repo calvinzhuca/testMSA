@@ -216,25 +216,29 @@ public class BrokerUtil {
          return user_key;
     }
     
-        public static String searchUserKeyBasedOnGUID(String guid, int accountId) {
+        public static String searchUserKeyBasedOnServiceAndPlanId(String serviceId, String planId, int accountId) {
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
 
-        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
-        String ampUrl = "/admin/api/applications.xml";
+        String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
         String result = restWsCall(ampUrl, postParameters, "GET");
         logInfo("application is listed : " + result);
 
-        int i = result.indexOf(guid);
-        String user_key = "";
-        if (i > -1) {
-            user_key = result.substring(result.lastIndexOf("<user_key>", i) + "<user_key>".length(), result.lastIndexOf("</user_key>", i));
-            logInfo("---------------------found user_key for this service id : " + user_key);
+        String userKey = "";
+        int i = result.indexOf("<service_id>" + serviceId +"</service_id>");
+        if (i > -1){
+            int j = result.indexOf("<id>" + planId + "</id>", i);
+            if (j > -1){
+                userKey = result.substring(result.indexOf("<user_key>", i) + "<user_key>".length(), result.indexOf("</user_key>", i));
+            }
+        }
+        if (!userKey.equals("")) {
+            logInfo("---------------------found user_key for this service id : " + userKey);
 
         } else {
-            logInfo("---------------------didn't found same service id in this application: " + guid);
+            logInfo("---------------------didn't found user_key for this serviceId: " + serviceId + " and planId: " + planId);
         }
-        return user_key;
+        return userKey;
 
     }
 

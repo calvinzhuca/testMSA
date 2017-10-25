@@ -49,30 +49,30 @@ public class ServiceSecurer {
             postParameters = new ArrayList();
             postParameters.add(new BasicNameValuePair("name", provision.getParameters().getService_name()));
             postParameters.add(new BasicNameValuePair("system_name", provision.getParameters().getService_name()));
-            postParameters.add(new BasicNameValuePair("description", instance_id));
+            postParameters.add(new BasicNameValuePair("description", "instance_id:" + instance_id));
 
             String ampUrl = "/admin/api/services.xml";
             result = restWsCall(ampUrl, postParameters, "POST");
             logInfo("---------------------services is created : " + result);
-            String serviceID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
-            logInfo("serviceID : " + serviceID);
+            String serviceId = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+            logInfo("serviceId : " + serviceId);
 
             //create applicaiton plan
-            ampUrl = "/admin/api/services/" + serviceID + "/application_plans.xml";
+            ampUrl = "/admin/api/services/" + serviceId + "/application_plans.xml";
             postParameters = new ArrayList();
             postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplication_plan()));
             postParameters.add(new BasicNameValuePair("system_name", provision.getParameters().getApplication_plan()));
             result = restWsCall(ampUrl, postParameters, "POST");
             logInfo("---------------------application plan is created: " + result);
-            String planID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
-            logInfo("planID : " + planID);
+            String planId = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+            logInfo("planId : " + planId);
 
-            createMappingRules(serviceID);
+            createMappingRules(serviceId);
 
             //API integration
-            ampUrl = "/admin/api/services/" + serviceID + "/proxy.xml";
+            ampUrl = "/admin/api/services/" + serviceId + "/proxy.xml";
             postParameters = new ArrayList();
-            postParameters.add(new BasicNameValuePair("service_id", serviceID));
+            postParameters.add(new BasicNameValuePair("service_id", serviceId));
             postParameters.add(new BasicNameValuePair("api_backend", provision.getParameters().getInput_url()));
             result = restWsCall(ampUrl, postParameters, "PATCH");
             logInfo("---------------------integration result : " + result);
@@ -81,7 +81,7 @@ public class ServiceSecurer {
             postParameters = new ArrayList();
             postParameters.add(new BasicNameValuePair("name", provision.getParameters().getApplication_name()));
             postParameters.add(new BasicNameValuePair("description", provision.getParameters().getApplication_name()));
-            postParameters.add(new BasicNameValuePair("plan_id", planID));
+            postParameters.add(new BasicNameValuePair("plan_id", planId));
 
             ampUrl = "/admin/api/accounts/" + account_id + "/applications.xml";
 
@@ -116,11 +116,11 @@ public class ServiceSecurer {
         String ampUrl = "/admin/api/accounts/" + account_id + "/users.xml";
         String result = restWsCall(ampUrl, postParameters, "POST");
         logInfo("user is created : " + result);
-        String tmpID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
-        logInfo("user ID : " + tmpID);
+        String userId = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+        logInfo("user Id : " + userId);
 
         //now activate the new user, the default state is "pending"
-        ampUrl = "/admin/api/accounts/" + account_id + "/users/" + tmpID + "/activate.xml";
+        ampUrl = "/admin/api/accounts/" + account_id + "/users/" + userId + "/activate.xml";
         postParameters = new ArrayList();
         result = restWsCall(ampUrl, postParameters, "PUT");
         logInfo("user is activated : " + result);
@@ -161,22 +161,22 @@ public class ServiceSecurer {
 
 
 
-    private void createMappingRules(String serviceID) {
+    private void createMappingRules(String serviceId) {
         //create mapping rule, first need to get the "hit" metric id.
-        String ampUrl = "/admin/api/services/" + serviceID + "/metrics.xml";
+        String ampUrl = "/admin/api/services/" + serviceId + "/metrics.xml";
         String result = restWsCall(ampUrl, null, "GET");
         logInfo("get metric result : " + result);
-        String metricID = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
-        logInfo("metricID : " + metricID);
+        String metricId = result.substring(result.indexOf("<id>") + "<id>".length(), result.indexOf("</id>"));
+        logInfo("metricId : " + metricId);
 
-        ampUrl = "/admin/api/services/" + serviceID + "/proxy/mapping_rules.xml";
+        ampUrl = "/admin/api/services/" + serviceId + "/proxy/mapping_rules.xml";
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
 
         //now create mapping rule for POST under metric "hit"
         postParameters.add(new BasicNameValuePair("pattern", "/"));
         postParameters.add(new BasicNameValuePair("delta", "1"));
-        postParameters.add(new BasicNameValuePair("metric_id", metricID));
+        postParameters.add(new BasicNameValuePair("metric_id", metricId));
         postParameters.add(3, new BasicNameValuePair("http_method", "POST"));
         result = restWsCall(ampUrl, postParameters, "POST");
         logInfo("creating mapping result : " + result);
