@@ -182,7 +182,7 @@ public class BrokerUtil {
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
 
-        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        //String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml";
         String ampUrl = "/admin/api/applications.xml";
         String result = restWsCall(ampUrl, postParameters, "GET");
         logInfo("application is listed : " + result);
@@ -220,7 +220,7 @@ public class BrokerUtil {
         ArrayList<NameValuePair> postParameters;
         postParameters = new ArrayList();
 
-        String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml ";
+        String ampUrl = "/admin/api/accounts/" + accountId + "/applications.xml";
         String result = restWsCall(ampUrl, postParameters, "GET");
         logInfo("application is listed : " + result);
 
