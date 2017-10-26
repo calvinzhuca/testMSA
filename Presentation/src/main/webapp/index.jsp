@@ -63,5 +63,21 @@
 			<%@include file="products.jsp"%>
 		</c:otherwise>
 	</c:choose>
+  <%
+    String billingServiceUrl = System.getenv("BILLING_SERVICE_URL");
+    String userKey = System.getenv("USER_KEY");
+    if (billingServiceUrl == null || ("".equals(billingServiceUrl))) {
+  %>
+      <h2>Billing service URL is not found, won't be able to checkout!</h2>
+  <%
+    } else {
+  %>
+      <h2>Billing Service URL: </h2><%= billingServiceUrl %>
+      <h2>User Key: </h2><%= userKey %>
+
+  <%
+    }
+  %>
+    
 </body>
 </html>
