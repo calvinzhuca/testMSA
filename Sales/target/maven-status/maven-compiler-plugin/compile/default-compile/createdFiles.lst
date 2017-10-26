@@ -1,8 +1,0 @@
-com/redhat/refarch/microservices/sales/service/SalesService.class
-com/redhat/refarch/microservices/sales/model/OrderItem.class
-com/redhat/refarch/microservices/sales/service/SalesService$PATCH.class
-com/redhat/refarch/microservices/sales/model/Error.class
-com/redhat/refarch/microservices/utils/Utils.class
-com/redhat/refarch/microservices/sales/model/Order$Status.class
-com/redhat/refarch/microservices/sales/model/Customer.class
-com/redhat/refarch/microservices/sales/model/Order.class
