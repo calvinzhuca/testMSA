@@ -12,7 +12,10 @@
     <modules>
         <module>Billing</module>
         <module>Showbinding</module>
-        <module>SecureServiceBroker</module>        
+        <module>SecureServiceBroker</module>     
+        <module>Presentation</module>
+        <module>Product</module>
+        <module>Sales</module>
     </modules>
  
 </project>
