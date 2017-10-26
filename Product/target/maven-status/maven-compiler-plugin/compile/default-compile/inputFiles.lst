@@ -1,0 +1,6 @@
+/home/czhu/works/git/testMSA/Product/src/main/java/com/redhat/refarch/microservices/product/service/ProductService.java
+/home/czhu/works/git/testMSA/Product/src/main/java/com/redhat/refarch/microservices/utils/Utils.java
+/home/czhu/works/git/testMSA/Product/src/main/java/com/redhat/refarch/microservices/product/model/Inventory.java
+/home/czhu/works/git/testMSA/Product/src/main/java/com/redhat/refarch/microservices/product/model/Keyword.java
+/home/czhu/works/git/testMSA/Product/src/main/java/com/redhat/refarch/microservices/product/model/Product.java
+/home/czhu/works/git/testMSA/Product/src/main/java/com/redhat/refarch/microservices/product/model/Error.java

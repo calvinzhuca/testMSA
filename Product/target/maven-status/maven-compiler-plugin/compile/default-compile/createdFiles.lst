@@ -1,0 +1,7 @@
+com/redhat/refarch/microservices/product/service/ProductService.class
+com/redhat/refarch/microservices/product/model/Product.class
+com/redhat/refarch/microservices/product/model/Error.class
+com/redhat/refarch/microservices/utils/Utils.class
+com/redhat/refarch/microservices/product/model/Inventory.class
+com/redhat/refarch/microservices/product/model/Keyword.class
+com/redhat/refarch/microservices/product/service/ProductService$PATCH.class
