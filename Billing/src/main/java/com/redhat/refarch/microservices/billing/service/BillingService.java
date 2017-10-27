@@ -59,28 +59,6 @@ public class BillingService {
         getExecutorService().execute(runnable);
     }
 
-    @POST
-    @Path("/process")
-    @Consumes({"*/*"})
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response process(final Transaction transaction, final @Suspended AsyncResponse asyncResponse) {
-
-        final long sleep = 2000;
-        logInfo("Will simulate credit card processing for " + sleep + " milliseconds");
-        try {
-            Thread.sleep(sleep);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(BillingService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        Result result = processSync(transaction);
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String jsonStr = gson.toJson(result);
-        logInfo("process result: " + jsonStr);
-
-        return Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-
-    }
-
     private Executor getExecutorService() {
         if (executorService == null) {
             try {
@@ -149,5 +127,29 @@ public class BillingService {
 
         return Response.ok(name, MediaType.APPLICATION_JSON).build();
     }
+    
+
+    @POST
+    @Path("/process")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response process(final Transaction transaction) {
+
+        final long sleep = 2000;
+        logInfo("Will simulate credit card processing for " + sleep + " milliseconds");
+        try {
+            Thread.sleep(sleep);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BillingService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Result result = processSync(transaction);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonStr = gson.toJson(result);
+        logInfo("process result: " + jsonStr);
+
+        return Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
+
+    }
+    
 
 }
