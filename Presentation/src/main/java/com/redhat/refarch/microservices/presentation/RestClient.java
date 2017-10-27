@@ -61,6 +61,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 
 public class RestClient {
 
@@ -391,15 +392,14 @@ public class RestClient {
 
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/billing/process");
-        ArrayList<NameValuePair> postParameters = new ArrayList();
         Result result = new Result();
         try {
             HttpPost post = new HttpPost(uriBuilder.build());
 
             Transaction transaction = Utils.getTransaction(request);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
             String jsonStr = gson.toJson(transaction);
+            logInfo(" transaction in Json string: " + jsonStr);
             StringEntity requestEntity = new StringEntity(
                     jsonStr,
                     ContentType.APPLICATION_JSON);
@@ -414,11 +414,11 @@ public class RestClient {
                 logInfo("return from billing, entity: " + response.getEntity());
                 logInfo("return from billing, entity2: " + response.getEntity().toString());
                 logInfo("return from billing, getStatusLine: " + response.getStatusLine());
-                result = gson.fromJson(response.getEntity().toString(), Result.class);
+                String responseString = EntityUtils.toString(response.getEntity());
+                logInfo("return from billing, responseString: " + responseString);
+                result = gson.fromJson(responseString, Result.class);
 
             }
-
-            response.getEntity();
 
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
