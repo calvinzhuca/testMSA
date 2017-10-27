@@ -62,7 +62,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingApp",
+                      "default": "billingSilverApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -97,7 +97,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingApp",
+                      "default": "billingSilverApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -134,7 +134,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingApp",
+                      "default": "billingSilverApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -179,7 +179,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingApp",
+                      "default": "billingGoldenApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -214,7 +214,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingApp",
+                      "default": "billingGoldenApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -251,7 +251,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingApp",
+                      "default": "billingGoldenApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
