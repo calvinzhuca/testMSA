@@ -391,10 +391,15 @@ public class RestClient {
     private static Result processTransaction(HttpServletRequest request) throws HttpErrorException {
 
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-        URIBuilder uriBuilder = getUriBuilder("/billing/process");
+        //URIBuilder uriBuilder = getUriBuilder("/billing/process");
         Result result = new Result();
         try {
-            HttpPost post = new HttpPost(uriBuilder.build());
+            String billingServiceUrl = System.getenv("BILLING_SERVICE_URL");
+            String userKey = System.getenv("USER_KEY");
+            logInfo("billingServiceUrl: " + billingServiceUrl);
+            logInfo("userKey: " + userKey);
+            String uri = billingServiceUrl + "/billing/process?user_key=" + userKey;
+            HttpPost post = new HttpPost(uri);
 
             Transaction transaction = Utils.getTransaction(request);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -421,8 +426,6 @@ public class RestClient {
             }
 
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (URISyntaxException ex) {
             Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -451,7 +454,12 @@ public class RestClient {
     private static void refundTransaction(long transactionNumber) throws HttpErrorException {
 
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
-        URIBuilder uriBuilder = getUriBuilder("/billing/refund" + transactionNumber);
+        //URIBuilder uriBuilder = getUriBuilder("/billing/refund" + transactionNumber);
+        String billingServiceUrl = System.getenv("BILLING_SERVICE_URL");
+        String userKey = System.getenv("USER_KEY");
+        logInfo("billingServiceUrl: " + billingServiceUrl);
+        logInfo("userKey: " + userKey);
+        String uri = billingServiceUrl + "/billing/refund" + transactionNumber + "?user_key=" + userKey;
         ArrayList<NameValuePair> postParameters = new ArrayList();
         /*
             postParameters.add(new BasicNameValuePair("name", provision.getParameters().getService_name()));
@@ -459,7 +467,7 @@ public class RestClient {
             postParameters.add(new BasicNameValuePair("description", "instance_id:" + instance_id));
          */
         try {
-            HttpPost post = new HttpPost(uriBuilder.build());
+            HttpPost post = new HttpPost(uri);
             post.setEntity(new UrlEncodedFormEntity(postParameters, "UTF-8"));
             HttpResponse response = client.execute(post);
             logInfo("Transaction refund response code: " + response.getStatusLine());
@@ -468,14 +476,13 @@ public class RestClient {
             }
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
+    /*
     private static URIBuilder getUriBuilder(Object... path) {
         String billingServiceUrl = System.getenv("BILLING_SERVICE_URL");
         String userKey = System.getenv("USER_KEY");
@@ -496,7 +503,7 @@ public class RestClient {
         uriBuilder.setPath(stringWriter.toString());
         return uriBuilder;
     }
-
+     */
     private static void reduceInventory(List<OrderItem> orderItems) throws HttpErrorException {
         WebTarget webTarget = getWebTarget(Service.Product, "reduce");
         List<Inventory> inventoryList = new ArrayList<>();

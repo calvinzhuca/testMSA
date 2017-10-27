@@ -171,7 +171,7 @@ public class BrokerUtil {
         String result = restWsCall(ampUrl, postParameters, "GET");
         logInfo("proxy is read: " + result);
 
-        String endpoint = result.substring(result.indexOf("<endpoint>") + "<endpoint>".length(), result.indexOf("</endpoint>"));
+        String endpoint = result.substring(result.indexOf("<sandbox_endpoint>") + "<sandbox_endpoint>".length(), result.indexOf("</sandbox_endpoint>"));
         logInfo("---------------------found endpoint for this service id : " + endpoint);
 
         return endpoint;
