@@ -127,7 +127,6 @@ public class BillingService {
 
         return Response.ok(name, MediaType.APPLICATION_JSON).build();
     }
-    
 
     @POST
     @Path("/process")
@@ -135,7 +134,10 @@ public class BillingService {
     @Produces({MediaType.APPLICATION_JSON})
     public Response process(final Transaction transaction) {
 
-        final long sleep = 2000;
+        String transcationDelay = System.getenv("TRANSCATION_DELAY");
+        logInfo("transcationDelay: " + transcationDelay);
+
+        long sleep = new Long(transcationDelay);
         logInfo("Will simulate credit card processing for " + sleep + " milliseconds");
         try {
             Thread.sleep(sleep);
@@ -150,6 +152,5 @@ public class BillingService {
         return Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
 
     }
-    
 
 }
