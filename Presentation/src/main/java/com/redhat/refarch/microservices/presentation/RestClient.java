@@ -392,7 +392,7 @@ public class RestClient {
         HttpClient client = createHttpClient_AcceptsUntrustedCerts();
         URIBuilder uriBuilder = getUriBuilder("/billing/process");
         ArrayList<NameValuePair> postParameters = new ArrayList();
-
+        Result result = new Result();
         try {
             HttpPost post = new HttpPost(uriBuilder.build());
 
@@ -406,11 +406,20 @@ public class RestClient {
 
             post.setEntity(requestEntity);
             HttpResponse response = client.execute(post);
-            
+
             logInfo("Got transaction result: " + response);
             if ((response.getStatusLine().getStatusCode() >= HttpStatus.SC_BAD_REQUEST)) {
                 logInfo("Failed to process transaction: " + response.getStatusLine().getReasonPhrase());
+            } else {
+                logInfo("return from billing, entity: " + response.getEntity());
+                logInfo("return from billing, entity2: " + response.getEntity().toString());
+                logInfo("return from billing, getStatusLine: " + response.getStatusLine());
+                result = gson.fromJson(response.getEntity().toString(), Result.class);
+
             }
+
+            response.getEntity();
+
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (URISyntaxException ex) {
@@ -419,7 +428,7 @@ public class RestClient {
             Logger.getLogger(RestClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return null;
+        return result;
 
         /*
         WebTarget webTarget = getWebTarget(Service.Billing, "process");
