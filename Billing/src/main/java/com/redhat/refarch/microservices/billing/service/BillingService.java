@@ -1,5 +1,7 @@
 package com.redhat.refarch.microservices.billing.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.Executor;
@@ -38,10 +40,10 @@ public class BillingService {
     private static final Random random = new Random();
 
     @POST
-    @Path("/process")
+    @Path("/process2")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void process(final Transaction transaction, final @Suspended AsyncResponse asyncResponse) {
+    public void process2(final Transaction transaction, final @Suspended AsyncResponse asyncResponse) {
 
         Runnable runnable = () -> {
             try {
@@ -55,6 +57,28 @@ public class BillingService {
             }
         };
         getExecutorService().execute(runnable);
+    }
+
+    @POST
+    @Path("/process")
+    @Consumes({"*/*"})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response process(final Transaction transaction, final @Suspended AsyncResponse asyncResponse) {
+
+        final long sleep = 2000;
+        logInfo("Will simulate credit card processing for " + sleep + " milliseconds");
+        try {
+            Thread.sleep(sleep);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BillingService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Result result = processSync(transaction);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonStr = gson.toJson(result);
+        logInfo("process result: " + jsonStr);
+
+        return Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
+
     }
 
     private Executor getExecutorService() {
