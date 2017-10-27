@@ -134,10 +134,8 @@ public class BillingService {
     @Produces({MediaType.APPLICATION_JSON})
     public Response process(final Transaction transaction) {
 
-        String transcationDelay = System.getenv("TRANSCATION_DELAY");
-        logInfo("transcationDelay: " + transcationDelay);
+        long sleep = new Long(System.getenv("TRANSCATION_IN_MILLISECONDS"));
 
-        long sleep = new Long(transcationDelay);
         logInfo("Will simulate credit card processing for " + sleep + " milliseconds");
         try {
             Thread.sleep(sleep);

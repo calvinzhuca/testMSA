@@ -47,16 +47,23 @@ public class ThreeScalesBroker {
     @Consumes({"*/*"})
     @Produces({MediaType.APPLICATION_JSON})
     public Response getCatalog() {
-        String result = new SecuredMarket().getCatalog();
-
-        //now read the catalog for secure service, which is static
+        //read the catalog for secure service, which is static
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/catalog.json")));
         String secureServiceCatalog = bufferedReader.lines().collect(Collectors.joining("\n"));
         logInfo("secure service catalog:\n\n" + secureServiceCatalog);
+
+        String loadSecuredMarket = System.getenv("LOAD_SECURED_SERVICE_MARKET");
+        String result = "";
+        if (loadSecuredMarket != null && ("true".equals(loadSecuredMarket))){
+            String securedMarketCatalog = new SecuredMarket().getCatalog();
+            int j = securedMarketCatalog.indexOf("[");
+            result = securedMarketCatalog.substring(0,j+1) + secureServiceCatalog + "," + securedMarketCatalog.substring(j+1,securedMarketCatalog.length());
+            logInfo("after combine catalog:\n\n" + result);
+        }else{
+            result = " { \"services\": [ " + secureServiceCatalog + "] }";
+        }
+
     
-        int j = result.indexOf("[");
-        result = result.substring(0,j+1) + secureServiceCatalog + result.substring(j+1,result.length());
-        logInfo("secure service catalog:\n\n" + secureServiceCatalog);
         
         return Response.ok(result, MediaType.APPLICATION_JSON).build();
     }
