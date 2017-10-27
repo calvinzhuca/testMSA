@@ -2,7 +2,9 @@
       "name": "secure-service-3scale",
       "id": "serviceUUID",
       "description": "secure service 3scales broker implementation",
-      "requires": ["route_forwarding"],
+      "requires": [
+        "route_forwarding"
+      ],
       "bindable": true,
       "metadata": {
         "displayName": "secure-service-3scale",
@@ -33,9 +35,9 @@
       },
       "plans": [
         {
-          "id": "gold-plan-id",
-          "name": "test-plan",
-          "description": "3scale plan description ...",
+          "id": "silver-plan-id",
+          "name": "silver-plan",
+          "description": "silver plan description details...",
           "free": true,
           "schemas": {
             "service_instance": {
@@ -45,12 +47,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "testapi",
+                      "default": "billing",
                       "title": "3scale service display name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "plan1",
+                      "default": "silver-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -60,7 +62,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "testApp1",
+                      "default": "billingApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -80,12 +82,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "testapi",
+                      "default": "billing",
                       "title": "3scale service name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "plan1",
+                      "default": "silver-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -95,7 +97,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "testApp1",
+                      "default": "billingApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -117,12 +119,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "testapi",
+                      "default": "billing",
                       "title": "3scale service name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "plan1",
+                      "default": "silver-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -132,7 +134,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "testApp1",
+                      "default": "billingApp",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -145,11 +147,128 @@
                   ],
                   "type": "object"
                 }
-              }              
-              
+              }
+            }
+          }
+        },
+        {
+          "id": "golden-plan-id",
+          "name": "golden-plan",
+          "description": "golden plan description details...",
+          "free": true,
+          "schemas": {
+            "service_instance": {
+              "create": {
+                "parameters": {
+                  "$schema": "http://json-schema.org/draft-04/schema",
+                  "additionalProperties": false,
+                  "properties": {
+                    "service_name": {
+                      "default": "billing",
+                      "title": "3scale service display name",
+                      "type": "string"
+                    },
+                    "application_plan": {
+                      "default": "golden-plan",
+                      "title": "3scale application plan name",
+                      "type": "string"
+                    },
+                    "input_url": {
+                      "title": "input url for secure",
+                      "type": "string",
+                      "default": "https://echo-api.3scale.net:443"
+                    },
+                    "application_name": {
+                      "default": "billingApp",
+                      "title": "3scale application name under brokerGroup",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "service_name",
+                    "application_plan",
+                    "input_url",
+                    "application_name"
+                  ],
+                  "type": "object"
+                }
+              },
+              "update": {
+                "parameters": {
+                  "$schema": "http://json-schema.org/draft-04/schema",
+                  "additionalProperties": false,
+                  "properties": {
+                    "service_name": {
+                      "default": "billing",
+                      "title": "3scale service name",
+                      "type": "string"
+                    },
+                    "application_plan": {
+                      "default": "golden-plan",
+                      "title": "3scale application plan name",
+                      "type": "string"
+                    },
+                    "input_url": {
+                      "title": "input url for secure",
+                      "type": "string",
+                      "default": "https://echo-api.3scale.net:443"
+                    },
+                    "application_name": {
+                      "default": "billingApp",
+                      "title": "3scale application name under brokerGroup",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "service_name",
+                    "application_plan",
+                    "input_url",
+                    "application_name"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "service_binding": {
+              "create": {
+                "parameters": {
+                  "$schema": "http://json-schema.org/draft-04/schema",
+                  "additionalProperties": false,
+                  "properties": {
+                    "service_name": {
+                      "default": "billing",
+                      "title": "3scale service name",
+                      "type": "string"
+                    },
+                    "application_plan": {
+                      "default": "golden-plan",
+                      "title": "3scale application plan name",
+                      "type": "string"
+                    },
+                    "input_url": {
+                      "title": "input url for secure",
+                      "type": "string",
+                      "default": "https://echo-api.3scale.net:443"
+                    },
+                    "application_name": {
+                      "default": "billingApp",
+                      "title": "3scale application name under brokerGroup",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "service_name",
+                    "application_plan",
+                    "input_url",
+                    "application_name"
+                  ],
+                  "type": "object"
+                }
+              }
             }
           }
         }
       ]
-    },
-
+    }
+  ]
+},
