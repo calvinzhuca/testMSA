@@ -18,7 +18,7 @@
                 String userKey = System.getenv("USER_KEY");
                 if (billingServiceUrl == null || ("".equals(billingServiceUrl))) {
             %>
-            <font size="5" color="red">Billing service URL is not found, won't be able to process transaction when check out!</font>
+            <font size="5" color="red">Billing service URL is not found, won't be able to process transaction during check out!</font>
                 <%
                 } else {
                 %>
