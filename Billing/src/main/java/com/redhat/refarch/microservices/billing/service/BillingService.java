@@ -136,7 +136,7 @@ public class BillingService {
 
         long sleep = new Long(System.getenv("TRANSCATION_IN_MILLISECONDS"));
 
-        logInfo("Will simulate credit card processing for " + sleep + " milliseconds");
+        logInfo("Will simulate credit card processing for " + sleep + " milliseconds, from env");
         try {
             Thread.sleep(sleep);
         } catch (InterruptedException ex) {
