@@ -1,84 +1,83 @@
 <%@page
-	import="com.redhat.refarch.microservices.presentation.RestClient"%>
-<%@page import="java.util.Map"%>
-<%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="ISO-8859-1"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+    import="com.redhat.refarch.microservices.presentation.RestClient"%>
+    <%@page import="java.util.Map"%>
+    <%@page import="java.util.List"%>
+    <%@ page language="java" contentType="text/html; charset=UTF-8"
+             pageEncoding="ISO-8859-1"%>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<title>Products</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<head>
-<body>
-  <%
-    String billingServiceUrl = System.getenv("BILLING_SERVICE_URL");
-    String userKey = System.getenv("USER_KEY");
-    if (billingServiceUrl == null || ("".equals(billingServiceUrl))) {
-  %>
-  <h2><font face="verdana" color="red">Billing service URL is not found, won't be able to process transaction!</font></h2>
-  <%
-    } else {
-  %>
-      <h2>Billing Service URL: </h2><%= billingServiceUrl %>
-      <h2>User Key: </h2><%= userKey %>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+    <html>
+        <head>
+            <title>Products</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <head>
+        <body>
+            <%
+                String billingServiceUrl = System.getenv("BILLING_SERVICE_URL");
+                String userKey = System.getenv("USER_KEY");
+                if (billingServiceUrl == null || ("".equals(billingServiceUrl))) {
+            %>
+            <font size="5" color="red">Billing service URL is not found, won't be able to process transaction when check out!</font>
+                <%
+                } else {
+                %>
+            <h2>Billing Service URL: </h2><%= billingServiceUrl%>
+            <h2>User Key: </h2><%= userKey%>
 
-  <%
-    }
-  %>
-        
-	<c:choose>
-		<c:when test="${param.register}">
-			<%@include file="register.jsp"%>
-		</c:when>
-		<c:when test="${param.cart}">
-			<%@include file="cart.jsp"%>
-		</c:when>
-		<c:when test="${param.checkout}">
-			<%@include file="checkout.jsp"%>
-		</c:when>
-		<c:when test="${param.history}">
-			<%@include file="history.jsp"%>
-		</c:when>
-		<c:otherwise>
-			<c:choose>
-				<c:when test="${param.purchase}">
-					<%
-						RestClient.purchase( request );
-					%>
-				</c:when>
-				<c:when test="${param.registration}">
-					<%
-						RestClient.register( request );
-					%>
-				</c:when>
-				<c:when test="${param.login}">
-					<%
-						RestClient.login( request );
-					%>
-				</c:when>
-				<c:when test="${param.logout}">
-					<%
-						RestClient.logout( request );
-					%>
-				</c:when>
-				<c:when test="${param.completeOrder}">
-					<%
-						RestClient.completeOrder( request );
-					%>
-				</c:when>
-			</c:choose>
-			<%
-				RestClient.setProductsAttribute( request );
-			%>
+            <%
+                }
+            %>
 
-			<%@include file="header.jsp"%>
+            <c:choose>
+                <c:when test="${param.register}">
+                    <%@include file="register.jsp"%>
+                </c:when>
+                <c:when test="${param.cart}">
+                    <%@include file="cart.jsp"%>
+                </c:when>
+                <c:when test="${param.checkout}">
+                    <%@include file="checkout.jsp"%>
+                </c:when>
+                <c:when test="${param.history}">
+                    <%@include file="history.jsp"%>
+                </c:when>
+                <c:otherwise>
+                    <c:choose>
+                        <c:when test="${param.purchase}">
+                            <%                                            RestClient.purchase(request);
+                            %>
+                        </c:when>
+                        <c:when test="${param.registration}">
+                            <%
+                                RestClient.register(request);
+                            %>
+                        </c:when>
+                        <c:when test="${param.login}">
+                            <%
+                                RestClient.login(request);
+                            %>
+                        </c:when>
+                        <c:when test="${param.logout}">
+                            <%
+                                RestClient.logout(request);
+                            %>
+                        </c:when>
+                        <c:when test="${param.completeOrder}">
+                            <%
+                                RestClient.completeOrder(request);
+                            %>
+                        </c:when>
+                    </c:choose>
+                    <%
+                        RestClient.setProductsAttribute(request);
+                    %>
 
-			<%@include file="products.jsp"%>
-		</c:otherwise>
-	</c:choose>
+                    <%@include file="header.jsp"%>
 
-</body>
-</html>
+                    <%@include file="products.jsp"%>
+                </c:otherwise>
+            </c:choose>
+
+        </body>
+    </html>
