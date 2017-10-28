@@ -35,9 +35,9 @@
       },
       "plans": [
         {
-          "id": "silver-plan-id",
-          "name": "silver-plan",
-          "description": "silver plan description details...",
+          "id": "economy-plan-id",
+          "name": "economy-plan",
+          "description": "economy plan description details...",
           "free": true,
           "schemas": {
             "service_instance": {
@@ -47,12 +47,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "billing",
+                      "default": "billing-economy-service",
                       "title": "3scale service display name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "silver-plan",
+                      "default": "economy-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -62,7 +62,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingSilverApp",
+                      "default": "billing-economy-App",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -82,12 +82,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "billing",
+                      "default": "billing-economy-service",
                       "title": "3scale service name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "silver-plan",
+                      "default": "economy-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -97,7 +97,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingSilverApp",
+                      "default": "billing-economy-App",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -119,12 +119,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "billing",
+                      "default": "billing-economy-service",
                       "title": "3scale service name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "silver-plan",
+                      "default": "economy-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -134,7 +134,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingSilverApp",
+                      "default": "billing-economy-App",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -152,9 +152,9 @@
           }
         },
         {
-          "id": "golden-plan-id",
-          "name": "golden-plan",
-          "description": "golden plan description details...",
+          "id": "premium-plan-id",
+          "name": "premium-plan",
+          "description": "premium plan description details...",
           "free": true,
           "schemas": {
             "service_instance": {
@@ -164,12 +164,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "billing",
+                      "default": "billing-premium-service",
                       "title": "3scale service display name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "golden-plan",
+                      "default": "premium-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -179,7 +179,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingGoldenApp",
+                      "default": "billing-premium-App",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -199,12 +199,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "billing",
+                      "default": "billing-premium-service",
                       "title": "3scale service name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "golden-plan",
+                      "default": "premium-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -214,7 +214,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingGoldenApp",
+                      "default": "billing-premium-App",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
@@ -236,12 +236,12 @@
                   "additionalProperties": false,
                   "properties": {
                     "service_name": {
-                      "default": "billing",
+                      "default": "billing-premium-service",
                       "title": "3scale service name",
                       "type": "string"
                     },
                     "application_plan": {
-                      "default": "golden-plan",
+                      "default": "premium-plan",
                       "title": "3scale application plan name",
                       "type": "string"
                     },
@@ -251,7 +251,7 @@
                       "default": "https://echo-api.3scale.net:443"
                     },
                     "application_name": {
-                      "default": "billingGoldenApp",
+                      "default": "billing-premium-App",
                       "title": "3scale application name under brokerGroup",
                       "type": "string"
                     }
