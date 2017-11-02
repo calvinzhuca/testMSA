@@ -414,13 +414,10 @@ public class RestClient {
 
             logInfo("Got transaction result: " + response);
             if ((response.getStatusLine().getStatusCode() >= HttpStatus.SC_BAD_REQUEST)) {
-                logInfo("Failed to process transaction: " + response.getStatusLine().getReasonPhrase());
+                logInfo("Failed to process transactions: " + response.getStatusLine().getReasonPhrase());
             } else {
-                logInfo("return from billing, entity: " + response.getEntity());
-                logInfo("return from billing, entity2: " + response.getEntity().toString());
-                logInfo("return from billing, getStatusLine: " + response.getStatusLine());
                 String responseString = EntityUtils.toString(response.getEntity());
-                logInfo("return from billing, responseString: " + responseString);
+                logInfo("return from billing, responseString is: " + responseString);
                 result = gson.fromJson(responseString, Result.class);
 
             }

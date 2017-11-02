@@ -223,7 +223,7 @@ public class SecuredMarket {
         user_key = BrokerUtil.searchUserKeyBasedOnServiceAndPlanId(serviceId, planId, account_id);
         String endpoint = BrokerUtil.searchEndPointBasedOnServiceId(serviceId);
         result = "{\"credentials\":{\"url\":\"" + endpoint + "\",\"user_key\":\"" + user_key + "\"}}";
-        logInfo("binding result: " + result);
+        logInfo("binding result:  " + result);
 
         return result;
     }
