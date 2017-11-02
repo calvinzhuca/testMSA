@@ -11,7 +11,6 @@
 
     <modules>
         <module>Billing</module>
-        <module>Showbinding</module>
         <module>SecureServiceBroker</module>     
         <module>Presentation</module>
         <module>Product</module>
