@@ -1,16 +1,11 @@
 package com.redhat.syseng.openshift.service.persistent.model;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -34,9 +29,6 @@ public class ProvisionRecord
 	private BigDecimal price;
 	private String image;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "PRODUCT_KEYWORD", joinColumns = @JoinColumn(name = "SKU", referencedColumnName = "SKU"), inverseJoinColumns = @JoinColumn(name = "KEYWORD", referencedColumnName = "KEYWORD"))
-	private List<Keyword> keywords;
 
 	public Long getSku()
 	{
@@ -146,11 +138,6 @@ public class ProvisionRecord
 	public void setImage(String image)
 	{
 		this.image = image;
-	}
-
-	public void setKeywords(List<Keyword> keywords)
-	{
-		this.keywords = keywords;
 	}
 
 	@Override

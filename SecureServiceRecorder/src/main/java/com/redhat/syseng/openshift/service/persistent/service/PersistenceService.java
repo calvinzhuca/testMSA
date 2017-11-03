@@ -7,16 +7,13 @@ import java.lang.annotation.Target;
 import java.net.HttpURLConnection;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -33,7 +30,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import com.redhat.syseng.openshift.service.persistent.model.Error;
-import com.redhat.syseng.openshift.service.persistent.model.Keyword;
 import com.redhat.syseng.openshift.service.persistent.model.ProvisionRecord;
 import com.redhat.syseng.openshift.service.persistent.utils.Utils;
 
@@ -82,22 +78,7 @@ public class PersistenceService
 			else if( queryParams.containsKey( "keyword" ) )
 			{
 				Collection<ProvisionRecord> records = new HashSet<ProvisionRecord>();
-				for( String keyword : queryParams.get( "keyword" ) )
-				{
-					try
-					{
-						TypedQuery<Keyword> query = em.createNamedQuery( "Keyword.findKeyword", Keyword.class );
-						query.setParameter( "query", keyword );
-						Keyword keywordEntity = query.getSingleResult();
-						List<ProvisionRecord> keywordRecords = keywordEntity.getRecords();
-						logInfo( "Found " + keyword + ": " + keywordRecords );
-						records.addAll( keywordRecords );
-					}
-					catch( NoResultException e )
-					{
-						//keyword not found, which is acceptable
-					}
-				}
+
 				return records;
 			}
 			else
@@ -191,25 +172,6 @@ public class PersistenceService
 		}
 		catch( RuntimeException e )
 		{
-			throw new Error( HttpURLConnection.HTTP_INTERNAL_ERROR, e ).asException();
-		}
-	}
-
-	@Path("/keywords")
-	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public Keyword addKeyword(Keyword keyword)
-	{
-		try
-		{
-			logInfo( "Will persist keyword " + keyword );
-			em.persist( keyword );
-			return keyword;
-		}
-		catch( RuntimeException e )
-		{
-			logError( "Got exception " + e.getMessage() );
 			throw new Error( HttpURLConnection.HTTP_INTERNAL_ERROR, e ).asException();
 		}
 	}
