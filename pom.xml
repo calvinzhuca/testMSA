@@ -15,6 +15,7 @@
         <module>Presentation</module>
         <module>Product</module>
         <module>Sales</module>
+        <module>SecureServiceRecord</module>
     </modules>
  
 </project>
