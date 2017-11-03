@@ -132,11 +132,11 @@
         <subsystem xmlns="urn:jboss:domain:bean-validation:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>
-                <datasource jndi-name="java:jboss/datasources/ProductDS" enabled="true" use-java-context="true" pool-name="ProductDS">
-                    <connection-url>jdbc:mysql://${env.DATABASE_SERVICE_HOST:product-db}:${env.DATABASE_SERVICE_PORT:3306}/${env.MYSQL_DATABASE:product}</connection-url>
+                <datasource jndi-name="java:jboss/datasources/RecorderDS" enabled="true" use-java-context="true" pool-name="RecorderDS">
+                    <connection-url>jdbc:mysql://${env.DATABASE_SERVICE_HOST:recorder-db}:${env.DATABASE_SERVICE_PORT:3306}/${env.MYSQL_DATABASE:recorder}</connection-url>
                     <driver>mysql</driver>
                     <security>
-                      <user-name>${env.MYSQL_USER:product}</user-name>
+                      <user-name>${env.MYSQL_USER:recorder}</user-name>
                       <password>${env.MYSQL_PASSWORD:password}</password>
                     </security>
                 </datasource>
@@ -174,7 +174,7 @@
                 </managed-scheduled-executor-services>
             </concurrent>
             <default-bindings context-service="java:jboss/ee/concurrency/context/default"
-                              datasource="java:jboss/datasources/ProductDS"
+                              datasource="java:jboss/datasources/RecorderDS"
                               jms-connection-factory="java:jboss/DefaultJMSConnectionFactory"
                               managed-executor-service="java:jboss/ee/concurrency/executor/default"
                               managed-scheduled-executor-service="java:jboss/ee/concurrency/scheduler/default"
