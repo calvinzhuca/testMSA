@@ -5,7 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.net.HttpURLConnection;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.logging.Logger;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -35,7 +33,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import com.redhat.syseng.openshift.service.persistent.model.Error;
-import com.redhat.syseng.openshift.service.persistent.model.Inventory;
 import com.redhat.syseng.openshift.service.persistent.model.Keyword;
 import com.redhat.syseng.openshift.service.persistent.model.ProvisionRecord;
 import com.redhat.syseng.openshift.service.persistent.utils.Utils;
@@ -43,7 +40,7 @@ import com.redhat.syseng.openshift.service.persistent.utils.Utils;
 @Path("/")
 @Stateless
 @LocalBean
-public class PersisentService
+public class PersistenceService
 {
 
 	@PersistenceContext
@@ -51,7 +48,7 @@ public class PersisentService
 
 	private Logger logger = Logger.getLogger( getClass().getName() );
 
-	@Path("/records")
+	@Path("/record")
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -71,7 +68,7 @@ public class PersisentService
 	}
 
 	@GET
-	@Path("/records")
+	@Path("/record")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Collection<ProvisionRecord> getRecords(@Context UriInfo uriInfo)
 	{
@@ -119,7 +116,7 @@ public class PersisentService
 	}
 
 	@GET
-	@Path("/records/{sku}")
+	@Path("/record/{sku}")
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public ProvisionRecord getRecord(@PathParam("sku") Long sku)
 	{
@@ -140,7 +137,7 @@ public class PersisentService
 	}
 
 	@PUT
-	@Path("/records/{sku}")
+	@Path("/record/{sku}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public ProvisionRecord updateRecord(@PathParam("sku") Long sku, ProvisionRecord record)
@@ -161,7 +158,7 @@ public class PersisentService
 	}
 
 	@PATCH
-	@Path("/records/{sku}")
+	@Path("/record/{sku}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public ProvisionRecord partiallyUpdateRecord(@PathParam("sku") Long sku, ProvisionRecord record)
@@ -182,7 +179,7 @@ public class PersisentService
 	}
 
 	@DELETE
-	@Path("/records/{sku}")
+	@Path("/record/{sku}")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public void deleteRecord(@PathParam("sku") Long sku)
@@ -217,65 +214,6 @@ public class PersisentService
 		}
 	}
 
-	@POST
-	@Path("/classify/{sku}")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public void classifyRecord(@PathParam("sku") Long sku, List<Keyword> keywords)
-	{
-		ProvisionRecord record = getRecord( sku );
-		logInfo( "Asked to classify " + record + " as " + keywords );
-		try
-		{
-			record.setKeywords( keywords );
-			em.merge( record );
-		}
-		catch( RuntimeException e )
-		{
-			throw new Error( HttpURLConnection.HTTP_INTERNAL_ERROR, e ).asException();
-		}
-	}
-
-	@POST
-	@Path("/reduce/")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public void reduceInventory(Inventory[] inventoryAdjustment)
-	{
-		try
-		{
-			logInfo( "Asked to reduce inventory: " + Arrays.toString( inventoryAdjustment ) );
-			for( Inventory inventory : inventoryAdjustment )
-			{
-				ProvisionRecord record = em.find(ProvisionRecord.class, inventory.getSku(), LockModeType.PESSIMISTIC_WRITE );
-				logInfo( "Looked up record as " + record );
-				if( record == null )
-				{
-					throw new Error( HttpURLConnection.HTTP_NOT_FOUND, "Record not found" ).asException();
-				}
-				int availability = record.getAvailability();
-				if( inventory.getQuantity() > availability )
-				{
-					String message = "Insufficient availability for " + inventory.getSku();
-					throw new Error( HttpURLConnection.HTTP_CONFLICT, message ).asException();
-				}
-				else
-				{
-					record.setAvailability( availability - inventory.getQuantity() );
-					em.merge( record );
-					logInfo( "Saved " + record );
-				}
-			}
-		}
-		catch( WebApplicationException e )
-		{
-			throw e;
-		}
-		catch( RuntimeException e )
-		{
-			throw new Error( HttpURLConnection.HTTP_INTERNAL_ERROR, e ).asException();
-		}
-	}
 
 	@Target({ElementType.METHOD})
 	@Retention(RetentionPolicy.RUNTIME)
