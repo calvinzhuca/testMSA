@@ -32,7 +32,7 @@ node {
 
         
         
-        echo 'Here13' 
+        echo 'Here1' 
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
         echo "createServiceReply: ${createServiceReply}"
 
