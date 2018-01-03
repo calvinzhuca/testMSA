@@ -22,25 +22,22 @@ node {
 
     stage ('create application plan'){
         // Git checkout before load source the file
-        //checkout scm
+        checkout scm
 
         // To know files are checked out or not
-        //sh "ls -lhrt"
+        sh "ls -lhrt"
 
         //def rootDir = pwd()
-        //println("Current Directory: " + rootDir)
+        println("Current Directory: " + rootDir)
 
-        
-        
-        echo 'Here212' 
+
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
         echo "createServiceReply: ${createServiceReply}"
 
         // Load the file 'externalMethod.groovy' from the current directory, into a variable called "externalMethod".
-        def externalMethod = load("externalMethod.groovy")
-
+        //def externalMethod = load("externalMethod.groovy")
         // Call the method we defined in externalMethod.
-        externalMethod.lookAtThis("Steve")
+        //externalMethod.lookAtThis("Steve")
         
         
         def ReadIdHelper = load("ReadIdHelper.groovy")
