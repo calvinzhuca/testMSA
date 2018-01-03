@@ -22,13 +22,13 @@ node {
 
     stage ('create application plan'){
         // Git checkout before load source the file
-        checkout scm
+        //checkout scm
 
         // To know files are checked out or not
-        sh "ls -lhrt"
+        //sh "ls -lhrt"
 
-        def rootDir = pwd()
-        println("Current Directory: " + rootDir)
+        //def rootDir = pwd()
+        //println("Current Directory: " + rootDir)
 
         
         
@@ -43,9 +43,9 @@ node {
         externalMethod.lookAtThis("Steve")
         
         
-        def externalMethod2 = load("ReadIdHelper.groovy")
+        def ReadIdHelper = load("ReadIdHelper.groovy")
         echo 'Here123456' 
-        def returnStr = externalMethod2.getServiceId(createServiceReply)
+        def returnStr = ReadIdHelper.getServiceId(createServiceReply)
         echo "serviceId ${returnStr}"
         //def serviceId = ReadIdHelper.getServiceId(createServiceReply)
         //echo "serviceId ${serviceId}"
