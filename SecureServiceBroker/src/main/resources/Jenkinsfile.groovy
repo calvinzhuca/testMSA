@@ -43,7 +43,7 @@ node {
     
     stage ('create service') {
        
-        def serviceName = "printPhoto"
+        def serviceName = "printPhoto1"
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
         serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out_createService.txt"
         //echo " serviceCurl: ${serviceCurl}"
