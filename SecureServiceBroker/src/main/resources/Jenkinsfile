@@ -18,6 +18,10 @@ node {
     }
 
     stage ('create application plan'){
-       //def externalMethod = load("externalMethod.groovy")
+        def createServiceReply = new File('out.txt').text
+        echo "createServiceReply ${createServiceReply}"
+        def ReadIdHelper = load("ReadIdHelper.groovy")
+        def serviceId = ReadIdHelper.getServiceId(createServiceReply)
+        echo "serviceId ${serviceId}"
     }
 }
