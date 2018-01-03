@@ -3,7 +3,20 @@
 node { 
 
     def accessToken = "55044249b6efeaa6ff383df3ac3709824ba51f79438ef5aa57b134e381120c78"
+
+    stage ('clean services') {
+
+        def ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
+        def listServiceCurl = "curl -v -k -X GET -d \"access_token=" + accessToken + "\" " + ampURL + " >out_listService.txt"
+        echo " listServiceCurl: ${listServiceCurl}"
+        
+        sh "${listServiceCurl}"
+        
+        def listServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out_listService.txt').text
+        echo "listServiceReply: ${createServiceReply}"        
+    }
     
+    /*
     stage ('create service') {
 
         
@@ -46,7 +59,7 @@ node {
         sh "${createApplicationPlanCurl}"      
 
     }
-    
+    */
     
 
 }
