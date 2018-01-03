@@ -2,14 +2,6 @@
 
 node { 
 
-    stage ('create application plan'){
-        def createServiceReply = new File('out.txt').text
-        echo "createServiceReply ${createServiceReply}"
-        def ReadIdHelper = load("ReadIdHelper.groovy")
-        def serviceId = ReadIdHelper.getServiceId(createServiceReply)
-        echo "serviceId ${serviceId}"
-    }
-    
     stage ('create service') {
         echo 'Hello World2' 
         def username = 'Jenkins'
@@ -26,5 +18,14 @@ node {
         sh "${createServiceCurl}"
     }
 
+    stage ('create application plan'){
+        def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
+        echo "createServiceReply ${createServiceReply}"
+        def ReadIdHelper = load("ReadIdHelper.groovy")
+        def serviceId = ReadIdHelper.getServiceId(createServiceReply)
+        echo "serviceId ${serviceId}"
+    }
+    
+    
 
 }
