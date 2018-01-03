@@ -13,7 +13,21 @@ node {
         sh "${listServiceCurl}"
         
         def listServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out_listService.txt').text
-        echo "listServiceReply: ${createServiceReply}"        
+        echo "listServiceReply: ${listServiceReply}"  
+        
+        // Git checkout before load source the file
+        checkout scm
+        // To know files are checked out or not
+        sh "ls -lhrt"
+        def rootDir = pwd()
+        println("Current Directory: " + rootDir)
+
+        def ReadIdHelper = load("ReadIdHelper.groovy")
+        
+        //just get 1 service id
+        def serviceId = ReadIdHelper.getServiceId2(listServiceReply)
+        echo "serviceId ${serviceId}"
+        
     }
     
     /*
@@ -32,7 +46,6 @@ node {
     stage ('create application plan'){
         // Git checkout before load source the file
         checkout scm
-
         // To know files are checked out or not
         sh "ls -lhrt"
         def rootDir = pwd()
