@@ -9,7 +9,7 @@ node {
         
         def serviceName = "test75"
         def ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
-        def createServiceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out.txt"
+        def createServiceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out_createService.txt"
         echo " createServiceCurl: ${createServiceCurl}"
         
         sh "${createServiceCurl}"
@@ -26,7 +26,7 @@ node {
         println("Current Directory: " + rootDir)
 
 
-        def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
+        def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out_createService.txt').text
         echo "createServiceReply: ${createServiceReply}"
 
         // Load the file 'externalMethod.groovy' from the current directory, into a variable called "externalMethod".
@@ -35,12 +35,12 @@ node {
         //externalMethod.lookAtThis("Steve")
         
         
-        echo 'Here1234567' 
+        echo 'Here12345678' 
         def ReadIdHelper = load("ReadIdHelper.groovy")
         def serviceId = ReadIdHelper.getServiceId(createServiceReply)
         echo "serviceId ${serviceId}"
 
-        def createApplicationPlanCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=plan1\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + servicId + "/application_plans.xml\"  > out.txt "
+        def createApplicationPlanCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=plan1\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/application_plans.xml\"  > out_createApplicationPlan.txt "
         shell(createApplicationPlanCurl)         
 
     }
