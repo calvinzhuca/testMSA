@@ -27,6 +27,10 @@ node {
         //just get 1 service id
         def serviceId = ReadIdHelper.getServiceId2(listServiceReply)
         echo "serviceId ${serviceId}"
+
+        for(int i = serviceId; i < serviceId + 10; ++ i) {
+            echo "here ${i}"
+        }         
         
     }
     
