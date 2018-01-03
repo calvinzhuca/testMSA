@@ -32,7 +32,7 @@ node {
 
         
         
-        echo 'Here1' 
+        echo 'Here2' 
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
         echo "createServiceReply: ${createServiceReply}"
 
@@ -42,9 +42,14 @@ node {
         // Call the method we defined in externalMethod.
         externalMethod.lookAtThis("Steve")
         
+        
+        def ReadIdHelper = load("ReadIdHelper.groovy")
+        echo 'Here12' 
+        def serviceId = ReadIdHelper.getServiceId(createServiceReply)
+        echo "serviceId ${serviceId}"
         /*
         // point to exact source file
-        load "${rootDir}/SecureServiceBroker/src/main/resources/ReadIdHelper.groovy"
+        
         
         
         //def ReadIdHelper = load("/var/lib/jenkins/workspace/testPipeline/ReadIdHelper.groovy")
