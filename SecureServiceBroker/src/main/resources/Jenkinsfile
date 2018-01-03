@@ -21,10 +21,10 @@ node {
      */
 
     stage ('create application plan'){
-        echo 'Here1' 
+        echo 'Here11' 
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
         echo "createServiceReply: ${createServiceReply}"
-        def ReadIdHelper = load("ReadIdHelper.groovy")
+        def ReadIdHelper = load("/var/lib/jenkins/workspace/testPipeline/ReadIdHelper.groovy")
         echo 'Here12' 
         def serviceId = ReadIdHelper.getServiceId(createServiceReply)
         echo "serviceId ${serviceId}"
