@@ -27,7 +27,7 @@ node {
         // To know files are checked out or not
         sh "ls -lhrt"
 
-        //def rootDir = pwd()
+        def rootDir = pwd()
         println("Current Directory: " + rootDir)
 
 
