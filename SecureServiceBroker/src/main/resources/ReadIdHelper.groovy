@@ -25,6 +25,16 @@ def getServiceId2(String inputString) {
     return serviceId
 }  
 
+def getPlanId(String inputString) {
+    String planId = ""
+    if (null != inputString && "" != inputString){
+        if (inputString.indexOf("<id>") > -1){
+            planId = inputString.substring(inputString.indexOf("<id>") + "<id>".length(), inputString.indexOf("</id>"));
+        }
+    }
+    return planId
+} 
+
 return this;
     
 

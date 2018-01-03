@@ -20,7 +20,7 @@ node {
         sh "${serviceCurl}"
         
         def listServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out_listService.txt').text
-        //echo "listServiceReply: ${listServiceReply}"  
+        echo "listServiceReply: ${listServiceReply}"  
         
 
         def ReadIdHelper = load("ReadIdHelper.groovy")
@@ -43,15 +43,13 @@ node {
     
     stage ('create service') {
        
-        def serviceName = "printPhoto1"
+        def serviceName = "printPhoto3"
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
         serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out_createService.txt"
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"
-    }
-    
 
-    stage ('create application plan'){
+        //create application plan
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out_createService.txt').text
         echo "createServiceReply: ${createServiceReply}"
 
@@ -62,14 +60,24 @@ node {
         serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=plan1\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/application_plans.xml\"  > out_createApplicationPlan.txt "
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"      
-        
+
+        def createPlanReply = new File('/var/lib/jenkins/workspace/testPipeline/out_createApplicationPlan.txt').text
+        def planId = ReadIdHelper.getPlanId(createPlanReply)
+        echo "planId ${planId}"
         
         //API integration
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/proxy.xml\""
-        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&api_backend=https%3A%2F%2Fgoogle.com\" " + ampURL + " >out_integration.txt"
+        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&api_backend=https%3A%2F%2Fgoogle.com\"" + ampURL + " >out_integration.txt"
         echo " serviceCurl: ${serviceCurl}"
-        sh "${serviceCurl}"      
-    
+        sh "${serviceCurl}"  
+        
+        //create application
+        def applicationName = "appName"
+        ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/accounts/4/applications.xml\""
+        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&name=" + applicationName + "&plan_id=" + planId + "&description=" + applicationName + "\"" + ampURL + " >out_integration.txt"
+        echo " serviceCurl: ${serviceCurl}"
+        sh "${serviceCurl}"  
+     
     }
     
 
