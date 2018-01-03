@@ -32,7 +32,7 @@ node {
 
         
         
-        echo 'Here21' 
+        echo 'Here212' 
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
         echo "createServiceReply: ${createServiceReply}"
 
@@ -45,6 +45,7 @@ node {
         
         def ReadIdHelper = load("ReadIdHelper.groovy")
         echo 'Here12' 
+        ReadIdHelper.say()
         //def serviceId = ReadIdHelper.getServiceId(createServiceReply)
         //echo "serviceId ${serviceId}"
         /*
