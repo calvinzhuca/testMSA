@@ -43,9 +43,9 @@ node {
         externalMethod.lookAtThis("Steve")
         
         
-        def ReadIdHelper = load("ReadIdHelper.groovy")
-        echo 'Here12' 
-        ReadIdHelper.say()
+        def externalMethod2 = load("ReadIdHelper.groovy")
+        echo 'Here123' 
+        externalMethod2.say()
         //def serviceId = ReadIdHelper.getServiceId(createServiceReply)
         //echo "serviceId ${serviceId}"
         /*

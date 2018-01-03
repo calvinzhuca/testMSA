@@ -1,7 +1,9 @@
 
-def String say() {
+def say() {
     // Hello World
-    return "Hello world!"
+    echo "Hello world!"
 }
+
+return this;
     
 
