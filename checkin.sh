@@ -7,7 +7,6 @@ git commit -m "test"
 git push
 
 cd /var/lib/jenkins/workspace/testPipeline/
-ls -l 
 rm -rf *
 ls -l
 
