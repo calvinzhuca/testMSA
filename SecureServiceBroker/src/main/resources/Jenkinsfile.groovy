@@ -21,10 +21,26 @@ node {
      */
 
     stage ('create application plan'){
-        echo 'Here11' 
+        // Git checkout before load source the file
+        checkout scm
+
+        // To know files are checked out or not
+        sh "ls -lhrt"
+
+        def rootDir = pwd()
+        println("Current Directory: " + rootDir)
+
+        
+        
+        echo 'Here1' 
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
         echo "createServiceReply: ${createServiceReply}"
-        def ReadIdHelper = load("/var/lib/jenkins/workspace/testPipeline/ReadIdHelper.groovy")
+        
+        // point to exact source file
+        def example = load "${rootDir}/SecureServiceBroker/src/main/resources/ReadIdHelper.groovy"
+        
+        
+        //def ReadIdHelper = load("/var/lib/jenkins/workspace/testPipeline/ReadIdHelper.groovy")
         echo 'Here12' 
         def serviceId = ReadIdHelper.getServiceId(createServiceReply)
         echo "serviceId ${serviceId}"
