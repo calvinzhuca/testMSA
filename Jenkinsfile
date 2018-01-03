@@ -25,9 +25,9 @@ node {
         def ReadIdHelper = load("ReadIdHelper.groovy")
         
         //just get 1 service id
-        def serviceId = ReadIdHelper.getServiceId2(listServiceReply)
-        echo "serviceId ${serviceId}"
-
+        def serviceId = new Integer(ReadIdHelper.getServiceId2(listServiceReply)).intValue()
+        echo "serviceId2 ${serviceId}"
+        
         for(int i = serviceId; i < serviceId + 10; ++ i) {
             echo "here ${i}"
         }         
