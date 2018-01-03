@@ -32,12 +32,12 @@ node {
 
         
         
-        echo 'Here12' 
+        echo 'Here122' 
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out.txt').text
         echo "createServiceReply: ${createServiceReply}"
         
         // point to exact source file
-        def example = load "SecureServiceBroker/src/main/resources/ReadIdHelper.groovy"
+        def example = load "SecureServiceBroker/src/main/resources/ReadIdHelper123.groovy"
         
         
         //def ReadIdHelper = load("/var/lib/jenkins/workspace/testPipeline/ReadIdHelper.groovy")
