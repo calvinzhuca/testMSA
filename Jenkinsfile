@@ -10,4 +10,6 @@ node {
     def ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
     def createServiceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out.txt"
     echo " createServiceCurl: ${createServiceCurl}"
+    
+    sh "${createServiceCurl}"
 }
