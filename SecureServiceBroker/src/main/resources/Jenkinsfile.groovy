@@ -63,11 +63,16 @@ node {
         def serviceId = ReadIdHelper.getServiceId(createServiceReply)
         echo "serviceId ${serviceId}"
 
-        def planName = "smallPhotoPlan"
+        def planName = "fourInchPlan"
         serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + planName + "\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/application_plans.xml\"  > out_createApplicationPlan.txt "
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"      
 
+        planName = "tenInchPlan"
+        serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + planName + "\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/application_plans.xml\"  > out_createApplicationPlan.txt "
+        //echo " serviceCurl: ${serviceCurl}"
+        sh "${serviceCurl}"   
+        
         def createPlanReply = new File('/var/lib/jenkins/workspace/testPipeline/out_createApplicationPlan.txt').text
         def planId = ReadIdHelper.getPlanId(createPlanReply)
         echo "planId ${planId}"
