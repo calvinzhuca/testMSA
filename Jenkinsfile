@@ -19,7 +19,7 @@ node {
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"
         
-        def listServiceReply = new File('/var/lib/jenkins/workspace/BrokerPipeline/out_listService.txt').text
+        def listServiceReply = new File("${WORKSPACE}/out_listService.txt").text
         echo "listServiceReply: ${listServiceReply}"  
         
 
@@ -68,14 +68,14 @@ node {
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"      
 
-        /*
+        
         planName = "tenInchPlan"
         serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + planName + "\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/application_plans.xml\"  > out_createApplicationPlan.txt "
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"   
-        */
+        
        
-        def createPlanReply = new File('/var/lib/jenkins/workspace/BrokerPipeline/out_createApplicationPlan.txt').text
+        def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
         def planId = ReadIdHelper.getPlanId(createPlanReply)
         echo "planId ${planId}"
         
@@ -106,7 +106,7 @@ node {
 
         //create application plan
         println("create application plan  ----------------------------------")
-        def createServiceReply = new File('/var/lib/jenkins/workspace/BrokerPipeline/out_createService.txt').text
+        def createServiceReply = new File("${WORKSPACE}/out_createService.txt").text
         echo "createServiceReply: ${createServiceReply}"
 
         def ReadIdHelper = load("ReadIdHelper.groovy")
@@ -118,7 +118,7 @@ node {
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"      
 
-        def createPlanReply = new File('/var/lib/jenkins/workspace/BrokerPipeline/out_createApplicationPlan.txt').text
+        def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
         def planId = ReadIdHelper.getPlanId(createPlanReply)
         echo "planId ${planId}"
         
@@ -149,7 +149,7 @@ node {
 
         //create application plan
         println("create application plan  ----------------------------------")
-        def createServiceReply = new File('/var/lib/jenkins/workspace/BrokerPipeline/out_createService.txt').text
+        def createServiceReply = new File("${WORKSPACE}/out_createService.txt").text
         echo "createServiceReply: ${createServiceReply}"
 
         def ReadIdHelper = load("ReadIdHelper.groovy")
@@ -161,7 +161,7 @@ node {
         //echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"      
 
-        def createPlanReply = new File('/var/lib/jenkins/workspace/BrokerPipeline/out_createApplicationPlan.txt').text
+        def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
         def planId = ReadIdHelper.getPlanId(createPlanReply)
         echo "planId ${planId}"
         
