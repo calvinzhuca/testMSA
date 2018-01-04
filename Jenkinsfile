@@ -10,12 +10,12 @@ node {
 
 
         
-    stage('Test') {
+
         parallel (
-            phase1: { stage('1'){sh "echo p11; sleep 20s; echo phase1"} },
-            phase2: { stage('2'){sh "echo p22; sleep 40s; echo phase2"}}
+            phase1: { stage('11'){sh "echo p1; sleep 20s; echo phase1"} },
+            phase2: { stage('22'){sh "echo p2; sleep 40s; echo phase2"}}
         )
-    }
+
         
     /*
     stage ('clean services') {
