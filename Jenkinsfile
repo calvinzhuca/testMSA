@@ -5,7 +5,9 @@ node {
     def accessToken = "55044249b6efeaa6ff383df3ac3709824ba51f79438ef5aa57b134e381120c78"
     def ampURL = ""
     def serviceCurl = ""
-
+    environment {
+        OC_HOME = "/home/czhu/works/ocClient"
+    }
 
     /*
     stage ('clean services') {
@@ -186,9 +188,7 @@ node {
      */
     stage ('Build') {
         
-        environment {
-            OC_HOME = "/home/czhu/works/ocClient"
-        }
+
         sh "${OC_HOME}/oc delete all -l app=three-scale  --grace-period=0 "
 
         withMaven(
