@@ -7,7 +7,7 @@ node {
     def serviceCurl = ""
 
 
-    parallel (
+parallel {
         stage ('3scale'){
             stage ('clean services') {
                 // Git checkout before load source the file
@@ -48,7 +48,7 @@ node {
         
             }
     
-    
+
             stage ('create service1') {
                 println("create service ----------------------------------")
                 def serviceName = "printPhotoMSA"
@@ -184,6 +184,7 @@ node {
                 sh "${serviceCurl}"  
      
             }
+            
         }
     
         stage ('OCP'){
@@ -208,6 +209,6 @@ node {
                 } // withMaven will discover the generated Maven artifacts, JUnit Surefire & FailSafe & FindBugs reports...
             }    
         }
-    )
+}
 
 }
