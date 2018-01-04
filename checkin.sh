@@ -6,7 +6,4 @@ git add *
 git commit -m "test"
 git push
 
-cd /var/lib/jenkins/workspace/BrokerPipeline/
-rm -rf *
-ls -l
 
