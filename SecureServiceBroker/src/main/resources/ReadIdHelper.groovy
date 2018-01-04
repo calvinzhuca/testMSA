@@ -20,7 +20,7 @@ def getServiceId2(String inputString) {
     if (null != inputString && "" != inputString){
         if (inputString.indexOf("<service><id>") > -1){
             //skip the first one, which is "echo"
-            int j = inputString.indexOf("<service><id>") + "<service><id>".length()
+            int j = inputString.indexOf("<service><id>") + "<service><id>".length() + 20
             println("new j: " + j)
             inputString = inputString.substring(j)
             println("new inputString: " + inputString)
