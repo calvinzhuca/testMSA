@@ -28,7 +28,7 @@ def getServiceId2(String inputString) {
                 //there is more service after "echo", return that one
                 serviceId = inputString.substring(inputString.indexOf("<service><id>", nextServiceIdPos) + "<service><id>".length(), inputString.indexOf("</id>", nextServiceIdPos));
             }else{
-                serviceId = "no"
+                serviceId = "-1"
             }
             //inputString = inputString.substring(j)
             //println("new inputString: " + inputString)

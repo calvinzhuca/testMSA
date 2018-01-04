@@ -29,7 +29,7 @@ node {
         def serviceId = Integer.parseInt(ReadIdHelper.getServiceId2(listServiceReply))
         echo "serviceId ${serviceId}"
         
-        if (serviceId != "no")
+        if (serviceId > 0)
         {
             //use for loop clean the rest 10 service, should be enough for the lab env
             for(int i = serviceId; i < serviceId + 10; ++ i) {
