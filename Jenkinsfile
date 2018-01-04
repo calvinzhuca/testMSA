@@ -39,6 +39,8 @@ node {
                 //echo "serviceCurl: ${serviceCurl}"   
                 sh "${serviceCurl}"
             }     
+        }else{
+            println("no need to clean service, only 1 left")
         }    
         
     }
