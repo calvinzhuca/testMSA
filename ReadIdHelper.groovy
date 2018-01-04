@@ -21,14 +21,14 @@ def getServiceId2(String inputString) {
         if (inputString.indexOf("<service><id>") > -1){
             //skip the first one, which is "echo"
             int j = inputString.indexOf("<service><id>") + "<service><id>".length() + 20
-            println("new j: " + j)
+            //println("new j: " + j)
             int nextServiceIdPos = inputString.indexOf("<service><id>", j)
-            println("new nextServiceIdPos: " + nextServiceIdPos)
+            //println("new nextServiceIdPos: " + nextServiceIdPos)
             if ( nextServiceIdPos > -1){
                 //there is more service after "echo", return that one
                 serviceId = inputString.substring(inputString.indexOf("<service><id>", nextServiceIdPos) + "<service><id>".length(), inputString.indexOf("</id>", nextServiceIdPos));
             }else{
-                serviceId = "-1"
+                serviceId = "no"
             }
             //inputString = inputString.substring(j)
             //println("new inputString: " + inputString)

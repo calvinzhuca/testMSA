@@ -29,14 +29,17 @@ node {
         def serviceId = Integer.parseInt(ReadIdHelper.getServiceId2(listServiceReply))
         echo "serviceId ${serviceId}"
         
-        //use for loop clean the rest 10 service, should be enough for the lab env
-        for(int i = serviceId; i < serviceId + 10; ++ i) {
-            echo "here ${i}"
-            ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + i + ".xml\""
-            serviceCurl = "curl -v -k -X DELETE -d \"access_token=" + accessToken + "\" " + ampURL + " >>out_deleteService.txt"
-            //echo "serviceCurl: ${serviceCurl}"   
-            sh "${serviceCurl}"
-        }         
+        if (${serviceId} != "no")
+        {
+            //use for loop clean the rest 10 service, should be enough for the lab env
+            for(int i = serviceId; i < serviceId + 10; ++ i) {
+                echo "here ${i}"
+                ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + i + ".xml\""
+                serviceCurl = "curl -v -k -X DELETE -d \"access_token=" + accessToken + "\" " + ampURL + " >>out_deleteService.txt"
+                //echo "serviceCurl: ${serviceCurl}"   
+                sh "${serviceCurl}"
+            }     
+        }    
         
     }
     
