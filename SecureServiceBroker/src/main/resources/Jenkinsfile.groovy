@@ -5,9 +5,7 @@ node {
     def accessToken = "55044249b6efeaa6ff383df3ac3709824ba51f79438ef5aa57b134e381120c78"
     def ampURL = ""
     def serviceCurl = ""
-    environment {
-        OC_HOME = "/home/czhu/works/ocClient"
-    }
+
 
     /*
     stage ('clean services') {
@@ -188,8 +186,10 @@ node {
      */
     stage ('Build') {
         
-
-        sh "${OC_HOME}/oc delete all -l app=three-scale  --grace-period=0 "
+        def OC_HOME = "/home/czhu/works/ocClient"    
+        withEnv(["PATH+OC=${OC_HOME}"]) {
+            sh "${OC_HOME}/oc projects "
+        }
 
         withMaven(
             // Maven installation declared in the Jenkins "Global Tool Configuration"
