@@ -98,51 +98,51 @@ node {
             sh "${serviceCurl}"  
      
         }
-    
-        stage ('create service2') {
-            println("create service ----------------------------------")
-            def serviceName = "buyTicket"
-            ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
-            serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out_createService.txt"
-            //echo " serviceCurl: ${serviceCurl}"
-            sh "${serviceCurl}"
+        parallel (
+            stage ('create service2') {
+                println("create service ----------------------------------")
+                def serviceName = "buyTicket"
+                ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
+                serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out_createService.txt"
+                //echo " serviceCurl: ${serviceCurl}"
+                sh "${serviceCurl}"
 
-            //create application plan
-            println("create application plan  ----------------------------------")
-            def createServiceReply = new File("${WORKSPACE}/out_createService.txt").text
-            echo "createServiceReply: ${createServiceReply}"
+                //create application plan
+                println("create application plan  ----------------------------------")
+                def createServiceReply = new File("${WORKSPACE}/out_createService.txt").text
+                echo "createServiceReply: ${createServiceReply}"
 
-            def ReadIdHelper = load("ReadIdHelper.groovy")
-            def serviceId = ReadIdHelper.getServiceId(createServiceReply)
-            echo "serviceId ${serviceId}"
+                def ReadIdHelper = load("ReadIdHelper.groovy")
+                def serviceId = ReadIdHelper.getServiceId(createServiceReply)
+                echo "serviceId ${serviceId}"
 
-            def planName = "seasonTicketPlan"
-            serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + planName + "\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/application_plans.xml\"  > out_createApplicationPlan.txt "
-            //echo " serviceCurl: ${serviceCurl}"
-            sh "${serviceCurl}"      
+                def planName = "seasonTicketPlan"
+                serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + planName + "\" \"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/application_plans.xml\"  > out_createApplicationPlan.txt "
+                //echo " serviceCurl: ${serviceCurl}"
+                sh "${serviceCurl}"      
 
-            def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
-            def planId = ReadIdHelper.getPlanId(createPlanReply)
-            echo "planId ${planId}"
+                def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
+                def planId = ReadIdHelper.getPlanId(createPlanReply)
+                echo "planId ${planId}"
         
-            //API integration
-            println("API integration  ----------------------------------")
-            ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/proxy.xml\""
-            serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&api_backend=https%3A%2F%2Fgoogle.com\" " + ampURL + " >out_integration.txt"
-            echo " serviceCurl: ${serviceCurl}"
-            sh "${serviceCurl}"  
+                //API integration
+                println("API integration  ----------------------------------")
+                ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/proxy.xml\""
+                serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&api_backend=https%3A%2F%2Fgoogle.com\" " + ampURL + " >out_integration.txt"
+                echo " serviceCurl: ${serviceCurl}"
+                sh "${serviceCurl}"  
         
-            //create application
-            println("create application  ----------------------------------")
-            def applicationName = "buyTicketApp"
-            ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/accounts/4/applications.xml\""
-            serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + applicationName + "&plan_id=" + planId + "&description=" + applicationName + "\" " + ampURL + " >out_integration.txt"
-            echo " serviceCurl: ${serviceCurl}"
-            sh "${serviceCurl}"  
+                //create application
+                println("create application  ----------------------------------")
+                def applicationName = "buyTicketApp"
+                ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/accounts/4/applications.xml\""
+                serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + applicationName + "&plan_id=" + planId + "&description=" + applicationName + "\" " + ampURL + " >out_integration.txt"
+                echo " serviceCurl: ${serviceCurl}"
+                sh "${serviceCurl}"  
      
-        }
-    
-        parallel {
+            }
+        )
+        parallel (
             stage ('create service3') {
                 println("create service ----------------------------------")
                 def serviceName = "orderPizza"
@@ -185,7 +185,7 @@ node {
                 sh "${serviceCurl}"  
      
             }
-        }
+        )
             
     }
     
