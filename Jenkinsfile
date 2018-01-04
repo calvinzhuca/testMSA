@@ -47,7 +47,7 @@ node {
     
     
     stage ('create service') {
-       
+       println("create service ----------------------------------")
         def serviceName = "printPhoto"
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
         serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out_createService.txt"
@@ -55,6 +55,7 @@ node {
         sh "${serviceCurl}"
 
         //create application plan
+       println("create application plan  ----------------------------------")
         def createServiceReply = new File('/var/lib/jenkins/workspace/testPipeline/out_createService.txt').text
         echo "createServiceReply: ${createServiceReply}"
 
@@ -71,15 +72,17 @@ node {
         echo "planId ${planId}"
         
         //API integration
+       println("API integration  ----------------------------------")
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/proxy.xml\""
         serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&api_backend=https%3A%2F%2Fgoogle.com\" " + ampURL + " >out_integration.txt"
         echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"  
         
         //create application
+       println("create application  ----------------------------------")
         def applicationName = "appName"
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/accounts/4/applications.xml\""
-        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&name=" + applicationName + "&plan_id=" + planId + "&description=" + applicationName + "\" " + ampURL + " >out_integration.txt"
+        serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + applicationName + "&plan_id=" + planId + "&description=" + applicationName + "\" " + ampURL + " >out_integration.txt"
         echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"  
      
