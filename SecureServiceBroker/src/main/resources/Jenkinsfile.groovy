@@ -56,7 +56,7 @@ node {
 
         //create application plan
         println("create application plan  ----------------------------------")
-        def createServiceReply = new File('out_createService.txt').text
+        def createServiceReply = new File("${WORKSPACE}/out_createService.txt").text
         echo "createServiceReply: ${createServiceReply}"
 
         def ReadIdHelper = load("ReadIdHelper.groovy")
