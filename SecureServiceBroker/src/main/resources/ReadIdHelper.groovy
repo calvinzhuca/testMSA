@@ -22,9 +22,13 @@ def getServiceId2(String inputString) {
             //skip the first one, which is "echo"
             int j = inputString.indexOf("<service><id>") + "<service><id>".length() + 20
             println("new j: " + j)
-            inputString = inputString.substring(j)
-            println("new inputString: " + inputString)
-            serviceId = inputString.substring(inputString.indexOf("<service><id>") + "<service><id>".length(), inputString.indexOf("</id>"));
+            int nextServiceIdPos = inputString.indexOf("<service><id>", j)
+            if ( nextServiceIdPos > -1){
+                //there is more service after "echo", return that one
+                serviceId = inputString.substring(inputString.indexOf("<service><id>", nextServiceIdPos) + "<service><id>".length(), inputString.indexOf("</id>", nextServiceIdPos));
+            }
+            //inputString = inputString.substring(j)
+            //println("new inputString: " + inputString)
         }
     }
     return serviceId
