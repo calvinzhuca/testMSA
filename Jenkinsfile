@@ -10,14 +10,15 @@ node {
 
 
         
-
+/*
+This is a working parallel test with stage inside
         parallel (
             phase1: { stage('11'){sh "echo p1; sleep 20s; echo phase1"} },
             phase2: { stage('22'){sh "echo p2; sleep 40s; echo phase2"}}
         )
 
-        
-    /*
+        */
+            parallel (
     stage ('clean services') {
     // Git checkout before load source the file
     checkout scm
@@ -216,6 +217,6 @@ node {
     } // withMaven will discover the generated Maven artifacts, JUnit Surefire & FailSafe & FindBugs reports...
     }    
 
-     */
+     
 
 }
