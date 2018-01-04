@@ -43,7 +43,7 @@ node {
     
     stage ('create service') {
        
-        def serviceName = "printPhoto3"
+        def serviceName = "printPhoto"
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services.xml\""
         serviceCurl = "curl -v -k -X POST -d \"access_token=" + accessToken + "&name=" + serviceName + "\" " + ampURL + " >out_createService.txt"
         //echo " serviceCurl: ${serviceCurl}"
@@ -67,14 +67,14 @@ node {
         
         //API integration
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/services/" + serviceId + "/proxy.xml\""
-        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&api_backend=https%3A%2F%2Fgoogle.com\"" + ampURL + " >out_integration.txt"
+        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&api_backend=https%3A%2F%2Fgoogle.com\" " + ampURL + " >out_integration.txt"
         echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"  
         
         //create application
         def applicationName = "appName"
         ampURL = "\"https://3scale-admin.middleware.ocp.cloud.lab.eng.bos.redhat.com/admin/api/accounts/4/applications.xml\""
-        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&name=" + applicationName + "&plan_id=" + planId + "&description=" + applicationName + "\"" + ampURL + " >out_integration.txt"
+        serviceCurl = "curl -v -k -X PATCH -d \"access_token=" + accessToken + "&name=" + applicationName + "&plan_id=" + planId + "&description=" + applicationName + "\" " + ampURL + " >out_integration.txt"
         echo " serviceCurl: ${serviceCurl}"
         sh "${serviceCurl}"  
      
