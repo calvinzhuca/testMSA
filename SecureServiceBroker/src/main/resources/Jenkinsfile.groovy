@@ -224,9 +224,13 @@ node {
         println("---------------------------------- Recreate Broker  ----------------------------------")
         //delete the old three-scale application first
         withEnv(["PATH+OC=${OC_HOME}"]) {
-            sh "${OC_HOME}/oc delete ClusterServiceBroker 3scale-broker"
-            sh "sleep 5"
-            sh "${OC_HOME}/oc get ClusterServiceBroker"
+            try {
+                sh "${OC_HOME}/oc delete ClusterServiceBroker 3scale-broker"
+                sh "sleep 5"
+                sh "${OC_HOME}/oc get ClusterServiceBroker"
+            }catch(err) {
+                echo "Error means there is no existing 3scale-broker, just continue..."
+            }
                     
             sh "${OC_HOME}/oc create -f 3scale-broker.yml"
             sh "sleep 5"
@@ -235,6 +239,21 @@ node {
 
         println("---------------------------------- Recreate Broker is finished ----------------------------------")
     }
-     
 
+       
+    stage ('Test getCatalog') {
+        //API integration
+        println("---------------------------------- Test getCatalog  ----------------------------------")
+        //delete the old three-scale application first
+        withEnv(["PATH+OC=${OC_HOME}"]) {
+            sh "${OC_HOME}/oc expose service three-scale --hostname=test.broker.com"
+            sh "sleep 5"
+            sh "curl http://test.broker.com/v2/catalog "
+                    
+ 
+        }        
+
+        println("---------------------------------- Test getCatalog is finished ----------------------------------")
+    }
+     
 }
