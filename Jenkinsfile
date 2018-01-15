@@ -255,11 +255,14 @@ node {
             //            def result = sh "curl http://test.broker.com/v2/catalog "
             
             def result = sh (
-                script: 'curl http://test.broker.com/v2/catalog',
+                script: 'curl http://test.broker.com/v2/catalogs',
                 returnStdout: true
             ).trim()    
             echo "curl result ${result}"   
-
+            
+            if (!result.contains("{\"services\"")){
+                currentBuild.result = 'FAILURE'
+            }
  
         }        
 
