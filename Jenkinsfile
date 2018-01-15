@@ -229,7 +229,7 @@ node {
                 sh "sleep 5"
                 sh "${OC_HOME}/oc get ClusterServiceBroker"
             }catch(err) {
-                echo "Error means there is no existing 3scale-broker, just continue..."
+                echo "!!!!!!!!!!!!!!!!!!Error means there is no existing 3scale-broker, just continue to create the new one..."
             }
                     
             sh "${OC_HOME}/oc create -f 3scale-broker.yml"
@@ -246,7 +246,11 @@ node {
         println("---------------------------------- Test getCatalog  ----------------------------------")
         //delete the old three-scale application first
         withEnv(["PATH+OC=${OC_HOME}"]) {
-            sh "${OC_HOME}/oc expose service three-scale --hostname=test.broker.com"
+            try {
+                sh "${OC_HOME}/oc expose service three-scale --hostname=test.broker.com"
+            }catch(err) {
+                echo "!!!!!!!!!!!!!!!!!!Error means there is an existing test.broker.com, no need to create, just continue for curl test..."
+            }            
             sh "sleep 5"
             sh "curl http://test.broker.com/v2/catalog "
                     
