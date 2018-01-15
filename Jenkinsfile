@@ -5,7 +5,7 @@ node {
     def accessToken = "55044249b6efeaa6ff383df3ac3709824ba51f79438ef5aa57b134e381120c78"
     def ampURL = ""
     def serviceCurl = ""
-
+    def OC_HOME = "/home/czhu/works/ocClient"  
 
 
 
@@ -220,16 +220,19 @@ node {
      */
     
     stage ('Recreate Broker') {
-        
         //API integration
         println("---------------------------------- Recreate Broker  ----------------------------------")
-        sh "oc delete ClusterServiceBroker 3scale-broker"
-        sh "sleep 5"
-        sh "oc get ClusterServiceBroker"
+        //delete the old three-scale application first
+        withEnv(["PATH+OC=${OC_HOME}"]) {
+            sh "${OC_HOME}/oc delete ClusterServiceBroker 3scale-broker"
+            sh "sleep 5"
+            sh "${OC_HOME}/oc get ClusterServiceBroker"
                     
-        sh "oc create -f 3scale-broker.yml"
-        sh "sleep 5"
-        sh "oc describe ClusterServiceBroker 3scale-broker"
+            sh "${OC_HOME}/oc create -f 3scale-broker.yml"
+            sh "sleep 5"
+            sh "${OC_HOME}/oc describe ClusterServiceBroker 3scale-broker"
+        }        
+
         println("---------------------------------- Recreate Broker is finished ----------------------------------")
     }
      
