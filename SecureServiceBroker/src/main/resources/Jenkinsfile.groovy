@@ -255,8 +255,8 @@ node {
             //            def result = sh "curl http://test.broker.com/v2/catalog "
             
             def result = sh (
-//                script: 'curl http://test.broker.com/v2/catalog',
-                script: 'curl http://www.google.ca',
+                script: 'curl http://test.broker.com/v2/catalog',
+//                script: 'curl http://www.google.ca',
                 returnStdout: true
             ).trim()    
             echo "curl result ${result}"   
@@ -265,6 +265,8 @@ node {
             if (!result.contains(expectWords)){
                 echo "result didn't contain following expect words: ${expectWords} "
                 currentBuild.result = 'FAILURE'
+            }else{
+                echo "good result, passed"
             }
  
         }        
