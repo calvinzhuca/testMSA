@@ -217,29 +217,29 @@ node {
 
     } // withMaven will discover the generated Maven artifacts, JUnit Surefire & FailSafe & FindBugs reports...
     }    
-     */
+
     
     stage ('Recreate Broker') {
-        //API integration
-        println("---------------------------------- Recreate Broker  ----------------------------------")
-        //delete the old three-scale application first
-        withEnv(["PATH+OC=${OC_HOME}"]) {
-            try {
-                sh "${OC_HOME}/oc delete ClusterServiceBroker 3scale-broker"
-                sh "sleep 5"
-                sh "${OC_HOME}/oc get ClusterServiceBroker"
-            }catch(err) {
-                echo "!!!!!!!!!!!!!!!!!!Error means there is no existing 3scale-broker, just continue to create the new one..."
-            }
-                    
-            sh "${OC_HOME}/oc create -f 3scale-broker.yml"
-            sh "sleep 5"
-            sh "${OC_HOME}/oc describe ClusterServiceBroker 3scale-broker"
-        }        
-
-        println("---------------------------------- Recreate Broker is finished ----------------------------------")
+    //API integration
+    println("---------------------------------- Recreate Broker  ----------------------------------")
+    //delete the old three-scale application first
+    withEnv(["PATH+OC=${OC_HOME}"]) {
+    try {
+    sh "${OC_HOME}/oc delete ClusterServiceBroker 3scale-broker"
+    sh "sleep 5"
+    sh "${OC_HOME}/oc get ClusterServiceBroker"
+    }catch(err) {
+    echo "!!!!!!!!!!!!!!!!!!Error means there is no existing 3scale-broker, just continue to create the new one..."
     }
+                    
+    sh "${OC_HOME}/oc create -f 3scale-broker.yml"
+    sh "sleep 5"
+    sh "${OC_HOME}/oc describe ClusterServiceBroker 3scale-broker"
+    }        
 
+    println("---------------------------------- Recreate Broker is finished ----------------------------------")
+    }
+     */
        
     stage ('Test getCatalog') {
         //API integration
@@ -252,8 +252,14 @@ node {
                 echo "!!!!!!!!!!!!!!!!!!Error means there is an existing test.broker.com, no need to create, just continue for curl test..."
             }            
             sh "sleep 5"
-            def result = sh "curl http://test.broker.com/v2/catalog "
+            //            def result = sh "curl http://test.broker.com/v2/catalog "
+            
+            def result = sh (
+                script: 'curl http://test.broker.com/v2/catalog',
+                returnStdout: true
+            ).trim()    
             echo "curl result ${result}"   
+
  
         }        
 
