@@ -252,8 +252,8 @@ node {
                 echo "!!!!!!!!!!!!!!!!!!Error means there is an existing test.broker.com, no need to create, just continue for curl test..."
             }            
             sh "sleep 5"
-            sh "curl http://test.broker.com/v2/catalog "
-                    
+            def result = sh "curl http://test.broker.com/v2/catalog "
+            echo "curl result ${result}"   
  
         }        
 
