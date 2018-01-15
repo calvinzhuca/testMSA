@@ -6,7 +6,7 @@ node {
     def ampURL = ""
     def serviceCurl = ""
     def OC_HOME = "/home/czhu/works/ocClient"  
-
+    checkout scm
 
 
         
