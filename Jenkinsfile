@@ -255,7 +255,7 @@ node {
             
             def result = sh (
                 script: 'curl http://test.broker.com/v2/catalog',
-//                script: 'curl http://www.google.com',
+                //                script: 'curl http://www.google.com',
                 returnStdout: true
             ).trim()    
             echo "curl result: ${result}"   
@@ -275,27 +275,27 @@ node {
     
     
 
-        stage ('Test provisionSecuredServices') {
+    stage ('Test provisionSecuredServices') {
         //API integration
         println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
 
-            def result = sh (
-                script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":\"service-guid-here\",\"plan_id\":\"plan-guid-here\",\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"service_name\":\"testapi\",\"application_plan\":\"plan1\",\"input_url\":\"http://www.google.com\",\"application_name\":\"testApp1\"}}'  http://test.broker.com/v2/service_instances/123",
-                returnStdout: true
-            ).trim()    
-            echo "curl result: ${result}"   
+        def result = sh (
+            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":\"service-guid-here\",\"plan_id\":\"plan-guid-here\",\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"service_name\":\"testapi\",\"application_plan\":\"plan1\",\"input_url\":\"http://www.google.com\",\"application_name\":\"testApp1\"}}'  http://test.broker.com/v2/service_instances/123",
+            returnStdout: true
+        ).trim()    
+        echo "curl result: ${result}"   
             
-            def expectWords = "/?user_key="
-            if (!result.contains(expectWords)){
-                echo "result didn't contain following expect words: ${expectWords} "
-                currentBuild.result = 'FAILURE'
-            }else{
-                echo "good result, passed"
-            }
- 
-        }        
-
+        def expectWords = "/?user_key="
+        if (!result.contains(expectWords)){
+            echo "result didn't contain following expect words: ${expectWords} "
+            currentBuild.result = 'FAILURE'
+        }else{
+            echo "good result, passed"
+        }
         println("---------------------------------- Test provisionSecuredServices is finished ----------------------------------")
-    }
+ 
+    }        
+
+
      
 }
