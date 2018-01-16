@@ -270,7 +270,7 @@ node {
                 echo "good result, passed"
                 def i = result.lastIndexOf("\"plans\":[{\"id\":\"");
                 echo "i: ${i}"
-                def j = result.	indexOf("\"",i +  "\"plans\":[{\"id\":\"".length)
+                def j = result.	indexOf("\"",i +  "\"plans\":[{\"id\":\"".length())
                 echo "j: ${j}"
                 planId = result.substring(i,j)
                 echo "planId: ${planId}"
