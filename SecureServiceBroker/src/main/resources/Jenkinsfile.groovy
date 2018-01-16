@@ -5,7 +5,8 @@ node {
     def accessToken = "55044249b6efeaa6ff383df3ac3709824ba51f79438ef5aa57b134e381120c78"
     def ampURL = ""
     def serviceCurl = ""
-    def OC_HOME = "/home/czhu/works/ocClient"  
+    def OC_HOME = "/home/czhu/works/ocClient" 
+    def planId
     checkout scm
 
 
@@ -242,7 +243,7 @@ node {
      */
        
     
-    /*
+    
     stage ('Test getCatalog') {
         println("---------------------------------- Test getCatalog  ----------------------------------")
         withEnv(["PATH+OC=${OC_HOME}"]) {
@@ -267,19 +268,25 @@ node {
                 currentBuild.result = 'FAILURE'
             }else{
                 echo "good result, passed"
+                def i = result.lastIndexOf("\"plans\":[{\"id\":\"");
+                echo "planId: ${i}"
+                def j = result.	indexOf("\"",j +  "\"plans\":[{\"id\":\"".length)
+                echo "planId: ${j}"
+                planId = result.substring(i,j)
+                echo "planId: ${planId}"
             }
  
         }        
 
         println("---------------------------------- Test getCatalog is finished ----------------------------------")
     }
-    */
+    
     
 
-    stage ('Test provisionSecuredServices') {
+    stage ('Test2: provisionSecureServices') {
         //Test provisionSecuredServices with instance id = 123
         println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
-            
+        echo "planId22222222222222: ${planId}"    
         //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
         //without deprovisioning first it might also failed because same service name exists at 3 scale side. 
 
@@ -300,9 +307,38 @@ node {
         }else{
             echo "good result, passed"
         }
-        println("---------------------------------- Test provisionSecuredServices is finished ----------------------------------")
+        println("---------------------------------- Test2: provisionSecureServices is finished ----------------------------------")
  
-    }        
+    }  
+    
+    /*
+    stage ('Test3: provisionSecuredMarket') {
+    //Test provisionSecuredServices with instance id = 123
+    println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
+            
+    //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
+    //without deprovisioning first it might also failed because same service name exists at 3 scale side. 
+
+    sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/123?plan_id=secure-service-plan-id&service_id=secure-service-id\""
+      
+        
+        
+    def result = sh (
+    script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":\"service-guid-here\",\"plan_id\":\"plan-guid-here\",\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"service_name\":\"testapi\",\"application_plan\":\"plan1\",\"input_url\":\"http://www.google.com\",\"application_name\":\"testApp1\"}}'  http://test.broker.com/v2/service_instances/123",
+    returnStdout: true
+    ).trim()    
+    echo "curl result: ${result}"   
+            
+    def expectWords = "/?user_key="
+    if (!result.contains(expectWords)){
+    echo "result didn't contain following expect words: ${expectWords} "
+    currentBuild.result = 'FAILURE'
+    }else{
+    echo "good result, passed"
+    }
+    println("---------------------------------- Test2: provisionSecuredMarket is finished ----------------------------------")
+ 
+    }      */
 
 
      
