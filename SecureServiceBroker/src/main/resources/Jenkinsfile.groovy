@@ -268,11 +268,13 @@ node {
                 currentBuild.result = 'FAILURE'
             }else{
                 echo "good result, passed"
-                def i = result.lastIndexOf("\"plans\":[{\"id\":\"");
+                
+                def tmpStr = "\"plans\":[{\"id\":\""
+                def i = result.lastIndexOf(tmpStr);
                 echo "i: ${i}"
-                def j = result.	indexOf("\"",i +  "\"plans\":[{\"id\":\"".length())
+                def j = result.	indexOf("\"",i +  tmpStr.length())
                 echo "j: ${j}"
-                planId = result.substring(i,j)
+                planId = result.substring(i +  tmpStr.length(),j)
                 echo "planId: ${planId}"
             }
  
