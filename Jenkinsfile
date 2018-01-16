@@ -241,6 +241,8 @@ node {
     }
      */
        
+    
+    /*
     stage ('Test getCatalog') {
         println("---------------------------------- Test getCatalog  ----------------------------------")
         withEnv(["PATH+OC=${OC_HOME}"]) {
@@ -271,7 +273,7 @@ node {
 
         println("---------------------------------- Test getCatalog is finished ----------------------------------")
     }
-    
+    */
     
 
     stage ('Test provisionSecuredServices') {
