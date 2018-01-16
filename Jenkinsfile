@@ -279,12 +279,10 @@ node {
         println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
             
         //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
-            try {
-                sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/123?plan_id=secure-service-plan-id&service_id=secure-service-id\""
-            }catch(err) {
-                //it's find this deprovision failed
-                echo "!!!!!!!!!!!!!!!!!!Error means there is an existing test.broker.com, no need to create, just continue for curl test..."
-            }            
+        //without deprovisioning first it might also failed because same service name exists at 3 scale side. 
+
+        sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/123?plan_id=secure-service-plan-id&service_id=secure-service-id\""
+      
         
         
         def result = sh (
