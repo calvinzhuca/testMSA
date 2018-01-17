@@ -278,7 +278,6 @@ node {
                 echo "planId: ${planId}"
                 
                 def f = i - 2
-                echo "f: ${f}"                
                 def e = result.lastIndexOf("\"",f-1);
                 serviceId = result.substring(e+1,f)
                 echo "serviceId: ${serviceId}"
@@ -319,14 +318,14 @@ node {
     
     stage ('Test3: provisionSecuredMarket') {
         //Test provisionSecuredServices with instance id = 123
-        println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
+        println("---------------------------------- Test provisionSecuredMarket  ----------------------------------")
             
         //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
         //without deprovisioning first it might also failed because same name exists at 3 scale side. 
         sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/5555?plan_id=secure-service-plan-id&service_id=secure-service-id\""
         
         def result = sh (
-            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":${serviceId},\"plan_id\":${planId},\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"applicationName\":\"testSecuredMarketApp\",\"description\":\"testAppDesc\"}}'  http://test.broker.com/v2/service_instances/5555",
+            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":${serviceId},\"plan_id\":${planId},\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"applicationName\":\"orderPizzaApp\",\"description\":\"testAppDesc\"}}'  http://test.broker.com/v2/service_instances/5555",
             returnStdout: true
         ).trim()    
         echo "curl result: ${result}"   
