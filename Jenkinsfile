@@ -278,7 +278,8 @@ node {
                 echo "planId: ${planId}"
                 
                 def f = i - 2
-                def e = result.lastIndexOf("\"",f);
+                echo "f: ${f}"                
+                def e = result.lastIndexOf("\"",f-1);
                 serviceId = result.substring(e,f)
                 echo "serviceId: ${serviceId}"
                 
