@@ -7,6 +7,7 @@ node {
     def serviceCurl = ""
     def OC_HOME = "/home/czhu/works/ocClient" 
     def planId
+    def serviceId
     checkout scm
 
 
@@ -269,12 +270,18 @@ node {
             }else{
                 echo "good result, passed"
                 
-                //get the planId from the catalog, which will be used in the testing of secured market
+                //get the planId from the catalog, which will be used in the testing of secured market, just pick the last one
                 def tmpStr = "\"plans\":[{\"id\":\""
                 def i = result.lastIndexOf(tmpStr);
                 def j = result.	indexOf("\"",i +  tmpStr.length())
                 planId = result.substring(i +  tmpStr.length(),j)
                 echo "planId: ${planId}"
+                
+                def f = i - 2
+                def e = result.lastIndexOf("\"",f);
+                serviceId = result.substring(e,f)
+                echo "serviceId: ${serviceId}"
+                
             }
  
         }        
@@ -318,7 +325,7 @@ node {
         sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/5555?plan_id=secure-service-plan-id&service_id=secure-service-id\""
         
         def result = sh (
-            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":\"service-guid-here\",\"plan_id\":${planId},\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"applicationName\":\"testSecuredMarketApp\",\"description\":\"testAppDesc\"}}'  http://test.broker.com/v2/service_instances/5555",
+            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":${serviceId},\"plan_id\":${planId},\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"applicationName\":\"testSecuredMarketApp\",\"description\":\"testAppDesc\"}}'  http://test.broker.com/v2/service_instances/5555",
             returnStdout: true
         ).trim()    
         echo "curl result: ${result}"   
