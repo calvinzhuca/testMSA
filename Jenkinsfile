@@ -280,7 +280,7 @@ node {
                 def f = i - 2
                 echo "f: ${f}"                
                 def e = result.lastIndexOf("\"",f-1);
-                serviceId = result.substring(e,f)
+                serviceId = result.substring(e+1,f)
                 echo "serviceId: ${serviceId}"
                 
             }
