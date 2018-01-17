@@ -269,11 +269,10 @@ node {
             }else{
                 echo "good result, passed"
                 
+                //get the planId from the catalog, which will be used in the testing of secured market
                 def tmpStr = "\"plans\":[{\"id\":\""
                 def i = result.lastIndexOf(tmpStr);
-                echo "i: ${i}"
                 def j = result.	indexOf("\"",i +  tmpStr.length())
-                echo "j: ${j}"
                 planId = result.substring(i +  tmpStr.length(),j)
                 echo "planId: ${planId}"
             }
@@ -284,17 +283,13 @@ node {
     }
     
     
-
+/*
     stage ('Test2: provisionSecureServices') {
         //Test provisionSecuredServices with instance id = 123
         println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
-        echo "planId22222222222222: ${planId}"    
         //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
-        //without deprovisioning first it might also failed because same service name exists at 3 scale side. 
-
+        //without deprovisioning first it might also failed because same name exists at 3 scale side. 
         sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/123?plan_id=secure-service-plan-id&service_id=secure-service-id\""
-      
-        
         
         def result = sh (
             script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":\"service-guid-here\",\"plan_id\":\"plan-guid-here\",\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"service_name\":\"testapi\",\"application_plan\":\"plan1\",\"input_url\":\"http://www.google.com\",\"application_name\":\"testApp1\"}}'  http://test.broker.com/v2/service_instances/123",
@@ -312,35 +307,32 @@ node {
         println("---------------------------------- Test2: provisionSecureServices is finished ----------------------------------")
  
     }  
+    */
     
-    /*
     stage ('Test3: provisionSecuredMarket') {
-    //Test provisionSecuredServices with instance id = 123
-    println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
+        //Test provisionSecuredServices with instance id = 123
+        println("---------------------------------- Test provisionSecuredServices  ----------------------------------")
             
-    //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
-    //without deprovisioning first it might also failed because same service name exists at 3 scale side. 
-
-    sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/123?plan_id=secure-service-plan-id&service_id=secure-service-id\""
-      
+        //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
+        //without deprovisioning first it might also failed because same name exists at 3 scale side. 
+        sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/5555?plan_id=secure-service-plan-id&service_id=secure-service-id\""
         
-        
-    def result = sh (
-    script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":\"service-guid-here\",\"plan_id\":\"plan-guid-here\",\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"service_name\":\"testapi\",\"application_plan\":\"plan1\",\"input_url\":\"http://www.google.com\",\"application_name\":\"testApp1\"}}'  http://test.broker.com/v2/service_instances/123",
-    returnStdout: true
-    ).trim()    
-    echo "curl result: ${result}"   
+        def result = sh (
+            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":\"service-guid-here\",\"plan_id\":${planId},\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"applicationName\":\"testSecuredMarketApp\",\"description\":\"testAppDesc\"}}'  http://test.broker.com/v2/service_instances/5555",
+            returnStdout: true
+        ).trim()    
+        echo "curl result: ${result}"   
             
-    def expectWords = "/?user_key="
-    if (!result.contains(expectWords)){
-    echo "result didn't contain following expect words: ${expectWords} "
-    currentBuild.result = 'FAILURE'
-    }else{
-    echo "good result, passed"
-    }
-    println("---------------------------------- Test2: provisionSecuredMarket is finished ----------------------------------")
+        def expectWords = "/?user_key="
+        if (!result.contains(expectWords)){
+            echo "result didn't contain following expect words: ${expectWords} "
+            currentBuild.result = 'FAILURE'
+        }else{
+            echo "good result, passed"
+        }
+        println("---------------------------------- Test2: provisionSecuredMarket is finished ----------------------------------")
  
-    }      */
+    }      
 
 
      
