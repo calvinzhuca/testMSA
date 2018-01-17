@@ -340,7 +340,6 @@ node {
  
     }      
     */
-
     stage ('Test4: BindingForSecuredMarket') {
         //Test provisionSecuredServices with instance id = 123
         println("---------------------------------- Test4: BindingForSecuredMarket  ----------------------------------")
@@ -355,7 +354,7 @@ node {
         ).trim()    
         echo "curl result: ${result}"   
             
-        def expectWords = "/?user_key="
+        def expectWords = "user_key"
         if (!result.contains(expectWords)){
             echo "result didn't contain following expect words: ${expectWords} "
             currentBuild.result = 'FAILURE'
