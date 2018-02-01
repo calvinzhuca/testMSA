@@ -45,7 +45,7 @@ node {
     def ReadIdHelper = load("ReadIdHelper.groovy")
         
     //just get 1 service id
-    def serviceId = Integer.parseInt(ReadIdHelper.getServiceId2(listServiceReply))
+    serviceId = Integer.parseInt(ReadIdHelper.getServiceId2(listServiceReply))
     echo "serviceId ${serviceId}"
         
     if (serviceId > 0)
@@ -79,7 +79,7 @@ node {
     echo "createServiceReply: ${createServiceReply}"
 
     def ReadIdHelper = load("ReadIdHelper.groovy")
-    def serviceId = ReadIdHelper.getServiceId(createServiceReply)
+    serviceId = ReadIdHelper.getServiceId(createServiceReply)
     echo "serviceId ${serviceId}"
 
     def planName = "fourInchPlan"
@@ -95,7 +95,7 @@ node {
         
        
     def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
-    def planId = ReadIdHelper.getPlanId(createPlanReply)
+    planId = ReadIdHelper.getPlanId(createPlanReply)
     echo "planId ${planId}"
         
     //API integration
@@ -129,7 +129,7 @@ node {
     echo "createServiceReply: ${createServiceReply}"
 
     def ReadIdHelper = load("ReadIdHelper.groovy")
-    def serviceId = ReadIdHelper.getServiceId(createServiceReply)
+    serviceId = ReadIdHelper.getServiceId(createServiceReply)
     echo "serviceId ${serviceId}"
 
     def planName = "seasonTicketPlan"
@@ -138,7 +138,7 @@ node {
     sh "${serviceCurl}"      
 
     def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
-    def planId = ReadIdHelper.getPlanId(createPlanReply)
+    planId = ReadIdHelper.getPlanId(createPlanReply)
     echo "planId ${planId}"
         
     //API integration
@@ -172,7 +172,7 @@ node {
     echo "createServiceReply: ${createServiceReply}"
 
     def ReadIdHelper = load("ReadIdHelper.groovy")
-    def serviceId = ReadIdHelper.getServiceId(createServiceReply)
+    serviceId = ReadIdHelper.getServiceId(createServiceReply)
     echo "serviceId ${serviceId}"
 
     def planName = "smallPizza"
@@ -181,7 +181,7 @@ node {
     sh "${serviceCurl}"      
 
     def createPlanReply = new File("${WORKSPACE}/out_createApplicationPlan.txt").text
-    def planId = ReadIdHelper.getPlanId(createPlanReply)
+    planId = ReadIdHelper.getPlanId(createPlanReply)
     echo "planId ${planId}"
         
     //API integration
