@@ -11,7 +11,6 @@ node {
     def accessToken
     withCredentials([string(credentialsId: '3SCALE_ACCESS_TOKEN', variable: 'token')]) {
         accessToken = token
-        echo " accessToken: ${accessToken}"
     }
     
 
@@ -281,6 +280,12 @@ node {
                 planId = result.substring(i +  tmpStr.length(),j)
                 echo "planId: ${planId}"
                 
+                tmpStr = "\"id\":\""
+                def k = result.indexOf(tmpStr,i)
+                def g = result.indexOf("\"", i + tmpStr.length())
+                def planId2 = result.substring(k +  tmpStr.length(),j)
+                echo "planId2: ${planId2}"
+
                 def f = i - 2
                 def e = result.lastIndexOf("\"",f-1);
                 serviceId = result.substring(e+1,f)
@@ -343,31 +348,31 @@ node {
     println("---------------------------------- Test3: provisionSecuredMarket is finished ----------------------------------")
  
     }      
-     */
+
     stage ('Test4: BindingForSecuredMarket') {
-        //Test provisionSecuredServices with instance id = 123
-        println("---------------------------------- Test4: BindingForSecuredMarket  ----------------------------------")
+    //Test provisionSecuredServices with instance id = 123
+    println("---------------------------------- Test4: BindingForSecuredMarket  ----------------------------------")
             
-        //do a unbinding first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
-        //test instance id: 8888, binding id: 9999, note we didn't really use binding id.
-        sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/8888/service_bindings/9999\""
+    //do a unbinding first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
+    //test instance id: 8888, binding id: 9999, note we didn't really use binding id.
+    sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/8888/service_bindings/9999\""
         
-        def result = sh (
-            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"service_id\":${serviceId},\"plan_id\":${planId},\"bind_resource\": {\"app_guid\": \"app-guid-here\"}}'  http://test.broker.com/v2/service_instances/8888/service_bindings/9999",
-            returnStdout: true
-        ).trim()    
-        echo "curl result: ${result}"   
+    def result = sh (
+    script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"service_id\":${serviceId},\"plan_id\":${planId},\"bind_resource\": {\"app_guid\": \"app-guid-here\"}}'  http://test.broker.com/v2/service_instances/8888/service_bindings/9999",
+    returnStdout: true
+    ).trim()    
+    echo "curl result: ${result}"   
             
-        def expectWords = "user_key"
-        if (!result.contains(expectWords)){
-            echo "result didn't contain following expect words: ${expectWords} "
-            currentBuild.result = 'FAILURE'
-        }else{
-            echo "good result, passed"
-        }
-        println("---------------------------------- Test4: BindingForSecuredMarket is finished ----------------------------------")
+    def expectWords = "user_key"
+    if (!result.contains(expectWords)){
+    echo "result didn't contain following expect words: ${expectWords} "
+    currentBuild.result = 'FAILURE'
+    }else{
+    echo "good result, passed"
+    }
+    println("---------------------------------- Test4: BindingForSecuredMarket is finished ----------------------------------")
  
     }      
 
-     
+     */
 }
