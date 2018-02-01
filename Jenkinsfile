@@ -355,7 +355,33 @@ node {
     println("---------------------------------- Test3: provisionSecuredMarket is finished ----------------------------------")
  
     }      
-
+*/
+    stage ('Test3: provisionSecuredMarket') {
+        //Test provisionSecuredMarket with instance id = 5555
+        println("---------------------------------- Test3: provisionSecuredMarket  ----------------------------------")
+            
+        //do a deprovisioning first, otherwise the provision will be skipped if there is already same instance id in the sqlite DB
+        //without deprovisioning first it might also failed because same name exists at 3 scale side. 
+        //test instance id: 5555
+        sh "curl  -H \"Content-Type: application/json\" -X DELETE  \"http://test.broker.com/v2/service_instances/5555?plan_id=secure-service-plan-id&service_id=secure-service-id\""
+        
+        def result = sh (
+            script: "curl  -H \"Content-Type: application/json\" -X PUT -d '{\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"},\"service_id\":${serviceId},\"plan_id\":${planId},\"organization_guid\":\"org-guid-here\",\"space_guid\":\"space-guid-here\",\"parameters\":{\"applicationName\":\"testSecuredMarketApp\",\"description\":\"testSecuredMarketApp\"}}'  http://test.broker.com/v2/service_instances/5555",
+            returnStdout: true
+        ).trim()    
+        echo "curl result: ${result}"   
+            
+        def expectWords = "/?user_key="
+        if (!result.contains(expectWords)){
+            echo "result didn't contain following expect words: ${expectWords} "
+            currentBuild.result = 'FAILURE'
+        }else{
+            echo "good result, passed"
+        }
+        println("---------------------------------- Test3: provisionSecuredMarket is finished ----------------------------------")
+    }          
+    
+    /*
     stage ('Test4: BindingForSecuredMarket') {
     //Test provisionSecuredServices with instance id = 123
     println("---------------------------------- Test4: BindingForSecuredMarket  ----------------------------------")
@@ -382,4 +408,26 @@ node {
     }      
 
      */
+    
+    stage ('Test5: updateServiceInstance') {
+        println("---------------------------------- Test5: updateServiceInstance  ----------------------------------")
+            
+        //test instance id: 5555, note this need to be the same as test3's instance id because it's update based on this instance id
+        //test3 uses planId (smallPizza plan), while this will use planId2 to update it to (largePizza plan)
+        
+        def result = sh (
+            script: "curl  -H \"Content-Type: application/json\" -X PATCH -d '{\"service_id\":${serviceId},\"plan_id\":${planId2},\"context\":{\"platform\":\"ocp\",\"namespace\":\"some-namespace\"}}'  http://test.broker.com/v2/service_instances/5555",
+            returnStdout: true
+        ).trim()    
+        echo "curl result: ${result}"   
+            
+        def expectWords = "success"
+        if (!result.contains(expectWords)){
+            echo "result didn't contain following expect words: ${expectWords} "
+            currentBuild.result = 'FAILURE'
+        }else{
+            echo "good result, passed"
+        }
+        println("---------------------------------- Test5: updateServiceInstance is finished ----------------------------------")
+    }      
 }
