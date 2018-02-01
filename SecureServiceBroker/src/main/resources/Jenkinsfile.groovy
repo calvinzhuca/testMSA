@@ -288,7 +288,7 @@ node {
                 echo "planId: ${planId}"
                 
                 tmpStr = "\"id\":\""
-                def k = result.indexOf(tmpStr,i)
+                def k = result.indexOf(tmpStr,i+10)
                 def g = result.indexOf("\"", i + tmpStr.length())
                 def planId2 = result.substring(k +  tmpStr.length(),j)
                 echo "planId2: ${planId2}"
