@@ -408,7 +408,7 @@ node {
  
     }      
 
-     */
+
     
     stage ('Test5: updateServiceInstance') {
         println("---------------------------------- Test5: updateServiceInstance  ----------------------------------")
@@ -430,5 +430,6 @@ node {
             echo "good result, passed"
         }
         println("---------------------------------- Test5: updateServiceInstance is finished ----------------------------------")
-    }      
+    }   
+         */
 }
